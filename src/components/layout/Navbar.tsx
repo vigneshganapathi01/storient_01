@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -31,6 +32,11 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('You have been successfully signed out!');
+  };
 
   return (
     <nav
@@ -54,11 +60,11 @@ const Navbar: React.FC = () => {
           <Link to="/templates" className="text-foreground hover:text-primary transition-colors">
             Templates
           </Link>
+          <Link to="/downloads" className="text-foreground hover:text-primary transition-colors">
+            Downloads
+          </Link>
           <Link to="/blog" className="text-foreground hover:text-primary transition-colors">
             Blog
-          </Link>
-          <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
-            How It Works
           </Link>
           <Link to="/about" className="text-foreground hover:text-primary transition-colors">
             About Us
@@ -89,13 +95,13 @@ const Navbar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard/profile" className="w-full">Profile</Link>
+                  <Link to="/downloads" className="w-full">My Downloads</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard/settings" className="w-full">Settings</Link>
+                  <Link to="/settings" className="w-full">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -142,6 +148,13 @@ const Navbar: React.FC = () => {
               Templates
             </Link>
             <Link 
+              to="/downloads" 
+              className="block text-foreground hover:text-primary py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Downloads
+            </Link>
+            <Link 
               to="/blog" 
               className="block text-foreground hover:text-primary py-2"
               onClick={() => setMobileMenuOpen(false)}
@@ -149,14 +162,7 @@ const Navbar: React.FC = () => {
               Blog
             </Link>
             <Link 
-              to="/how-it-works" 
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              How It Works
-            </Link>
-            <Link 
-              to="/about" 
+              to="/about"
               className="block text-foreground hover:text-primary py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -180,12 +186,12 @@ const Navbar: React.FC = () => {
               
               {user ? (
                 <Link 
-                  to="/dashboard/profile" 
+                  to="/downloads" 
                   className="flex items-center space-x-2 text-foreground"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <User className="h-5 w-5" />
-                  <span>Dashboard</span>
+                  <span>My Downloads</span>
                 </Link>
               ) : (
                 <div className="flex space-x-2">

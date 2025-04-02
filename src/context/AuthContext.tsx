@@ -5,6 +5,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Tables } from '@/integrations/supabase/types';
+import { toast } from 'sonner';
 
 interface AuthContextProps {
   session: Session | null;
@@ -26,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Tables<'profiles'> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: useToastMethod } = useToast();
 
   useEffect(() => {
     const setupAuth = async () => {
@@ -35,6 +36,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         (event, currentSession) => {
           setSession(currentSession);
           setUser(currentSession?.user ?? null);
+
+          // Display welcome message on sign in
+          if (event === 'SIGNED_IN') {
+            toast.success('Welcome back! Your login was successful.');
+          }
+
+          // Redirect to home page after email confirmation
+          if (event === 'USER_UPDATED' && currentSession?.user) {
+            navigate('/');
+            toast.success('Email confirmed successfully! Welcome to TemplatePro!');
+          }
 
           // If user exists, fetch their profile with setTimeout to avoid deadlocks
           if (currentSession?.user) {
@@ -64,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     setupAuth();
-  }, []);
+  }, [navigate]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -93,19 +105,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) throw error;
-
-      toast({
-        title: "Welcome back!",
-        description: "You've successfully signed in.",
-      });
       
-      navigate('/dashboard/profile');
+      navigate('/');
     } catch (error: any) {
-      toast({
-        title: "Error signing in",
-        description: error.message || "An error occurred during sign in.",
-        variant: "destructive",
-      });
+      toast.error(`Error signing in: ${error.message || "An error occurred during sign in."}`);
     } finally {
       setIsLoading(false);
     }
@@ -118,24 +121,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email, 
         password,
         options: {
-          data: metadata
+          data: metadata,
+          emailRedirectTo: `${window.location.origin}`
         }
       });
 
       if (error) throw error;
 
-      toast({
-        title: "Registration successful!",
-        description: "Welcome to TemplatePro! You're now logged in.",
-      });
-      
-      navigate('/dashboard/profile');
+      toast.success('Registration successful! Please check your email to confirm your account.');
+      navigate('/');
     } catch (error: any) {
-      toast({
-        title: "Error signing up",
-        description: error.message || "An error occurred during sign up.",
-        variant: "destructive",
-      });
+      toast.error(`Error signing up: ${error.message || "An error occurred during sign up."}`);
     } finally {
       setIsLoading(false);
     }
@@ -147,18 +143,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/dashboard/profile'
+          redirectTo: `${window.location.origin}`
         }
       });
 
       if (error) throw error;
 
     } catch (error: any) {
-      toast({
-        title: "Error signing in with Google",
-        description: error.message || "An error occurred during Google sign in.",
-        variant: "destructive",
-      });
+      toast.error(`Error signing in with Google: ${error.message || "An error occurred during Google sign in."}`);
       setIsLoading(false);
     }
   };
@@ -169,19 +161,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signOut();
 
       if (error) throw error;
-
-      toast({
-        title: "Signed out",
-        description: "You've been successfully signed out.",
-      });
       
       navigate('/');
     } catch (error: any) {
-      toast({
-        title: "Error signing out",
-        description: error.message || "An error occurred during sign out.",
-        variant: "destructive",
-      });
+      toast.error(`Error signing out: ${error.message || "An error occurred during sign out."}`);
     } finally {
       setIsLoading(false);
     }
@@ -195,7 +178,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const { error } = await supabase
         .from('profiles')
-        .update(data as any)
+        .update(data)
         .eq('id', user.id);
 
       if (error) throw error;
@@ -203,16 +186,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Refetch the profile after update
       await fetchProfile(user.id);
 
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been successfully updated.",
-      });
+      toast.success('Profile updated successfully!');
     } catch (error: any) {
-      toast({
-        title: "Error updating profile",
-        description: error.message || "An error occurred while updating your profile.",
-        variant: "destructive",
-      });
+      toast.error(`Error updating profile: ${error.message || "An error occurred while updating your profile."}`);
     } finally {
       setIsLoading(false);
     }
