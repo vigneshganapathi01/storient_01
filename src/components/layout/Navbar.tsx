@@ -2,24 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X, Download, Package, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
-
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const {
+    user,
+    signOut
+  } = useAuth();
   const navigate = useNavigate();
-  const { totalItems } = useCart();
-
+  const {
+    totalItems
+  } = useCart();
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -31,20 +28,11 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
   const handleSignOut = async () => {
     await signOut();
     toast.success('You have been successfully signed out!');
   };
-
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white dark:bg-gray-900 shadow-md py-3' 
-          : 'bg-transparent py-5'
-      }`}
-    >
+  return <nav className="">
       <div className="max-container flex-between">
         <Link to="/" className="flex items-center">
           <span className="text-2xl font-bold text-gradient">TemplatePro</span>
@@ -73,22 +61,14 @@ const Navbar: React.FC = () => {
             <Search className="h-5 w-5" />
           </Button>
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-foreground hover:text-primary transition-colors relative"
-            onClick={() => navigate('/cart')}
-          >
+          <Button variant="ghost" size="icon" className="text-foreground hover:text-primary transition-colors relative" onClick={() => navigate('/cart')}>
             <ShoppingCart className="h-5 w-5" />
-            {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-brand-purple text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+            {totalItems > 0 && <span className="absolute -top-1 -right-1 bg-brand-purple text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {totalItems}
-              </span>
-            )}
+              </span>}
           </Button>
 
-          {user ? (
-            <DropdownMenu>
+          {user ? <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full border border-border">
                   <User className="h-5 w-5" />
@@ -119,67 +99,38 @@ const Navbar: React.FC = () => {
                   <span>Sign Out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex space-x-2">
+            </DropdownMenu> : <div className="flex space-x-2">
               <Button onClick={() => navigate('/signin')} variant="outline" className="text-foreground">
                 Sign In
               </Button>
               <Button onClick={() => navigate('/signup')} className="bg-brand-purple hover:bg-brand-indigo text-white">
                 Sign Up
               </Button>
-            </div>
-          )}
+            </div>}
         </div>
 
         <div className="md:hidden flex items-center">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-foreground"
-          >
+          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-foreground">
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-background border-t border-border animate-fade-in">
+      {mobileMenuOpen && <div className="md:hidden bg-background border-t border-border animate-fade-in">
           <div className="max-container py-4 space-y-4">
-            <Link 
-              to="/" 
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               Home
             </Link>
-            <Link 
-              to="/templates" 
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/templates" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               Templates
             </Link>
-            <Link 
-              to="/how-it-works" 
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/how-it-works" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               How It Works
             </Link>
-            <Link 
-              to="/blog" 
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/blog" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               Blog
             </Link>
-            <Link 
-              to="/about"
-              className="block text-foreground hover:text-primary py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <Link to="/about" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               About Us
             </Link>
             
@@ -188,62 +139,37 @@ const Navbar: React.FC = () => {
                 <Button variant="ghost" size="icon" className="text-foreground">
                   <Search className="h-5 w-5" />
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-foreground relative"
-                  onClick={() => {
-                    navigate('/cart');
-                    setMobileMenuOpen(false);
-                  }}
-                >
+                <Button variant="ghost" size="icon" className="text-foreground relative" onClick={() => {
+              navigate('/cart');
+              setMobileMenuOpen(false);
+            }}>
                   <ShoppingCart className="h-5 w-5" />
-                  {totalItems > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-brand-purple text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems > 0 && <span className="absolute -top-1 -right-1 bg-brand-purple text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                       {totalItems}
-                    </span>
-                  )}
+                    </span>}
                 </Button>
               </div>
               
-              {user ? (
-                <Link 
-                  to="/dashboard/profile" 
-                  className="flex items-center space-x-2 text-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+              {user ? <Link to="/dashboard/profile" className="flex items-center space-x-2 text-foreground" onClick={() => setMobileMenuOpen(false)}>
                   <User className="h-5 w-5" />
                   <span>My Dashboard</span>
-                </Link>
-              ) : (
-                <div className="flex space-x-2">
-                  <Button 
-                    onClick={() => {
-                      navigate('/signin');
-                      setMobileMenuOpen(false);
-                    }} 
-                    variant="outline"
-                    className="text-foreground"
-                  >
+                </Link> : <div className="flex space-x-2">
+                  <Button onClick={() => {
+              navigate('/signin');
+              setMobileMenuOpen(false);
+            }} variant="outline" className="text-foreground">
                     Sign In
                   </Button>
-                  <Button 
-                    onClick={() => {
-                      navigate('/signup');
-                      setMobileMenuOpen(false);
-                    }} 
-                    className="bg-brand-purple hover:bg-brand-indigo text-white"
-                  >
+                  <Button onClick={() => {
+              navigate('/signup');
+              setMobileMenuOpen(false);
+            }} className="bg-brand-purple hover:bg-brand-indigo text-white">
                     Sign Up
                   </Button>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
-        </div>
-      )}
-    </nav>
-  );
+        </div>}
+    </nav>;
 };
-
 export default Navbar;
