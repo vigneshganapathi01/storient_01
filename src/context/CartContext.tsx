@@ -31,6 +31,7 @@ interface CartContextProps {
   promoCode: string | null;
   promoDiscount: number;
   isLoading: boolean;
+  fetchCartItems: () => Promise<void>; // Add this to expose the function
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -72,10 +73,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Fetch cart items from Supabase
   const fetchCartItems = async () => {
-    if (!user) return;
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
     
     try {
       setIsLoading(true);
+      
+      console.log("Fetching cart items for user:", user.id);
       
       // First get the cart items
       const { data: cartItems, error: cartError } = await supabase
@@ -85,12 +91,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (cartError) throw cartError;
       
+      console.log("Cart items fetched:", cartItems);
+      
       // If we got cart items, fetch the related template details for each
       if (cartItems && cartItems.length > 0) {
         const cartItemsWithTemplates: CartItem[] = [];
         
         // For each cart item, get the template details
         for (const item of cartItems) {
+          console.log("Fetching template details for:", item.template_id);
+          
           const { data: template, error: templateError } = await supabase
             .from('templates')
             .select('*')
@@ -101,6 +111,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error('Error fetching template:', templateError);
             continue; // Skip this item if there's an error
           }
+          
+          console.log("Template data:", template);
           
           if (template) {
             // Transform data to match CartItem interface
@@ -119,6 +131,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         }
         
+        console.log("Final cart items with details:", cartItemsWithTemplates);
         setItems(cartItemsWithTemplates);
       } else {
         setItems([]);
@@ -323,7 +336,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       applyPromoCode,
       promoCode,
       promoDiscount,
-      isLoading
+      isLoading,
+      fetchCartItems // Expose the function
     }}>
       {children}
     </CartContext.Provider>

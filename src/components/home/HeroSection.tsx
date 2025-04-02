@@ -118,10 +118,10 @@ const HeroSection: React.FC = () => {
             muted
             loop
             playsInline
-            className="hero-video"
+            className="hero-video w-full h-full object-cover"
             poster="/placeholder.svg"
           >
-            <source src="https://cdn.coverr.co/videos/coverr-creating-on-a-laptop-9733/1080p.mp4" type="video/mp4" />
+            <source src="https://videos.pexels.com/video-files/5519939/5519939-uhd_2560_1440_30fps.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,12 +27,19 @@ const Cart: React.FC = () => {
     applyPromoCode, 
     promoCode, 
     promoDiscount, 
-    isLoading 
+    isLoading,
+    fetchCartItems 
   } = useCart();
   
   const [promoInput, setPromoInput] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+
+  // Ensure cart items are loaded
+  useEffect(() => {
+    // Force a refresh of cart items
+    fetchCartItems();
+  }, []);
 
   const handleRemoveItem = (id: string) => {
     removeFromCart(id);
