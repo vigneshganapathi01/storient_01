@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -76,42 +77,52 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsLoading(true);
       
-      // Get cart items from database
-      const { data, error } = await supabase
+      // First get the cart items
+      const { data: cartItems, error: cartError } = await supabase
         .from('cart_items')
-        .select(`
-          id,
-          template_id,
-          quantity,
-          templates:template_id(
-            id, 
-            title, 
-            price, 
-            discount_percentage,
-            image_url, 
-            category,
-            is_pack
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id);
       
-      if (error) throw error;
+      if (cartError) throw cartError;
       
-      // Transform data to match CartItem interface
-      const cartItems: CartItem[] = data.map(item => ({
-        id: item.template_id,
-        title: item.templates.title,
-        price: item.templates.price,
-        discountPrice: item.templates.discount_percentage 
-          ? Number((item.templates.price * (1 - item.templates.discount_percentage / 100)).toFixed(2))
-          : null,
-        image: item.templates.image_url,
-        quantity: item.quantity,
-        type: item.templates.category,
-        isPack: item.templates.is_pack,
-      }));
-      
-      setItems(cartItems);
+      // If we got cart items, fetch the related template details for each
+      if (cartItems && cartItems.length > 0) {
+        const cartItemsWithTemplates: CartItem[] = [];
+        
+        // For each cart item, get the template details
+        for (const item of cartItems) {
+          const { data: template, error: templateError } = await supabase
+            .from('templates')
+            .select('*')
+            .eq('id', item.template_id)
+            .single();
+          
+          if (templateError) {
+            console.error('Error fetching template:', templateError);
+            continue; // Skip this item if there's an error
+          }
+          
+          if (template) {
+            // Transform data to match CartItem interface
+            cartItemsWithTemplates.push({
+              id: item.template_id,
+              title: template.title,
+              price: template.price,
+              discountPrice: template.discount_percentage 
+                ? Number((template.price * (1 - template.discount_percentage / 100)).toFixed(2))
+                : null,
+              image: template.image_url,
+              quantity: item.quantity || 1,
+              type: template.category,
+              isPack: template.is_pack,
+            });
+          }
+        }
+        
+        setItems(cartItemsWithTemplates);
+      } else {
+        setItems([]);
+      }
     } catch (error: any) {
       console.error('Error fetching cart:', error);
       toast.error(`Failed to load cart: ${error.message}`);
