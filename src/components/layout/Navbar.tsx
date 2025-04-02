@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Download, Package, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -60,8 +60,8 @@ const Navbar: React.FC = () => {
           <Link to="/templates" className="text-foreground hover:text-primary transition-colors">
             Templates
           </Link>
-          <Link to="/downloads" className="text-foreground hover:text-primary transition-colors">
-            Downloads
+          <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">
+            How It Works
           </Link>
           <Link to="/blog" className="text-foreground hover:text-primary transition-colors">
             Blog
@@ -95,13 +95,28 @@ const Navbar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link to="/downloads" className="w-full">My Downloads</Link>
+                  <Link to="/dashboard/profile" className="w-full flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>My Profile</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" className="w-full">Settings</Link>
+                  <Link to="/dashboard/purchased" className="w-full flex items-center">
+                    <Package className="mr-2 h-4 w-4" />
+                    <span>Purchased Packs</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard/downloads" className="w-full flex items-center">
+                    <FileDown className="mr-2 h-4 w-4" />
+                    <span>My Downloads</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
+                  <Download className="mr-2 h-4 w-4 rotate-90" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -148,11 +163,11 @@ const Navbar: React.FC = () => {
               Templates
             </Link>
             <Link 
-              to="/downloads" 
+              to="/how-it-works" 
               className="block text-foreground hover:text-primary py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Downloads
+              How It Works
             </Link>
             <Link 
               to="/blog" 
@@ -186,12 +201,12 @@ const Navbar: React.FC = () => {
               
               {user ? (
                 <Link 
-                  to="/downloads" 
+                  to="/dashboard/profile" 
                   className="flex items-center space-x-2 text-foreground"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <User className="h-5 w-5" />
-                  <span>My Downloads</span>
+                  <span>My Dashboard</span>
                 </Link>
               ) : (
                 <div className="flex space-x-2">
