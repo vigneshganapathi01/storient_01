@@ -99,9 +99,14 @@ const Navbar: React.FC = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => navigate('/signin')} className="bg-brand-purple hover:bg-brand-indigo text-white">
-              Sign In
-            </Button>
+            <div className="flex space-x-2">
+              <Button onClick={() => navigate('/signin')} variant="outline" className="text-foreground">
+                Sign In
+              </Button>
+              <Button onClick={() => navigate('/signup')} className="bg-brand-purple hover:bg-brand-indigo text-white">
+                Sign Up
+              </Button>
+            </div>
           )}
         </div>
 
@@ -183,15 +188,27 @@ const Navbar: React.FC = () => {
                   <span>Dashboard</span>
                 </Link>
               ) : (
-                <Button 
-                  onClick={() => {
-                    navigate('/signin');
-                    setMobileMenuOpen(false);
-                  }} 
-                  className="bg-brand-purple hover:bg-brand-indigo text-white"
-                >
-                  Sign In
-                </Button>
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={() => {
+                      navigate('/signin');
+                      setMobileMenuOpen(false);
+                    }} 
+                    variant="outline"
+                    className="text-foreground"
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      navigate('/signup');
+                      setMobileMenuOpen(false);
+                    }} 
+                    className="bg-brand-purple hover:bg-brand-indigo text-white"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
               )}
             </div>
           </div>
