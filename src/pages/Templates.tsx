@@ -4,7 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Filter, Check } from 'lucide-react';
+import { ShoppingCart, Filter, Check, Eye } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -17,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
 
 // Sample template data
 const sampleTemplates = [
@@ -129,6 +131,7 @@ const categories = [
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
+  const { addToCart } = useCart();
 
   const filteredTemplates = sampleTemplates
     .filter(template => selectedCategory === 'All Categories' || template.category === selectedCategory)
@@ -149,6 +152,18 @@ const Templates = () => {
       return 0;
     });
 
+  const handleAddToCart = (template: any) => {
+    addToCart({
+      id: template.id.toString(),
+      title: template.title,
+      price: template.price,
+      discountPrice: template.discountPrice,
+      image: template.image,
+      type: template.type,
+      isPack: template.isPack,
+    });
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -156,7 +171,7 @@ const Templates = () => {
         <div className="max-container pt-32 pb-20">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Browse Templates</h1>
+              <h1 className="text-4xl font-bold mb-2 text-brand-blue">Browse Templates</h1>
               <p className="text-muted-foreground">
                 Discover our collection of premium templates designed for professionals.
               </p>
@@ -190,7 +205,7 @@ const Templates = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.map((template) => (
-              <Card key={template.id} className="overflow-hidden flex flex-col h-full">
+              <Card key={template.id} className="overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg">
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img 
                     src={template.image} 
@@ -218,11 +233,11 @@ const Templates = () => {
                       <div className="space-x-2">
                         {template.discountPrice ? (
                           <>
-                            <span className="text-2xl font-bold">${template.discountPrice}</span>
+                            <span className="text-2xl font-bold text-brand-blue">${template.discountPrice}</span>
                             <span className="text-lg text-muted-foreground line-through">${template.price}</span>
                           </>
                         ) : (
-                          <span className="text-2xl font-bold">${template.price}</span>
+                          <span className="text-2xl font-bold text-brand-blue">${template.price}</span>
                         )}
                       </div>
                     </div>
@@ -231,10 +246,14 @@ const Templates = () => {
                 </CardContent>
                 <CardFooter className="pt-0 px-5 pb-5">
                   <div className="w-full flex gap-2">
-                    <Button className="flex-1">
-                      Preview
+                    <Button className="flex-1 bg-brand-blue hover:bg-brand-blue/90">
+                      <Eye className="h-4 w-4 mr-2" /> Preview
                     </Button>
-                    <Button variant="outline" className="flex items-center gap-1">
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-1 border-brand-lightBlue text-brand-lightBlue hover:bg-brand-lightBlue hover:text-white"
+                      onClick={() => handleAddToCart(template)}
+                    >
                       <ShoppingCart className="h-4 w-4" />
                     </Button>
                   </div>

@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 import Index from "./pages/Index";
 import Templates from "./pages/Templates";
 import Blog from "./pages/Blog";
@@ -12,6 +13,7 @@ import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import CartPage from "./pages/CartPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,17 +25,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/templates" element={<Templates />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/signin" element={<Auth tab="signin" />} />
-            <Route path="/signup" element={<Auth tab="signup" />} />
-            <Route path="/dashboard/*" element={<Dashboard />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <CartProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/templates" element={<Templates />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/signin" element={<Auth tab="signin" />} />
+              <Route path="/signup" element={<Auth tab="signup" />} />
+              <Route path="/dashboard/*" element={<Dashboard />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </CartProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

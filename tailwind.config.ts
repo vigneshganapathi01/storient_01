@@ -64,9 +64,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
                 brand: {
-                    purple: '#8B5CF6',
-                    blue: '#0EA5E9',
-                    indigo: '#6366F1',
+                    blue: '#002060',   // Primary color
+                    lightBlue: '#009bff', // Secondary color
+                    purple: '#4b258f',  // Accent color
                     light: '#E5DEFF',
                 },
 			},
