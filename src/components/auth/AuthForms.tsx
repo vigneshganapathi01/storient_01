@@ -1,13 +1,12 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 interface AuthFormsProps {
   defaultTab?: 'signin' | 'signup';
@@ -19,78 +18,22 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const [fullName, setFullName] = useState('');
+  
+  const { signIn, signUp, signInWithGoogle, isLoading } = useAuth();
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      // For demo purposes, we'll just check if email and password are filled
-      if (email && password) {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
-        navigate('/dashboard/profile');
-      } else {
-        toast({
-          title: "Error",
-          description: "Please enter your email and password.",
-          variant: "destructive",
-        });
-      }
-      setLoading(false);
-    }, 1000);
+    await signIn(email, password);
   };
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      // Check if all fields are filled and passwords match
-      if (email && password && confirmPassword) {
-        if (password !== confirmPassword) {
-          toast({
-            title: "Error",
-            description: "Passwords do not match.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Account created!",
-            description: "Your account has been created successfully.",
-          });
-          navigate('/dashboard/profile');
-        }
-      } else {
-        toast({
-          title: "Error",
-          description: "Please fill all fields.",
-          variant: "destructive",
-        });
-      }
-      setLoading(false);
-    }, 1000);
-  };
-
-  const handleGoogleAuth = () => {
-    setLoading(true);
-
-    // Simulate Google OAuth
-    setTimeout(() => {
-      toast({
-        title: "Google authentication",
-        description: "You have successfully signed in with Google.",
-      });
-      navigate('/dashboard/profile');
-      setLoading(false);
-    }, 1000);
+    if (password !== confirmPassword) {
+      return; // Error is handled in the UI with validation
+    }
+    
+    await signUp(email, password, { full_name: fullName });
   };
 
   return (
@@ -163,9 +106,9 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
                   <Button
                     type="submit"
                     className="w-full bg-brand-purple hover:bg-brand-indigo"
-                    disabled={loading}
+                    disabled={isLoading}
                   >
-                    {loading ? "Signing in..." : "Sign In"}
+                    {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
                   <div className="relative w-full">
                     <div className="absolute inset-0 flex items-center">
@@ -181,8 +124,8 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={handleGoogleAuth}
-                    disabled={loading}
+                    onClick={signInWithGoogle}
+                    disabled={isLoading}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -224,6 +167,16 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
               </CardHeader>
               <form onSubmit={handleSignUp}>
                 <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="full-name">Full Name</Label>
+                    <Input
+                      id="full-name"
+                      type="text"
+                      placeholder="John Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                    />
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -271,15 +224,20 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                     />
+                    {password && confirmPassword && password !== confirmPassword && (
+                      <p className="text-xs text-destructive mt-1">
+                        Passwords do not match
+                      </p>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4">
                   <Button
                     type="submit"
                     className="w-full bg-brand-purple hover:bg-brand-indigo"
-                    disabled={loading}
+                    disabled={isLoading || (password !== confirmPassword && !!confirmPassword)}
                   >
-                    {loading ? "Creating account..." : "Create Account"}
+                    {isLoading ? "Creating account..." : "Create Account"}
                   </Button>
                   <div className="relative w-full">
                     <div className="absolute inset-0 flex items-center">
@@ -295,8 +253,8 @@ const AuthForms: React.FC<AuthFormsProps> = ({ defaultTab = 'signin' }) => {
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={handleGoogleAuth}
-                    disabled={loading}
+                    onClick={signInWithGoogle}
+                    disabled={isLoading}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

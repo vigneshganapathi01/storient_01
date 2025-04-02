@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,15 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/context/AuthContext';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState(0);
-
-  // For demo purposes - Toggle logged in state
-  const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   // Scroll effect for navbar
   useEffect(() => {
@@ -81,7 +80,7 @@ const Navbar: React.FC = () => {
             )}
           </Button>
 
-          {isLoggedIn ? (
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full border border-border">
@@ -89,18 +88,18 @@ const Navbar: React.FC = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/dashboard/profile" className="w-full">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/dashboard/settings" className="w-full">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={toggleLogin}>Sign Out</DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={toggleLogin} className="bg-brand-purple hover:bg-brand-indigo text-white">
+            <Button onClick={() => navigate('/signin')} className="bg-brand-purple hover:bg-brand-indigo text-white">
               Sign In
             </Button>
           )}
@@ -174,7 +173,7 @@ const Navbar: React.FC = () => {
                 </Button>
               </div>
               
-              {isLoggedIn ? (
+              {user ? (
                 <Link 
                   to="/dashboard/profile" 
                   className="flex items-center space-x-2 text-foreground"
@@ -186,7 +185,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <Button 
                   onClick={() => {
-                    toggleLogin();
+                    navigate('/signin');
                     setMobileMenuOpen(false);
                   }} 
                   className="bg-brand-purple hover:bg-brand-indigo text-white"
