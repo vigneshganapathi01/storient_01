@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -20,10 +19,9 @@ import {
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 
-// Sample template data
 const sampleTemplates = [
   {
-    id: 1,
+    id: "123e4567-e89b-12d3-a456-426614174000",
     title: 'Modern Dashboard',
     price: 49,
     discountPrice: null,
@@ -33,7 +31,7 @@ const sampleTemplates = [
     type: 'React'
   },
   {
-    id: 2,
+    id: "223e4567-e89b-12d3-a456-426614174001",
     title: 'E-commerce Bundle',
     price: 129,
     discountPrice: 99,
@@ -44,7 +42,7 @@ const sampleTemplates = [
     isPack: true
   },
   {
-    id: 3,
+    id: "323e4567-e89b-12d3-a456-426614174002",
     title: 'Portfolio Template',
     price: 39,
     discountPrice: null,
@@ -54,7 +52,7 @@ const sampleTemplates = [
     type: 'HTML'
   },
   {
-    id: 4,
+    id: "423e4567-e89b-12d3-a456-426614174003",
     title: 'Blog Theme',
     price: 45,
     discountPrice: 35,
@@ -64,7 +62,7 @@ const sampleTemplates = [
     type: 'WordPress'
   },
   {
-    id: 5,
+    id: "523e4567-e89b-12d3-a456-426614174004",
     title: 'Corporate Site',
     price: 59,
     discountPrice: null,
@@ -74,7 +72,7 @@ const sampleTemplates = [
     type: 'HTML'
   },
   {
-    id: 6,
+    id: "623e4567-e89b-12d3-a456-426614174005",
     title: 'Landing Page Pack',
     price: 79,
     discountPrice: 59,
@@ -85,7 +83,7 @@ const sampleTemplates = [
     isPack: true
   },
   {
-    id: 7,
+    id: "723e4567-e89b-12d3-a456-426614174006",
     title: 'SaaS Dashboard',
     price: 69,
     discountPrice: null,
@@ -95,7 +93,7 @@ const sampleTemplates = [
     type: 'React'
   },
   {
-    id: 8,
+    id: "823e4567-e89b-12d3-a456-426614174007",
     title: 'Mobile App UI Kit',
     price: 89,
     discountPrice: 75,
@@ -106,7 +104,7 @@ const sampleTemplates = [
     isPack: true
   },
   {
-    id: 9,
+    id: "923e4567-e89b-12d3-a456-426614174008",
     title: 'Restaurant Website',
     price: 49,
     discountPrice: null,
@@ -147,14 +145,14 @@ const Templates = () => {
         const bPrice = b.discountPrice || b.price;
         return bPrice - aPrice;
       } else if (sortBy === 'newest') {
-        return b.id - a.id;
+        return b.id.localeCompare(a.id);
       }
       return 0;
     });
 
   const handleAddToCart = (template: any) => {
     addToCart({
-      id: template.id.toString(),
+      id: template.id,
       title: template.title,
       price: template.price,
       discountPrice: template.discountPrice,
