@@ -1,40 +1,31 @@
-
 import React from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { MapPin, Mail, Phone, Clock, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const teamMembers = [
-  {
-    name: 'Sarah Johnson',
-    role: 'CEO & Founder',
-    bio: 'With 15+ years in design and tech, Sarah founded TemplatePro to make premium design accessible to everyone.',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'
-  },
-  {
-    name: 'Michael Chen',
-    role: 'Head of Design',
-    bio: 'Award-winning designer who leads our creative team with a focus on innovative and user-friendly templates.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    name: 'Jessica Williams',
-    role: 'Lead Developer',
-    bio: 'Full-stack developer with expertise in creating responsive, accessible, and high-performance web templates.',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop'
-  },
-  {
-    name: 'Daniel Martinez',
-    role: 'Customer Success',
-    bio: 'Passionate about helping clients make the most of our templates and ensuring exceptional user experiences.',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop'
-  }
-];
-
+const teamMembers = [{
+  name: 'Sarah Johnson',
+  role: 'CEO & Founder',
+  bio: 'With 15+ years in design and tech, Sarah founded TemplatePro to make premium design accessible to everyone.',
+  image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'
+}, {
+  name: 'Michael Chen',
+  role: 'Head of Design',
+  bio: 'Award-winning designer who leads our creative team with a focus on innovative and user-friendly templates.',
+  image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'
+}, {
+  name: 'Jessica Williams',
+  role: 'Lead Developer',
+  bio: 'Full-stack developer with expertise in creating responsive, accessible, and high-performance web templates.',
+  image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop'
+}, {
+  name: 'Daniel Martinez',
+  role: 'Customer Success',
+  bio: 'Passionate about helping clients make the most of our templates and ensuring exceptional user experiences.',
+  image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop'
+}];
 const About = () => {
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
@@ -49,7 +40,7 @@ const About = () => {
               <Button className="bg-white text-brand-purple hover:bg-gray-100">
                 Join Our Team
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button variant="outline" className="border-white text-brand-purple bg-white">
                 Contact Us
               </Button>
             </div>
@@ -78,11 +69,7 @@ const About = () => {
             </div>
             <div className="relative">
               <div className="aspect-[4/3] rounded-lg overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" 
-                  alt="TemplatePro team collaborating" 
-                  className="w-full h-full object-cover"
-                />
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="TemplatePro team collaborating" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-brand-purple text-white p-6 rounded-lg shadow-lg">
                 <p className="text-3xl font-bold">5+ Years</p>
@@ -139,20 +126,14 @@ const About = () => {
             </p>
               
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="text-center">
+              {teamMembers.map((member, index) => <div key={index} className="text-center">
                   <div className="relative mb-4 mx-auto w-40 h-40 rounded-full overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <h3 className="text-xl font-medium">{member.name}</h3>
                   <p className="text-brand-purple font-medium mb-2">{member.role}</p>
                   <p className="text-muted-foreground text-sm">{member.bio}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
             
@@ -207,32 +188,20 @@ const About = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Name</label>
-                      <input 
-                        type="text" 
-                        className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple"
-                      />
+                      <input type="text" className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Email</label>
-                      <input 
-                        type="email" 
-                        className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple"
-                      />
+                      <input type="email" className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Subject</label>
-                    <input 
-                      type="text" 
-                      className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple"
-                    />
+                    <input type="text" className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Message</label>
-                    <textarea 
-                      rows={4}
-                      className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple"
-                    ></textarea>
+                    <textarea rows={4} className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-purple"></textarea>
                   </div>
                   <Button className="w-full bg-brand-purple hover:bg-brand-indigo">
                     Send Message
@@ -244,8 +213,6 @@ const About = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default About;
