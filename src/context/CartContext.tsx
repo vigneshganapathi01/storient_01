@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,7 +35,7 @@ interface CartContextProps {
   fetchCartItems: () => Promise<void>;
 }
 
-// Make sure the context has a default value matching the CartContextProps interface
+// Create context with undefined default value
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -312,7 +313,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user, authLoading]);
 
-  // Make sure all required context values are provided
+  // Create a value object with all the required context properties
   const contextValue: CartContextProps = {
     items,
     addToCart,
@@ -337,7 +338,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// Fixed useCart hook with proper error checking
+// Custom hook to use the cart context with proper error checking
 export const useCart = (): CartContextProps => {
   const context = useContext(CartContext);
   if (context === undefined) {
