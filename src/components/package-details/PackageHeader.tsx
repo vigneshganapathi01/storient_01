@@ -2,6 +2,7 @@
 import React from 'react';
 import PackageDetailsHeader from './PackageDetailsHeader';
 import PackageImageCarousel from './PackageImageCarousel';
+import PriceSection, { PriceTier } from './PriceSection';
 
 interface PackageHeaderProps {
   packageName: string;
@@ -27,13 +28,23 @@ const PackageHeader = ({
 }: PackageHeaderProps) => {
   return (
     <div className="grid md:grid-cols-2 gap-10">
-      <PackageDetailsHeader 
-        packageName={packageName}
-        reviewCount={reviewCount}
-        averageRating={averageRating}
-        price={price}
-        isLoading={isLoading}
-      />
+      <div>
+        <PackageDetailsHeader 
+          packageName={packageName}
+          reviewCount={reviewCount}
+          averageRating={averageRating}
+          price={price}
+          isLoading={isLoading}
+        />
+        
+        <div className="mt-8">
+          <PriceSection 
+            packageName={packageName}
+            price={price}
+            buttonVariant="default"
+          />
+        </div>
+      </div>
       
       <PackageImageCarousel slides={slides} />
     </div>
