@@ -25,14 +25,12 @@ const PriceSection = ({ price, packageName }: PriceSectionProps) => {
 
   return (
     <Card className="mb-8">
-      <CardContent className="p-6 flex justify-between items-center">
-        <div className="text-2xl font-bold">${price}</div>
+      <CardContent className="p-6">
         <Button 
-          className="bg-brand-blue hover:bg-brand-blue/90 flex items-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-xl py-6 rounded-md"
           onClick={handleBuyNow}
         >
-          <ShoppingCart className="h-5 w-5" />
-          Buy Now
+          Buy now ${price}
         </Button>
       </CardContent>
     </Card>

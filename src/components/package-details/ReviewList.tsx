@@ -14,20 +14,21 @@ export interface Review {
 interface ReviewListProps {
   reviews: Review[];
   averageRating: number;
+  reviewCount: number;
 }
 
-const ReviewList = ({ reviews, averageRating }: ReviewListProps) => {
+const ReviewList = ({ reviews, averageRating, reviewCount }: ReviewListProps) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold">Customer Reviews</h3>
-        <div className="flex items-center">
-          <div className="flex mr-2">
+        <div className="flex items-center gap-3">
+          <div className="flex">
             <RatingStars rating={Math.round(averageRating)} />
           </div>
-          <span className="text-sm text-muted-foreground">
-            {reviews.length > 0 
-              ? `${averageRating.toFixed(1)} out of 5 (${reviews.length} ${reviews.length === 1 ? 'review' : 'reviews'})` 
+          <span className="text-sm text-blue-500 font-medium">
+            {reviewCount > 0 
+              ? `${reviewCount} ${reviewCount === 1 ? 'review' : 'reviews'}` 
               : 'No reviews yet'}
           </span>
         </div>

@@ -13,6 +13,7 @@ export interface Template {
   created_at?: string;
   updated_at?: string;
   description?: string;
+  review_count?: number;
 }
 
 // Fetch templates from the database
@@ -83,10 +84,11 @@ export const addToCartDB = async (userId: string, templateId: string): Promise<v
 };
 
 // Fetch a template by ID
-export const fetchTemplateById = async (templateId: string) => {
+export const fetchTemplateById = async (templateId: string): Promise<Template | null> => {
   console.log('Fetching template details for:', templateId);
   
   try {
+    // First check if the template exists in the database
     const { data, error } = await supabase
       .from('templates')
       .select('*')

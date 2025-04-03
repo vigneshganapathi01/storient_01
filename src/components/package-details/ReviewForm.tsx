@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import RatingStars from './RatingStars';
 import { useAuth } from '@/context/AuthContext';
+import { fetchTemplateById } from '@/services/templateService';
 
 // Define the schema for the review form
 const reviewSchema = z.object({
@@ -63,6 +64,14 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
     setIsSubmitting(true);
     
     try {
+      // First verify that the template exists
+      const templateData = await fetchTemplateById(packageId);
+      
+      if (!templateData) {
+        throw new Error('Template not found');
+      }
+      
+      // Submit the review
       const { error } = await supabase
         .from('reviews')
         .insert({
@@ -81,11 +90,11 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
       
       form.reset();
       onReviewSubmitted(); // Refresh reviews
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting review:', error);
       toast({
         title: "Error",
-        description: "Failed to submit review",
+        description: error.message || "Failed to submit review. Please try again later.",
         variant: "destructive"
       });
     } finally {

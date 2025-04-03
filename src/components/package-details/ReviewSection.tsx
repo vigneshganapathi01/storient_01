@@ -13,6 +13,7 @@ interface ReviewSectionProps {
   averageRating: number;
   hasUserReviewed: boolean;
   onReviewSubmitted: () => void;
+  reviewCount: number;
 }
 
 const ReviewSection = ({ 
@@ -20,7 +21,8 @@ const ReviewSection = ({
   reviews, 
   averageRating, 
   hasUserReviewed, 
-  onReviewSubmitted 
+  onReviewSubmitted,
+  reviewCount
 }: ReviewSectionProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -28,7 +30,11 @@ const ReviewSection = ({
   return (
     <Card className="mb-8">
       <CardContent className="p-6">
-        <ReviewList reviews={reviews} averageRating={averageRating} />
+        <ReviewList 
+          reviews={reviews} 
+          averageRating={averageRating} 
+          reviewCount={reviewCount}
+        />
         
         {!hasUserReviewed && user && (
           <ReviewForm packageId={packageId} onReviewSubmitted={onReviewSubmitted} />
