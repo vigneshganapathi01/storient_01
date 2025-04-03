@@ -15,10 +15,17 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const PackageContent = ({ title, description, color }: { title: string, description: string, color: string }) => (
+const PackageContent = ({ title, description, color, templateCount }: { title: string, description: string, color: string, templateCount?: number }) => (
   <div className={`p-4 h-full bg-gradient-to-b ${color} rounded-md`}>
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
+    {templateCount && (
+      <div className="mt-2">
+        <Badge variant="outline" className="bg-white/50">
+          {templateCount} Templates
+        </Badge>
+      </div>
+    )}
   </div>
 );
 
@@ -85,18 +92,21 @@ const Templates = () => {
                   title="Field Set of Questions" 
                   description="Turn your cards into winning recipes for clear, structured frameworks that build trust and urgency."
                   color="from-blue-50 to-blue-100"
+                  templateCount={12}
                 />
                 
                 <PackageContent 
                   title="Case Studies" 
                   description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories."
                   color="from-purple-50 to-purple-100"
+                  templateCount={8}
                 />
                 
                 <PackageContent 
                   title="Point of Views" 
                   description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms."
                   color="from-green-50 to-green-100"
+                  templateCount={10}
                 />
               </div>
               
@@ -123,18 +133,21 @@ const Templates = () => {
                   title="Workshops" 
                   description="Facilitate engaging and productive brainstorming sessions."
                   color="from-cyan-50 to-cyan-100"
+                  templateCount={15}
                 />
                 
                 <PackageContent 
                   title="Proposals" 
                   description="Win pitch-ready deals with proposal templates designed to connect with decision-makers."
                   color="from-amber-50 to-amber-100"
+                  templateCount={7}
                 />
                 
                 <PackageContent 
                   title="Client Proposals" 
                   description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points."
                   color="from-rose-50 to-rose-100"
+                  templateCount={9}
                 />
               </div>
               
@@ -161,18 +174,21 @@ const Templates = () => {
                   title="Business Review Pack" 
                   description="MEPS, QBRs, and EBRs."
                   color="from-blue-100 to-blue-200"
+                  templateCount={18}
                 />
                 
                 <PackageContent 
                   title="C-Suite Communication Strategy Pack" 
                   description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions."
                   color="from-indigo-100 to-indigo-200"
+                  templateCount={14}
                 />
                 
                 <PackageContent 
                   title="The Divergent Deck" 
                   description="Frameworks for Upcoming Training & Communication."
                   color="from-sky-100 to-sky-200"
+                  templateCount={20}
                 />
               </div>
               
@@ -197,6 +213,11 @@ const Templates = () => {
               <div className="flex-1 p-4 flex flex-col space-y-4 bg-gradient-to-b from-blue-50 to-blue-100 rounded-md">
                 <h3 className="font-bold text-xl text-center text-brand-blue">Storytelling Masterclass</h3>
                 <p className="text-sm text-center">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
+                <div className="mt-2 text-center">
+                  <Badge variant="outline" className="bg-white/50">
+                    35 Templates
+                  </Badge>
+                </div>
               </div>
               
               <div className="p-4 mt-auto">
@@ -220,6 +241,11 @@ const Templates = () => {
               <div className="flex-1 p-4 flex flex-col space-y-4 bg-gradient-to-b from-purple-100 to-purple-200 rounded-md">
                 <h3 className="font-bold text-xl text-center text-brand-blue">Full Access Bundle</h3>
                 <p className="text-sm text-center">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
+                <div className="mt-2 text-center">
+                  <Badge variant="outline" className="bg-white/50">
+                    100+ Templates
+                  </Badge>
+                </div>
               </div>
               
               <div className="p-4 mt-auto">
