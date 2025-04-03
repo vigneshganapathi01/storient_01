@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { StarIcon } from 'lucide-react';
+import { StarIcon, ShoppingCart } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 // Define the schema for the review form
 const reviewSchema = z.object({
@@ -37,11 +38,13 @@ const PackageDetails = () => {
   const { packageId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState<number>(0);
   const [hasUserReviewed, setHasUserReviewed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [packageDetails, setPackageDetails] = useState<any>(null);
   
   // Format package name from URL
   const formatPackageName = (id: string) => {
@@ -52,7 +55,6 @@ const PackageDetails = () => {
   };
 
   const packageName = packageId ? formatPackageName(packageId) : 'Package';
-  const packagePrice = "$99"; // In a real app, this would be fetched from a database
   
   const form = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
@@ -61,6 +63,32 @@ const PackageDetails = () => {
       reviewText: '',
     },
   });
+
+  // Fetch package details
+  const fetchPackageDetails = async () => {
+    try {
+      if (!packageId) return;
+      
+      const { data, error } = await supabase
+        .from('templates')
+        .select('*')
+        .eq('id', packageId)
+        .single();
+        
+      if (error) throw error;
+      
+      if (data) {
+        setPackageDetails(data);
+      }
+    } catch (error) {
+      console.error('Error fetching package details:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load package details",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Fetch reviews for this package
   const fetchReviews = async () => {
@@ -117,30 +145,40 @@ const PackageDetails = () => {
       }
     } catch (error) {
       console.error('Error fetching reviews:', error);
-      toast.error('Failed to load reviews');
+      toast({
+        title: "Error",
+        description: "Failed to load reviews",
+        variant: "destructive"
+      });
     }
   };
   
   useEffect(() => {
+    fetchPackageDetails();
     fetchReviews();
   }, [packageId, user]);
   
   const handleBuyNow = () => {
-    toast.success(`${packageName} added to cart`);
+    toast({
+      title: "Added to cart",
+      description: `${packageName} has been added to your cart`,
+    });
     navigate('/cart');
   };
   
   const onSubmitReview = async (values: ReviewFormValues) => {
     if (!user) {
-      toast.error('Please sign in to submit a review');
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to submit a review",
+        variant: "destructive"
+      });
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      // In a real app, you would get the template ID from the database
-      // For now, we'll just use the packageId as the template identifier
       const { error } = await supabase
         .from('reviews')
         .insert({
@@ -152,12 +190,21 @@ const PackageDetails = () => {
       
       if (error) throw error;
       
-      toast.success('Review submitted successfully');
+      toast({
+        title: "Success",
+        description: "Review submitted successfully",
+      });
+      
       form.reset();
       fetchReviews(); // Refresh reviews
+      setHasUserReviewed(true);
     } catch (error) {
       console.error('Error submitting review:', error);
-      toast.error('Failed to submit review');
+      toast({
+        title: "Error",
+        description: "Failed to submit review",
+        variant: "destructive"
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -209,11 +256,12 @@ const PackageDetails = () => {
 
           <Card className="mb-8">
             <CardContent className="p-6 flex justify-between items-center">
-              <div className="text-2xl font-bold">{packagePrice}</div>
+              <div className="text-2xl font-bold">{packageDetails?.price ? `$${packageDetails.price}` : "$99"}</div>
               <Button 
-                className="bg-brand-blue hover:bg-brand-blue/90"
+                className="bg-brand-blue hover:bg-brand-blue/90 flex items-center gap-2"
                 onClick={handleBuyNow}
               >
+                <ShoppingCart className="h-5 w-5" />
                 Buy Now
               </Button>
             </CardContent>
