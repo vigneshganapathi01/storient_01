@@ -6,7 +6,6 @@ export interface Review {
   id: string;
   user_id: string;
   rating: number;
-  review_text: string;
   created_at: string;
   user_name?: string;
 }
@@ -34,12 +33,12 @@ const ReviewList = ({ reviews, averageRating, reviewCount }: ReviewListProps) =>
         </div>
       </div>
       
-      {/* Display reviews */}
-      <div className="space-y-6">
+      {/* Display ratings only */}
+      <div className="space-y-4">
         {reviews.length > 0 ? (
           reviews.map((review) => (
-            <div key={review.id} className="border-b pb-4 last:border-0">
-              <div className="flex items-center justify-between mb-2">
+            <div key={review.id} className="border-b pb-3 last:border-0">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="flex mr-2">
                     <RatingStars rating={review.rating} />
@@ -50,11 +49,10 @@ const ReviewList = ({ reviews, averageRating, reviewCount }: ReviewListProps) =>
                   {new Date(review.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-muted-foreground">{review.review_text}</p>
             </div>
           ))
         ) : (
-          <div className="text-center py-8">
+          <div className="text-center py-6">
             <p className="text-muted-foreground">No reviews yet. Be the first to review this package!</p>
           </div>
         )}

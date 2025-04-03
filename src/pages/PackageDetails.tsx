@@ -6,15 +6,12 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 import PackageDetailsHeader from '@/components/package-details/PackageDetailsHeader';
-import PackageOverview from '@/components/package-details/PackageOverview';
-import PriceSection from '@/components/package-details/PriceSection';
-import PackageInfo from '@/components/package-details/PackageInfo';
 import ReviewSection from '@/components/package-details/ReviewSection';
 import { Review } from '@/components/package-details/ReviewList';
 import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
-import { CheckIcon } from 'lucide-react';
 
 const PackageDetails = () => {
   const { packageId } = useParams();
@@ -27,6 +24,29 @@ const PackageDetails = () => {
   const [packageDetails, setPackageDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [reviewCount, setReviewCount] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Sample slides data - in a real app, this would come from the database
+  const slides = [
+    {
+      title: "Part 1:",
+      subtitle: "Get a tried-and-tested best-practice guide on structuring consulting proposals with hands-on examples and practical tips",
+      description: "A best-practice guide with hands-on tips and examples on how to creating proposals following the structure used by McKinsey, Bain, and BCG:",
+      image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    },
+    {
+      title: "Part 2:",
+      subtitle: "Use our PowerPoint templates to create professional slides",
+      description: "Professional PowerPoint templates with charts, diagrams, and layouts used by top consulting firms:",
+      image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    },
+    {
+      title: "Part 3:",
+      subtitle: "Learn from real-world examples",
+      description: "Study real Fortune 500 case examples to understand how consultants structure their proposals:",
+      image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    }
+  ];
   
   // Format package name from URL
   const formatPackageName = (id: string) => {
@@ -37,6 +57,15 @@ const PackageDetails = () => {
   };
 
   const packageName = packageId ? formatPackageName(packageId) : 'Package';
+  
+  // Carousel navigation
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+  
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
   
   // Fetch package details and reviews
   useEffect(() => {
@@ -147,12 +176,11 @@ const PackageDetails = () => {
             userNameMap.set(profile.id, profile.full_name || 'Anonymous User');
           });
           
-          // Combine the reviews with user names
+          // Combine the reviews with user names, but omit review_text as per requirements
           const formattedReviews = reviewsData.map(review => ({
             id: review.id,
             user_id: review.user_id,
             rating: review.rating,
-            review_text: review.review_text,
             created_at: review.created_at,
             user_name: userNameMap.get(review.user_id) || 'Anonymous User',
           }));
@@ -194,86 +222,55 @@ const PackageDetails = () => {
         <div className="max-container pt-32 pb-20">
           <div className="grid md:grid-cols-2 gap-10">
             {/* Left side content */}
-            <div className="text-white">
-              <h1 className="text-6xl font-bold mb-8">
-                {packageName}
-              </h1>
-              
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-2">
-                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
-                  <p>Created by ex-McKinsey & BCG consultants</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
-                  <p>242 PowerPoint slides & 1 Excel model</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
-                  <p>1 full-length, real Fortune500 case example</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 mb-8">
-                <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg text-lg font-medium">
-                  Buy now ${packageDetails?.price || '149'}
-                </button>
-                <button className="border border-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-white/10">
-                  Download free sample
-                </button>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span key={star} className="text-yellow-400 text-xl">★</span>
-                  ))}
-                </div>
-                <a href="#reviews" className="text-blue-400 hover:underline">
-                  {reviewCount > 0 ? `${reviewCount} reviews` : 'No reviews yet'}
-                </a>
-              </div>
-            </div>
+            <PackageDetailsHeader 
+              packageName={packageName}
+              reviewCount={reviewCount}
+              averageRating={averageRating}
+              price={packageDetails?.price || 149}
+              isLoading={isLoading}
+            />
             
             {/* Right side content - Image carousel */}
             <div className="bg-white rounded-lg p-5 text-black">
               <div className="relative">
-                <h2 className="text-xl font-bold text-blue-800 mb-1">Part 1:</h2>
-                <h3 className="text-lg font-bold mb-4">Get a tried-and-tested best-practice guide on structuring consulting proposals with hands-on examples and practical tips</h3>
+                <h2 className="text-xl font-bold text-blue-800 mb-1">{slides[currentSlide].title}</h2>
+                <h3 className="text-lg font-bold mb-4">{slides[currentSlide].subtitle}</h3>
                 
                 <p className="mb-4 text-sm">
-                  A best-practice guide with hands-on tips and examples on how to creating proposals following the structure used by McKinsey, Bain, and BCG:
+                  {slides[currentSlide].description}
                 </p>
                 
                 <div className="bg-white rounded-lg border">
                   <img 
-                    src="/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png" 
+                    src={slides[currentSlide].image} 
                     alt="Consulting Template Preview" 
                     className="w-full h-auto rounded-lg"
                   />
                 </div>
                 
-                <div className="absolute left-0 bottom-1/2 -translate-x-12">
-                  <button className="rounded-full bg-white p-2 shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m15 18-6-6 6-6"/>
-                    </svg>
-                  </button>
-                </div>
+                <button 
+                  onClick={prevSlide}
+                  className="absolute left-0 bottom-1/2 -translate-x-12 rounded-full bg-white p-2 shadow-md hover:bg-gray-100"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeftIcon size={24} />
+                </button>
                 
-                <div className="absolute right-0 bottom-1/2 translate-x-12">
-                  <button className="rounded-full bg-white p-2 shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m9 18 6-6-6-6"/>
-                    </svg>
-                  </button>
-                </div>
+                <button 
+                  onClick={nextSlide}
+                  className="absolute right-0 bottom-1/2 translate-x-12 rounded-full bg-white p-2 shadow-md hover:bg-gray-100"
+                  aria-label="Next slide"
+                >
+                  <ChevronRightIcon size={24} />
+                </button>
                 
                 <div className="flex justify-center mt-4 space-x-2">
-                  {Array(12).fill(0).map((_, index) => (
-                    <div 
+                  {slides.map((_, index) => (
+                    <button
                       key={index} 
-                      className={`w-2 h-2 rounded-full ${index === 6 ? 'bg-blue-500' : 'bg-gray-300'}`}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full ${index === currentSlide ? 'bg-blue-500' : 'bg-gray-300'}`}
+                      aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
                 </div>

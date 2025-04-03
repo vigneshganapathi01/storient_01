@@ -43,14 +43,14 @@ const ReviewSection = ({
         {!user && (
           <div className="text-center py-4 mb-4 bg-gray-50 rounded-md">
             <p className="text-muted-foreground">
-              Please <Button variant="link" onClick={() => navigate('/signin')} className="p-0 h-auto font-medium">sign in</Button> to leave a review
+              Please <Button variant="link" onClick={() => navigate('/signin')} className="p-0 h-auto font-medium">sign in</Button> to leave a rating
             </p>
           </div>
         )}
         
         {hasUserReviewed && (
           <div className="text-center py-4 mb-4 bg-gray-50 rounded-md">
-            <p className="text-muted-foreground">Thank you for your review!</p>
+            <p className="text-muted-foreground">Thank you for your rating!</p>
           </div>
         )}
       </CardContent>

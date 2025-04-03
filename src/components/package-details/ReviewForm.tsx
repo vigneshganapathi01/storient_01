@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,10 +11,9 @@ import RatingStars from './RatingStars';
 import { useAuth } from '@/context/AuthContext';
 import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
 
-// Define the schema for the review form
+// Define the schema for the review form - only rating now
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
-  reviewText: z.string().min(5, 'Review must be at least 5 characters').max(500, 'Review must be less than 500 characters'),
 });
 
 type ReviewFormValues = z.infer<typeof reviewSchema>;
@@ -34,7 +32,6 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       rating: 5,
-      reviewText: '',
     },
   });
 
@@ -92,14 +89,13 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
           user_id: user.id,
           template_id: templateData.id,
           rating: values.rating,
-          review_text: values.reviewText,
         });
       
       if (error) throw error;
       
       toast({
         title: "Success",
-        description: "Review submitted successfully",
+        description: "Rating submitted successfully",
       });
       
       form.reset();
@@ -119,14 +115,14 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmitReview)} className="space-y-4 mb-8 border rounded-md p-4">
-        <h4 className="font-medium">Write a Review</h4>
+        <h4 className="font-medium">Rate this Template</h4>
         
         <FormField
           control={form.control}
           name="rating"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rating</FormLabel>
+              <FormLabel>Your Rating</FormLabel>
               <FormControl>
                 <RatingStars 
                   rating={field.value} 
@@ -139,29 +135,12 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
           )}
         />
         
-        <FormField
-          control={form.control}
-          name="reviewText"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Your Review</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Share your experience with this template..." 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
         <Button 
           type="submit" 
           disabled={isSubmitting} 
           className="bg-brand-blue hover:bg-brand-blue/90"
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Review'}
+          {isSubmitting ? 'Submitting...' : 'Submit Rating'}
         </Button>
       </form>
     </Form>

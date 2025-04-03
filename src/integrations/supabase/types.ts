@@ -141,6 +141,7 @@ export type Database = {
           image_url: string | null
           is_pack: boolean | null
           price: number
+          slug: string | null
           title: string
           updated_at: string | null
         }
@@ -153,6 +154,7 @@ export type Database = {
           image_url?: string | null
           is_pack?: boolean | null
           price: number
+          slug?: string | null
           title: string
           updated_at?: string | null
         }
@@ -165,6 +167,7 @@ export type Database = {
           image_url?: string | null
           is_pack?: boolean | null
           price?: number
+          slug?: string | null
           title?: string
           updated_at?: string | null
         }
