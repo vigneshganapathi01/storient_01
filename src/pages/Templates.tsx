@@ -4,7 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ChevronDown, CreditCard } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,8 +15,23 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const PackageContent = ({ title, description, color, templateCount }: { title: string, description: string, color: string, templateCount?: number }) => (
-  <div className={`p-4 h-full bg-gradient-to-b ${color} rounded-md`}>
+const PackageContent = ({ 
+  title, 
+  description, 
+  color, 
+  templateCount,
+  onClick
+}: { 
+  title: string, 
+  description: string, 
+  color: string, 
+  templateCount?: number,
+  onClick?: () => void
+}) => (
+  <div 
+    className={`p-4 h-full bg-gradient-to-b ${color} rounded-md cursor-pointer hover:shadow-md transition-all`}
+    onClick={onClick}
+  >
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
     {templateCount && (
@@ -36,6 +51,10 @@ const Templates = () => {
   
   const handleAddToCart = (packageName: string) => {
     toast.success(`${packageName} added to cart`);
+  };
+
+  const navigateToPackageDetails = (packageName: string) => {
+    navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   return (
@@ -93,6 +112,7 @@ const Templates = () => {
                   description="Turn your cards into winning recipes for clear, structured frameworks that build trust and urgency."
                   color="from-blue-50 to-blue-100"
                   templateCount={12}
+                  onClick={() => navigateToPackageDetails("Field Set of Questions")}
                 />
                 
                 <PackageContent 
@@ -100,6 +120,7 @@ const Templates = () => {
                   description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories."
                   color="from-purple-50 to-purple-100"
                   templateCount={8}
+                  onClick={() => navigateToPackageDetails("Case Studies")}
                 />
                 
                 <PackageContent 
@@ -107,6 +128,7 @@ const Templates = () => {
                   description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms."
                   color="from-green-50 to-green-100"
                   templateCount={10}
+                  onClick={() => navigateToPackageDetails("Point of Views")}
                 />
               </div>
               
@@ -210,10 +232,10 @@ const Templates = () => {
                 <p className="text-xs text-muted-foreground">consult with our team</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4 bg-gradient-to-b from-blue-50 to-blue-100 rounded-md">
-                <h3 className="font-bold text-xl text-center text-brand-blue">Storytelling Masterclass</h3>
-                <p className="text-sm text-center">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
-                <div className="mt-2 text-center">
+              <div className="flex-1 p-4 flex flex-col space-y-4">
+                <div className="bg-gradient-to-b from-blue-50 to-blue-100 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center">
+                  <h3 className="font-bold text-xl text-brand-blue mb-3">Storytelling Masterclass</h3>
+                  <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
                   <Badge variant="outline" className="bg-white/50">
                     35 Templates
                   </Badge>
@@ -238,10 +260,10 @@ const Templates = () => {
                 <p className="text-xs text-muted-foreground">Lifetime Updates</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4 bg-gradient-to-b from-purple-100 to-purple-200 rounded-md">
-                <h3 className="font-bold text-xl text-center text-brand-blue">Full Access Bundle</h3>
-                <p className="text-sm text-center">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
-                <div className="mt-2 text-center">
+              <div className="flex-1 p-4 flex flex-col space-y-4">
+                <div className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center">
+                  <h3 className="font-bold text-xl text-brand-blue mb-3">Full Access Bundle</h3>
+                  <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/50">
                     100+ Templates
                   </Badge>
