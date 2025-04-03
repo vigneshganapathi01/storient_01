@@ -13,6 +13,7 @@ import PriceSection from '@/components/package-details/PriceSection';
 import PackageInfo from '@/components/package-details/PackageInfo';
 import ReviewSection from '@/components/package-details/ReviewSection';
 import { Review } from '@/components/package-details/ReviewList';
+import { fetchTemplateById } from '@/services/templateService';
 
 const PackageDetails = () => {
   const { packageId } = useParams();
@@ -46,22 +47,12 @@ const PackageDetails = () => {
           return;
         }
         
-        // Fetch package details
-        const { data: templateData, error: templateError } = await supabase
-          .from('templates')
-          .select('*')
-          .eq('id', packageId)
-          .maybeSingle();
+        // Fetch package details using the service
+        const templateData = await fetchTemplateById(packageId);
           
-        if (templateError) {
-          console.error('Error fetching package details:', templateError);
-          toast({
-            title: "Error",
-            description: "Failed to load package details. Please try again later.",
-            variant: "destructive"
-          });
-        } else if (templateData) {
+        if (templateData) {
           setPackageDetails(templateData);
+          // Set review count from template data if available, otherwise default to 0
           setReviewCount(templateData.review_count || 0);
         }
         
@@ -87,7 +78,7 @@ const PackageDetails = () => {
     try {
       if (!packageId) return;
       
-      // Don't use the URL as the ID, use the actual ID from the database
+      // Use the template slug for fetching reviews
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('*')
@@ -140,6 +131,9 @@ const PackageDetails = () => {
             const userReview = formattedReviews.find(review => review.user_id === user.id);
             setHasUserReviewed(!!userReview);
           }
+
+          // Update review count
+          setReviewCount(formattedReviews.length);
         } else {
           setReviews([]);
         }

@@ -100,6 +100,22 @@ export const fetchTemplateById = async (templateId: string): Promise<Template | 
       throw error;
     }
     
+    // If the template exists, also fetch the review count
+    if (data) {
+      // Count reviews for this template
+      const { count, error: countError } = await supabase
+        .from('reviews')
+        .select('*', { count: 'exact', head: true })
+        .eq('template_id', templateId);
+      
+      if (countError) {
+        console.error('Error counting reviews:', countError);
+      } else if (count !== null) {
+        // Add the review count to the template data
+        data.review_count = count;
+      }
+    }
+    
     return data;
   } catch (error) {
     console.error('Error fetching template:', error);

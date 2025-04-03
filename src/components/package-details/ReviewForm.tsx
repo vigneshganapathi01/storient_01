@@ -71,12 +71,12 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
         throw new Error('Template not found');
       }
       
-      // Submit the review
+      // Use the template's ID from the database for the review
       const { error } = await supabase
         .from('reviews')
         .insert({
           user_id: user.id,
-          template_id: packageId,
+          template_id: templateData.id,
           rating: values.rating,
           review_text: values.reviewText,
         });
