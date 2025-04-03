@@ -36,20 +36,49 @@ export const fetchTemplates = async (): Promise<Template[]> => {
 
 // Add an item to a user's cart
 export const addToCartDB = async (userId: string, templateId: string): Promise<void> => {
-  const { error } = await supabase
+  // First check if the item already exists in the cart
+  const { data, error: fetchError } = await supabase
     .from('cart_items')
-    .upsert({
-      user_id: userId,
-      template_id: templateId,
-      quantity: 1
-    }, {
-      onConflict: 'user_id,template_id',
-      ignoreDuplicates: false
-    });
-
-  if (error) {
-    console.error('Error adding to cart:', error);
-    throw error;
+    .select('*')
+    .eq('user_id', userId)
+    .eq('template_id', templateId)
+    .maybeSingle();
+  
+  if (fetchError) {
+    console.error('Error checking if item exists in cart:', fetchError);
+    throw fetchError;
+  }
+  
+  // If the item already exists, update the quantity, otherwise insert a new item
+  if (data) {
+    // Item exists, update the quantity
+    const { error: updateError } = await supabase
+      .from('cart_items')
+      .update({ 
+        quantity: data.quantity + 1,
+        updated_at: new Date()
+      })
+      .eq('user_id', userId)
+      .eq('template_id', templateId);
+      
+    if (updateError) {
+      console.error('Error updating cart item quantity:', updateError);
+      throw updateError;
+    }
+  } else {
+    // Item doesn't exist, insert a new one
+    const { error: insertError } = await supabase
+      .from('cart_items')
+      .insert({
+        user_id: userId,
+        template_id: templateId,
+        quantity: 1
+      });
+      
+    if (insertError) {
+      console.error('Error adding item to cart:', insertError);
+      throw insertError;
+    }
   }
 };
 
