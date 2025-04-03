@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import RatingStars from './RatingStars';
 import { useAuth } from '@/context/AuthContext';
-import { fetchTemplateById } from '@/services/templateService';
+import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
 
 // Define the schema for the review form
 const reviewSchema = z.object({
@@ -64,8 +64,22 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // First verify that the template exists
-      const templateData = await fetchTemplateById(packageId);
+      // Try first with a UUID (if the packageId is a UUID)
+      let templateData = null;
+      
+      try {
+        // Check if packageId is a valid UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(packageId)) {
+          templateData = await fetchTemplateById(packageId);
+        } else {
+          // If not a UUID, assume it's a slug
+          templateData = await fetchTemplateBySlug(packageId);
+        }
+      } catch (e) {
+        // If fetching by ID fails, try by slug
+        templateData = await fetchTemplateBySlug(packageId);
+      }
       
       if (!templateData) {
         throw new Error('Template not found');

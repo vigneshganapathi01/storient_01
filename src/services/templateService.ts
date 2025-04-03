@@ -14,6 +14,7 @@ export interface Template {
   updated_at?: string;
   description?: string;
   review_count?: number;
+  slug?: string;
 }
 
 // Fetch templates from the database
@@ -106,7 +107,7 @@ export const fetchTemplateById = async (templateId: string): Promise<Template | 
       const { count, error: countError } = await supabase
         .from('reviews')
         .select('*', { count: 'exact', head: true })
-        .eq('template_id', templateId);
+        .eq('template_id', data.id);
       
       if (countError) {
         console.error('Error counting reviews:', countError);
@@ -119,6 +120,46 @@ export const fetchTemplateById = async (templateId: string): Promise<Template | 
     return data;
   } catch (error) {
     console.error('Error fetching template:', error);
+    throw error;
+  }
+};
+
+// Fetch a template by slug (new function)
+export const fetchTemplateBySlug = async (slug: string): Promise<Template | null> => {
+  console.log('Fetching template details for slug:', slug);
+  
+  try {
+    // First check if the template exists in the database
+    const { data, error } = await supabase
+      .from('templates')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Error fetching template by slug:', error);
+      throw error;
+    }
+    
+    // If the template exists, also fetch the review count
+    if (data) {
+      // Count reviews for this template
+      const { count, error: countError } = await supabase
+        .from('reviews')
+        .select('*', { count: 'exact', head: true })
+        .eq('template_id', data.id);
+      
+      if (countError) {
+        console.error('Error counting reviews:', countError);
+      } else if (count !== null) {
+        // Add the review count to the template data
+        data.review_count = count;
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching template by slug:', error);
     throw error;
   }
 };

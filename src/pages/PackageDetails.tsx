@@ -13,7 +13,8 @@ import PriceSection from '@/components/package-details/PriceSection';
 import PackageInfo from '@/components/package-details/PackageInfo';
 import ReviewSection from '@/components/package-details/ReviewSection';
 import { Review } from '@/components/package-details/ReviewList';
-import { fetchTemplateById } from '@/services/templateService';
+import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
+import { CheckIcon } from 'lucide-react';
 
 const PackageDetails = () => {
   const { packageId } = useParams();
@@ -47,8 +48,21 @@ const PackageDetails = () => {
           return;
         }
         
-        // Fetch package details using the service
-        const templateData = await fetchTemplateById(packageId);
+        let templateData = null;
+        
+        try {
+          // Check if packageId is a valid UUID
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (uuidRegex.test(packageId)) {
+            templateData = await fetchTemplateById(packageId);
+          } else {
+            // If not a UUID, assume it's a slug
+            templateData = await fetchTemplateBySlug(packageId);
+          }
+        } catch (e) {
+          // If fetching by ID fails, try by slug
+          templateData = await fetchTemplateBySlug(packageId);
+        }
           
         if (templateData) {
           setPackageDetails(templateData);
@@ -78,11 +92,36 @@ const PackageDetails = () => {
     try {
       if (!packageId) return;
       
-      // Use the template slug for fetching reviews
+      // Try to get the templateId (whether it's a slug or UUID)
+      let templateId;
+      
+      try {
+        // Check if packageId is a valid UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(packageId)) {
+          templateId = packageId;
+        } else {
+          // If not a UUID, assume it's a slug and fetch the template
+          const templateData = await fetchTemplateBySlug(packageId);
+          if (templateData) {
+            templateId = templateData.id;
+          }
+        }
+      } catch (e) {
+        console.error('Error determining template ID:', e);
+        return;
+      }
+      
+      if (!templateId) {
+        console.error('Could not determine template ID');
+        return;
+      }
+      
+      // Use the template ID for fetching reviews
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('*')
-        .eq('template_id', packageId);
+        .eq('template_id', templateId);
       
       if (reviewsError) {
         console.error('Error fetching reviews:', reviewsError);
@@ -151,23 +190,107 @@ const PackageDetails = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow bg-slate-950">
         <div className="max-container pt-32 pb-20">
-          <PackageDetailsHeader packageName={packageName} isLoading={isLoading} />
-          <PackageOverview />
-          <PriceSection 
-            price={packageDetails?.price ? packageDetails.price : "129"} 
-            packageName={packageName} 
-          />
-          <PackageInfo />
-          <ReviewSection 
-            packageId={packageId}
-            reviews={reviews} 
-            averageRating={averageRating}
-            hasUserReviewed={hasUserReviewed}
-            onReviewSubmitted={fetchReviews}
-            reviewCount={reviewCount}
-          />
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Left side content */}
+            <div className="text-white">
+              <h1 className="text-6xl font-bold mb-8">
+                {packageName}
+              </h1>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-2">
+                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
+                  <p>Created by ex-McKinsey & BCG consultants</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
+                  <p>242 PowerPoint slides & 1 Excel model</p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckIcon className="text-blue-500 mt-1 h-5 w-5" />
+                  <p>1 full-length, real Fortune500 case example</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg text-lg font-medium">
+                  Buy now ${packageDetails?.price || '149'}
+                </button>
+                <button className="border border-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-white/10">
+                  Download free sample
+                </button>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span key={star} className="text-yellow-400 text-xl">★</span>
+                  ))}
+                </div>
+                <a href="#reviews" className="text-blue-400 hover:underline">
+                  {reviewCount > 0 ? `${reviewCount} reviews` : 'No reviews yet'}
+                </a>
+              </div>
+            </div>
+            
+            {/* Right side content - Image carousel */}
+            <div className="bg-white rounded-lg p-5 text-black">
+              <div className="relative">
+                <h2 className="text-xl font-bold text-blue-800 mb-1">Part 1:</h2>
+                <h3 className="text-lg font-bold mb-4">Get a tried-and-tested best-practice guide on structuring consulting proposals with hands-on examples and practical tips</h3>
+                
+                <p className="mb-4 text-sm">
+                  A best-practice guide with hands-on tips and examples on how to creating proposals following the structure used by McKinsey, Bain, and BCG:
+                </p>
+                
+                <div className="bg-white rounded-lg border">
+                  <img 
+                    src="/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png" 
+                    alt="Consulting Template Preview" 
+                    className="w-full h-auto rounded-lg"
+                  />
+                </div>
+                
+                <div className="absolute left-0 bottom-1/2 -translate-x-12">
+                  <button className="rounded-full bg-white p-2 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="absolute right-0 bottom-1/2 translate-x-12">
+                  <button className="rounded-full bg-white p-2 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="flex justify-center mt-4 space-x-2">
+                  {Array(12).fill(0).map((_, index) => (
+                    <div 
+                      key={index} 
+                      className={`w-2 h-2 rounded-full ${index === 6 ? 'bg-blue-500' : 'bg-gray-300'}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div id="reviews" className="mt-16">
+            <ReviewSection 
+              packageId={packageId}
+              reviews={reviews} 
+              averageRating={averageRating}
+              hasUserReviewed={hasUserReviewed}
+              onReviewSubmitted={fetchReviews}
+              reviewCount={reviewCount}
+            />
+          </div>
         </div>
       </main>
       <Footer />
