@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { Check, ShoppingCart } from 'lucide-react';
 
 export type PriceTier = {
   name: string;
@@ -21,6 +21,7 @@ interface PriceSectionProps {
   onTierSelect?: (tierName: string) => void;
   buttonVariant?: 'default' | 'outline' | 'secondary' | 'destructive';
   buttonText?: string;
+  onAddToCart?: () => void;
 }
 
 const PriceSection = ({ 
@@ -30,7 +31,8 @@ const PriceSection = ({
   selectedTier,
   onTierSelect,
   buttonVariant = 'default',
-  buttonText = 'Buy now'
+  buttonText = 'Buy now',
+  onAddToCart
 }: PriceSectionProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ const PriceSection = ({
       title: "Proceeding to payment",
       description: `You're purchasing ${tier.name}`,
     });
-    navigate('/payment', { state: { price: tier.price, packageName: tier.name } });
+    navigate('/payment', { state: { packageName: tier.name, price: tier.price } });
   };
 
   // Find selected tier or default to first tier
@@ -60,13 +62,25 @@ const PriceSection = ({
     return (
       <Card className="mb-8">
         <CardContent className="p-6">
-          <Button 
-            className="w-full text-xl py-6 rounded-md"
-            variant={buttonVariant}
-            onClick={() => handleBuyNow(tier)}
-          >
-            {buttonText} ${tier.price}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button 
+              className="w-full text-xl py-6 rounded-md bg-blue-600 hover:bg-blue-700"
+              onClick={() => handleBuyNow(tier)}
+            >
+              {buttonText} ${tier.price}
+            </Button>
+            
+            {onAddToCart && (
+              <Button 
+                variant="outline" 
+                className="w-full py-4"
+                onClick={onAddToCart}
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Add to Cart
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     );
@@ -122,12 +136,25 @@ const PriceSection = ({
         </div>
         
         {selectedTier && (
-          <Button 
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-xl py-6 rounded-md"
-            onClick={() => handleBuyNow(getSelectedTier())}
-          >
-            {buttonText} ${getSelectedTier().price}
-          </Button>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-xl py-6 rounded-md"
+              onClick={() => handleBuyNow(getSelectedTier())}
+            >
+              {buttonText} ${getSelectedTier().price}
+            </Button>
+            
+            {onAddToCart && (
+              <Button 
+                variant="outline" 
+                className="w-full py-4"
+                onClick={onAddToCart}
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Add to Cart
+              </Button>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>

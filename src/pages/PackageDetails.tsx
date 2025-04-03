@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
 
 import PackageHeader from '@/components/package-details/PackageHeader';
 import ReviewSection from '@/components/package-details/ReviewSection';
@@ -37,6 +39,8 @@ const packageSlides = [
 const PackageDetails = () => {
   const { packageId } = useParams();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   
   const [packageDetails, setPackageDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,6 +61,23 @@ const PackageDetails = () => {
   };
 
   const packageName = packageId ? formatPackageName(packageId) : 'Package';
+  
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        id: packageId || '',
+        title: packageName,
+        price: packageDetails?.price || 149,
+        image: packageSlides[0]?.image || '/placeholder.svg'
+      });
+      
+      toast.success(`${packageName} added to cart!`);
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart. Please try again.');
+    }
+  };
   
   useEffect(() => {
     const fetchData = async () => {

@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown, ShoppingCart } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useCart } from '@/context/CartContext';
 
 const PackageContent = ({ 
   title, 
@@ -48,9 +48,23 @@ const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   
-  const handleAddToCart = (packageName: string) => {
-    toast.success(`${packageName} added to cart`);
+  const handleAddToCart = async (packageName: string, price: number) => {
+    try {
+      await addToCart({
+        id: packageName.toLowerCase().replace(/\s+/g, '-'),
+        title: packageName,
+        price: price,
+        image: '/placeholder.svg'
+      });
+      
+      toast.success(`${packageName} added to cart!`);
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add to cart. Please try again.');
+    }
   };
 
   const navigateToPackageDetails = (packageName: string) => {
@@ -134,9 +148,10 @@ const Templates = () => {
               
               <div className="p-4 mt-auto">
                 <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90"
-                  onClick={() => handleAddToCart("$99 Package")}
+                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
+                  onClick={() => handleAddToCart("$99 Package", 99)}
                 >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
               </div>
@@ -178,9 +193,10 @@ const Templates = () => {
               
               <div className="p-4 mt-auto">
                 <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90"
-                  onClick={() => handleAddToCart("$149 Package")}
+                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
+                  onClick={() => handleAddToCart("$149 Package", 149)}
                 >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
               </div>
@@ -222,9 +238,10 @@ const Templates = () => {
               
               <div className="p-4 mt-auto">
                 <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90"
-                  onClick={() => handleAddToCart("$199 Package")}
+                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
+                  onClick={() => handleAddToCart("$199 Package", 199)}
                 >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
               </div>
@@ -253,10 +270,11 @@ const Templates = () => {
               
               <div className="p-4 mt-auto">
                 <Button 
-                  className="w-full bg-brand-purple hover:bg-brand-purple/90"
-                  onClick={() => handleAddToCart("Storytelling Masterclass")}
+                  className="w-full bg-brand-purple hover:bg-brand-purple/90 flex items-center justify-center"
+                  onClick={() => handleAddToCart("Storytelling Masterclass", 499)}
                 >
-                  Flagship
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
                 </Button>
               </div>
             </div>
@@ -284,10 +302,11 @@ const Templates = () => {
               
               <div className="p-4 mt-auto">
                 <Button 
-                  className="w-full bg-brand-purple hover:bg-brand-purple/90"
-                  onClick={() => handleAddToCart("Full Access Bundle")}
+                  className="w-full bg-brand-purple hover:bg-brand-purple/90 flex items-center justify-center"
+                  onClick={() => handleAddToCart("Full Access Bundle", 999)}
                 >
-                  Best Value
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
                 </Button>
               </div>
             </div>

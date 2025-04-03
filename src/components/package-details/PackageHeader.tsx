@@ -3,6 +3,9 @@ import React from 'react';
 import PackageDetailsHeader from './PackageDetailsHeader';
 import PackageImageCarousel from './PackageImageCarousel';
 import PriceSection, { PriceTier } from './PriceSection';
+import { useCart } from '@/context/CartContext';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface PackageHeaderProps {
   packageName: string;
@@ -26,6 +29,26 @@ const PackageHeader = ({
   isLoading,
   slides 
 }: PackageHeaderProps) => {
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        id: packageName.toLowerCase().replace(/\s+/g, '-'),
+        title: packageName,
+        price: price,
+        image: slides[0]?.image || '/placeholder.svg'
+      });
+      
+      toast.success(`${packageName} added to cart!`);
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart. Please try again.');
+    }
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-10">
       <div>
@@ -42,6 +65,7 @@ const PackageHeader = ({
             price={price}
             buttonVariant="default"
             buttonText="Buy now"
+            onAddToCart={handleAddToCart}
           />
         </div>
       </div>

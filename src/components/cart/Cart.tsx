@@ -59,18 +59,8 @@ const Cart: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    setShowPaymentDialog(true);
-  };
-
-  const handleConfirmOrder = () => {
-    setIsCheckingOut(true);
-    // Simulate checkout process
-    setTimeout(() => {
-      toast.success('Checkout successful! Thank you for your purchase.');
-      clearCart();
-      setIsCheckingOut(false);
-      setShowPaymentDialog(false);
-    }, 2000);
+    // Direct navigation to payment page instead of showing dialog
+    navigate('/payment', { state: { price: total, packageName: `Cart (${totalItems} items)` } });
   };
 
   const handleContinueShopping = () => {
@@ -218,7 +208,7 @@ const Cart: React.FC = () => {
         <Button 
           className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white py-6 text-lg"
           onClick={handleCheckout}
-          disabled={isCheckingOut}
+          disabled={isCheckingOut || items.length === 0}
         >
           Proceed to Checkout ({totalItems} {totalItems === 1 ? 'item' : 'items'})
         </Button>
@@ -235,96 +225,12 @@ const Cart: React.FC = () => {
             variant="outline" 
             className="flex-1 text-muted-foreground"
             onClick={() => clearCart()}
-            disabled={isCheckingOut}
+            disabled={isCheckingOut || items.length === 0}
           >
             Clear Cart
           </Button>
         </div>
       </div>
-
-      {/* Payment Dialog */}
-      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Complete Your Purchase</DialogTitle>
-            <DialogDescription>
-              Review your order details below.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2">
-              {items.map((item) => (
-                <div key={item.id} className="flex items-start gap-4 pb-3 border-b">
-                  <div className="w-16 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm">{item.title}</h3>
-                    <div className="flex justify-between mt-1">
-                      <div className="text-xs text-muted-foreground">
-                        Qty: {item.quantity}
-                      </div>
-                      <div className="text-sm font-medium">
-                        ${((item.discountPrice || item.price) * item.quantity).toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="border-t pt-4">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'}):</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              {discount > 0 && (
-                <div className="flex justify-between text-sm text-brand-purple">
-                  <span>Item Discounts:</span>
-                  <span>-${discount.toFixed(2)}</span>
-                </div>
-              )}
-              {promoDiscount > 0 && (
-                <div className="flex justify-between text-sm text-brand-purple">
-                  <span>Promo ({promoCode}):</span>
-                  <span>-${promoDiscount.toFixed(2)}</span>
-                </div>
-              )}
-              <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
-                <span>Order Total:</span>
-                <span className="text-brand-blue">${total.toFixed(2)}</span>
-              </div>
-            </div>
-            
-            <div className="bg-muted p-4 rounded-md mt-4">
-              <p className="text-center font-medium">Demo Payment - Payment Gateway Coming Soon</p>
-              <p className="text-center text-sm text-muted-foreground mt-1">This is a demonstration only. No actual payment will be processed.</p>
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPaymentDialog(false)}>Cancel</Button>
-            <Button 
-              className="bg-brand-blue hover:bg-brand-blue/90"
-              onClick={handleConfirmOrder}
-              disabled={isCheckingOut}
-            >
-              {isCheckingOut ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Place Your Order
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

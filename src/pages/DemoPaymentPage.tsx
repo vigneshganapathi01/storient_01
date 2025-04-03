@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,9 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
-import { CreditCard, Smartphone, QrCode } from 'lucide-react';
+import { CreditCard, Smartphone, QrCode, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
+import { useCart } from '@/context/CartContext';
 
 type PaymentMethod = 'card' | 'upi' | 'qr';
 
@@ -26,9 +27,25 @@ const DemoPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { packageName = "Package", price = 149 } = (location.state as { packageName: string; price: number }) || {};
+  const { items, clearCart } = useCart();
+  
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Get data from location state or use defaults
+  const { packageName = "Package", price = 149 } = (location.state as { packageName: string; price: number }) || {};
+
+  // Check if user directly accessed this page without going through checkout
+  useEffect(() => {
+    if (!location.state) {
+      toast({
+        title: "Invalid Access",
+        description: "Please select items before proceeding to payment",
+        variant: "destructive"
+      });
+      navigate('/templates');
+    }
+  }, [location.state]);
 
   const form = useForm<PaymentFormData>({
     defaultValues: {
@@ -52,9 +69,13 @@ const DemoPaymentPage = () => {
     // Simulate a delay before redirecting
     setTimeout(() => {
       setIsProcessing(false);
+      // Clear the cart if payment is successful
+      clearCart();
       navigate('/thank-you', { state: { packageName, price } });
     }, 2000);
   };
+
+  const isFromCart = packageName.includes('Cart');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -63,8 +84,43 @@ const DemoPaymentPage = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-white mb-2">Complete Your Purchase</h1>
-            <p className="text-gray-400">{packageName} - ${price}</p>
+            <p className="text-gray-400">{packageName} - ${price.toFixed(2)}</p>
           </div>
+          
+          {isFromCart && items.length > 0 && (
+            <Card className="w-full mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <ShoppingBag className="mr-2 h-5 w-5" />
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {items.map((item) => (
+                    <div key={item.id} className="flex justify-between items-center pb-2 border-b">
+                      <div className="flex items-center gap-2">
+                        {item.image && (
+                          <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden">
+                            <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-medium text-sm">{item.title}</h3>
+                          <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                        </div>
+                      </div>
+                      <span className="font-medium">${((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between font-bold pt-2">
+                    <span>Total</span>
+                    <span className="text-blue-600">${price.toFixed(2)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           <Card className="w-full">
             <CardHeader>
@@ -183,7 +239,7 @@ const DemoPaymentPage = () => {
                         className="w-full bg-blue-600 hover:bg-blue-700"
                         disabled={isProcessing}
                       >
-                        {isProcessing ? "Processing..." : `Pay $${price}`}
+                        {isProcessing ? "Processing..." : `Pay $${price.toFixed(2)}`}
                       </Button>
                     </div>
                   </form>
