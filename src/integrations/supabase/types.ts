@@ -96,6 +96,41 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          created_at: string | null
+          id: string
+          rating: number
+          review_text: string | null
+          template_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rating: number
+          review_text?: string | null
+          template_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rating?: number
+          review_text?: string | null
+          template_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       templates: {
         Row: {
           category: string | null

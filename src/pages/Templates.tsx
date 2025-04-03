@@ -156,6 +156,7 @@ const Templates = () => {
                   description="Facilitate engaging and productive brainstorming sessions."
                   color="from-cyan-50 to-cyan-100"
                   templateCount={15}
+                  onClick={() => navigateToPackageDetails("Workshops")}
                 />
                 
                 <PackageContent 
@@ -163,6 +164,7 @@ const Templates = () => {
                   description="Win pitch-ready deals with proposal templates designed to connect with decision-makers."
                   color="from-amber-50 to-amber-100"
                   templateCount={7}
+                  onClick={() => navigateToPackageDetails("Proposals")}
                 />
                 
                 <PackageContent 
@@ -170,6 +172,7 @@ const Templates = () => {
                   description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points."
                   color="from-rose-50 to-rose-100"
                   templateCount={9}
+                  onClick={() => navigateToPackageDetails("Client Proposals")}
                 />
               </div>
               
@@ -197,6 +200,7 @@ const Templates = () => {
                   description="MEPS, QBRs, and EBRs."
                   color="from-blue-100 to-blue-200"
                   templateCount={18}
+                  onClick={() => navigateToPackageDetails("Business Review Pack")}
                 />
                 
                 <PackageContent 
@@ -204,6 +208,7 @@ const Templates = () => {
                   description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions."
                   color="from-indigo-100 to-indigo-200"
                   templateCount={14}
+                  onClick={() => navigateToPackageDetails("C-Suite Communication Strategy Pack")}
                 />
                 
                 <PackageContent 
@@ -211,6 +216,7 @@ const Templates = () => {
                   description="Frameworks for Upcoming Training & Communication."
                   color="from-sky-100 to-sky-200"
                   templateCount={20}
+                  onClick={() => navigateToPackageDetails("The Divergent Deck")}
                 />
               </div>
               
@@ -233,7 +239,10 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-gradient-to-b from-blue-50 to-blue-100 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center">
+                <div 
+                  className="bg-gradient-to-b from-blue-50 to-blue-100 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all"
+                  onClick={() => navigateToPackageDetails("Storytelling Masterclass")}
+                >
                   <h3 className="font-bold text-xl text-brand-blue mb-3">Storytelling Masterclass</h3>
                   <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
                   <Badge variant="outline" className="bg-white/50">
@@ -261,7 +270,10 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center">
+                <div 
+                  className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all"
+                  onClick={() => navigateToPackageDetails("Full Access Bundle")}
+                >
                   <h3 className="font-bold text-xl text-brand-blue mb-3">Full Access Bundle</h3>
                   <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/50">
