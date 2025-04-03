@@ -65,30 +65,40 @@ const PackageDetails = () => {
   // Fetch reviews for this package
   const fetchReviews = async () => {
     try {
-      // In a real app, you would fetch the template ID based on the packageId
-      // For now, we'll just use the packageId as the template identifier
-      const { data, error } = await supabase
+      // Fetch reviews for this package
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
-        .select(`
-          id,
-          user_id,
-          rating,
-          review_text,
-          created_at,
-          profiles(full_name)
-        `)
+        .select('*')
         .eq('template_id', packageId);
       
-      if (error) throw error;
+      if (reviewsError) throw reviewsError;
       
-      if (data) {
-        const formattedReviews = data.map(review => ({
+      if (reviewsData) {
+        // Get unique user IDs from reviews to fetch their profiles
+        const userIds = [...new Set(reviewsData.map(review => review.user_id))];
+        
+        // Fetch profiles for these users
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', userIds);
+          
+        if (profilesError) throw profilesError;
+        
+        // Create a map of user IDs to full names for quick lookup
+        const userNameMap = new Map();
+        profilesData?.forEach(profile => {
+          userNameMap.set(profile.id, profile.full_name || 'Anonymous User');
+        });
+        
+        // Combine the reviews with user names
+        const formattedReviews = reviewsData.map(review => ({
           id: review.id,
           user_id: review.user_id,
           rating: review.rating,
           review_text: review.review_text,
           created_at: review.created_at,
-          user_name: review.profiles?.full_name || 'Anonymous User',
+          user_name: userNameMap.get(review.user_id) || 'Anonymous User',
         }));
         
         setReviews(formattedReviews);
