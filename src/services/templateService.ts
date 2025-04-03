@@ -56,7 +56,7 @@ export const addToCartDB = async (userId: string, templateId: string): Promise<v
       .from('cart_items')
       .update({ 
         quantity: data.quantity + 1,
-        updated_at: new Date()
+        updated_at: new Date().toISOString() // Convert Date to ISO string
       })
       .eq('user_id', userId)
       .eq('template_id', templateId);
