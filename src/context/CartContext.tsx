@@ -1,9 +1,9 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { addToCartDB } from '@/services/templateService';
 
 // Define the cart item type
 interface CartItem {
@@ -31,7 +31,7 @@ interface CartContextProps {
   promoCode: string | null;
   promoDiscount: number;
   isLoading: boolean;
-  fetchCartItems: () => Promise<void>; // Add this to expose the function
+  fetchCartItems: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -152,6 +152,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       sessionStorage.setItem('pendingCartItem', JSON.stringify(item));
       
       // Redirect to sign in page
+      toast.info("Please sign in to add items to your cart");
       navigate('/signin', { state: { returnTo: window.location.pathname } });
       return;
     }
@@ -164,22 +165,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (existingItemIndex >= 0) {
         // Update quantity if item exists
-        await updateQuantity(item.id, items[existingItemIndex].quantity + 1);
+        const newQuantity = items[existingItemIndex].quantity + 1;
+        await updateQuantity(item.id, newQuantity);
+        
+        toast.success(`${item.title} quantity updated in cart!`);
       } else {
         // Otherwise add new item
         const newItem = { ...item, quantity: 1 };
-        setItems(prev => [...prev, newItem]);
         
         // Add item to database
-        const { error } = await supabase
-          .from('cart_items')
-          .insert({
-            template_id: item.id,
-            user_id: user.id,
-            quantity: 1
-          });
+        await addToCartDB(user.id, item.id);
         
-        if (error) throw error;
+        // Update local state
+        setItems(prev => [...prev, newItem]);
         
         toast.success(`${item.title} added to cart!`);
       }
@@ -337,7 +335,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       promoCode,
       promoDiscount,
       isLoading,
-      fetchCartItems // Expose the function
+      fetchCartItems
     }}>
       {children}
     </CartContext.Provider>

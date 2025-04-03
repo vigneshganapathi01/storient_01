@@ -37,3 +37,48 @@ export const fetchTemplateById = async (id: string): Promise<Template | null> =>
   return data;
 };
 
+// New function to add or update cart item in the database
+export const addToCartDB = async (userId: string, templateId: string, quantity: number = 1) => {
+  // First check if the item already exists in the cart
+  const { data: existingItem, error: checkError } = await supabase
+    .from('cart_items')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('template_id', templateId)
+    .single();
+
+  if (checkError && checkError.code !== 'PGRST116') {
+    console.error('Error checking cart item:', checkError);
+    throw checkError;
+  }
+
+  // If item exists, update quantity
+  if (existingItem) {
+    const { error: updateError } = await supabase
+      .from('cart_items')
+      .update({ quantity: existingItem.quantity + quantity })
+      .eq('user_id', userId)
+      .eq('template_id', templateId);
+
+    if (updateError) {
+      console.error('Error updating cart item:', updateError);
+      throw updateError;
+    }
+  } else {
+    // If item doesn't exist, insert new item
+    const { error: insertError } = await supabase
+      .from('cart_items')
+      .insert({
+        user_id: userId,
+        template_id: templateId,
+        quantity
+      });
+
+    if (insertError) {
+      console.error('Error adding item to cart:', insertError);
+      throw insertError;
+    }
+  }
+
+  return true;
+};

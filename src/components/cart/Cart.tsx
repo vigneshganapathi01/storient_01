@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { XCircle, Loader2, CreditCard } from 'lucide-react';
+import { XCircle, Loader2, CreditCard, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -34,6 +35,7 @@ const Cart: React.FC = () => {
   const [promoInput, setPromoInput] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const navigate = useNavigate();
 
   // Ensure cart items are loaded
   useEffect(() => {
@@ -71,6 +73,10 @@ const Cart: React.FC = () => {
     }, 2000);
   };
 
+  const handleContinueShopping = () => {
+    navigate('/templates');
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -85,7 +91,10 @@ const Cart: React.FC = () => {
       <div className="text-center py-10">
         <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
         <p className="text-muted-foreground mb-6">Browse our templates and add some to your cart!</p>
-        <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={() => window.location.href = '/templates'}>
+        <Button 
+          className="bg-brand-blue hover:bg-brand-blue/90" 
+          onClick={handleContinueShopping}
+        >
           Explore Templates
         </Button>
       </div>
@@ -94,7 +103,7 @@ const Cart: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold mb-6 text-brand-blue">Your Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h2>
+      <h2 className="text-2xl font-bold mb-6 text-brand-blue">Shopping Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h2>
       
       <div className="space-y-6 mb-8">
         {items.map((item) => (
@@ -151,6 +160,7 @@ const Cart: React.FC = () => {
               <button 
                 onClick={() => handleRemoveItem(item.id)}
                 className="text-muted-foreground hover:text-destructive transition-colors"
+                aria-label="Remove item"
               >
                 <XCircle size={20} />
               </button>
@@ -183,7 +193,7 @@ const Cart: React.FC = () => {
       
       <div className="space-y-2 border-t pt-4">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Subtotal:</span>
+          <span className="text-muted-foreground">Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'}):</span>
           <span>${subtotal.toFixed(2)}</span>
         </div>
         {discount > 0 && (
@@ -199,7 +209,7 @@ const Cart: React.FC = () => {
           </div>
         )}
         <div className="flex justify-between font-bold text-lg pt-2 border-t">
-          <span>Total:</span>
+          <span>Order Total:</span>
           <span className="text-brand-blue">${total.toFixed(2)}</span>
         </div>
       </div>
@@ -210,19 +220,29 @@ const Cart: React.FC = () => {
           onClick={handleCheckout}
           disabled={isCheckingOut}
         >
-          Proceed to Checkout
+          Proceed to Checkout ({totalItems} {totalItems === 1 ? 'item' : 'items'})
         </Button>
-        <Button 
-          variant="outline" 
-          className="w-full text-muted-foreground"
-          onClick={() => clearCart()}
-          disabled={isCheckingOut}
-        >
-          Clear Cart
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            className="flex-1 text-muted-foreground"
+            onClick={handleContinueShopping}
+          >
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            Continue Shopping
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex-1 text-muted-foreground"
+            onClick={() => clearCart()}
+            disabled={isCheckingOut}
+          >
+            Clear Cart
+          </Button>
+        </div>
       </div>
 
-      {/* Demo Payment Dialog */}
+      {/* Payment Dialog */}
       <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -256,7 +276,7 @@ const Cart: React.FC = () => {
             
             <div className="border-t pt-4">
               <div className="flex justify-between text-sm">
-                <span>Subtotal:</span>
+                <span>Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'}):</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
               {discount > 0 && (
@@ -272,7 +292,7 @@ const Cart: React.FC = () => {
                 </div>
               )}
               <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
-                <span>Total:</span>
+                <span>Order Total:</span>
                 <span className="text-brand-blue">${total.toFixed(2)}</span>
               </div>
             </div>
@@ -298,7 +318,7 @@ const Cart: React.FC = () => {
               ) : (
                 <>
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Confirm Order
+                  Place Your Order
                 </>
               )}
             </Button>
