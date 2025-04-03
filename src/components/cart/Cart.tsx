@@ -39,7 +39,7 @@ const Cart: React.FC = () => {
 
   // Ensure cart items are loaded
   useEffect(() => {
-    // Force a refresh of cart items
+    // Force a refresh of cart items when component mounts
     fetchCartItems();
   }, []);
 

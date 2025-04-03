@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
-import { addToCartDB } from '@/services/templateService';
+import { addToCartDB, fetchTemplateById } from '@/services/templateService';
 
 // Define the cart item type
 interface CartItem {
@@ -58,19 +58,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, 0);
   const total = subtotal - promoDiscount;
 
-  // Load cart from Supabase when user logs in
-  useEffect(() => {
-    if (!authLoading) {
-      if (user) {
-        fetchCartItems();
-      } else {
-        // If no user but we had previous items, keep them in local state
-        // They'll be synced when user logs in
-        setIsLoading(false);
-      }
-    }
-  }, [user, authLoading]);
-
   // Fetch cart items from Supabase
   const fetchCartItems = async () => {
     if (!user) {
@@ -99,35 +86,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // For each cart item, get the template details
         for (const item of cartItems) {
-          console.log("Fetching template details for:", item.template_id);
-          
-          const { data: template, error: templateError } = await supabase
-            .from('templates')
-            .select('*')
-            .eq('id', item.template_id)
-            .single();
-          
-          if (templateError) {
-            console.error('Error fetching template:', templateError);
-            continue; // Skip this item if there's an error
-          }
-          
-          console.log("Template data:", template);
-          
-          if (template) {
-            // Transform data to match CartItem interface
-            cartItemsWithTemplates.push({
-              id: item.template_id,
-              title: template.title,
-              price: template.price,
-              discountPrice: template.discount_percentage 
-                ? Number((template.price * (1 - template.discount_percentage / 100)).toFixed(2))
-                : null,
-              image: template.image_url,
-              quantity: item.quantity || 1,
-              type: template.category,
-              isPack: template.is_pack,
-            });
+          try {
+            const template = await fetchTemplateById(item.template_id);
+            
+            if (template) {
+              // Transform data to match CartItem interface
+              cartItemsWithTemplates.push({
+                id: item.template_id,
+                title: template.title,
+                price: template.price,
+                discountPrice: template.discount_percentage 
+                  ? Number((template.price * (1 - template.discount_percentage / 100)).toFixed(2))
+                  : null,
+                image: template.image_url,
+                quantity: item.quantity || 1,
+                type: template.category,
+                isPack: template.is_pack,
+              });
+            }
+          } catch (err) {
+            console.error(`Error fetching template ${item.template_id}:`, err);
           }
         }
         
@@ -319,6 +297,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     handlePendingCartItem();
   }, [user]);
+
+  // Load cart from Supabase when user logs in
+  useEffect(() => {
+    if (!authLoading) {
+      if (user) {
+        fetchCartItems();
+      } else {
+        // If no user but we had previous items, keep them in local state
+        // They'll be synced when user logs in
+        setIsLoading(false);
+      }
+    }
+  }, [user, authLoading]);
 
   return (
     <CartContext.Provider value={{

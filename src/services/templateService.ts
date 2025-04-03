@@ -18,26 +18,28 @@ export const fetchTemplates = async (): Promise<Template[]> => {
 };
 
 export const fetchTemplateById = async (id: string): Promise<Template | null> => {
-  const { data, error } = await supabase
-    .from('templates')
-    .select('*')
-    .eq('id', id)
-    .single();
+  console.log("Fetching template details for:", id);
+  
+  try {
+    const { data, error } = await supabase
+      .from('templates')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
 
-  if (error) {
-    if (error.code === 'PGRST116') {
-      // No rows returned
-      console.warn(`No template found with id: ${id}`);
-      return null;
+    if (error) {
+      console.error('Error fetching template by id:', error);
+      throw error;
     }
-    console.error('Error fetching template by id:', error);
-    throw error;
-  }
 
-  return data;
+    return data;
+  } catch (error) {
+    console.error('Error in fetchTemplateById:', error);
+    return null;
+  }
 };
 
-// New function to add or update cart item in the database
+// Function to add or update cart item in the database
 export const addToCartDB = async (userId: string, templateId: string, quantity: number = 1) => {
   // First check if the item already exists in the cart
   const { data: existingItem, error: checkError } = await supabase
@@ -45,7 +47,7 @@ export const addToCartDB = async (userId: string, templateId: string, quantity: 
     .select('*')
     .eq('user_id', userId)
     .eq('template_id', templateId)
-    .single();
+    .maybeSingle();
 
   if (checkError && checkError.code !== 'PGRST116') {
     console.error('Error checking cart item:', checkError);
