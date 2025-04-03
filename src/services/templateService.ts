@@ -1,96 +1,44 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Tables } from '@/integrations/supabase/types';
 
-export type Template = Tables<'templates'>;
-
-export const fetchTemplates = async (): Promise<Template[]> => {
-  const { data, error } = await supabase
-    .from('templates')
-    .select('*');
+// Add an item to a user's cart
+export const addToCartDB = async (userId: string, templateId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('cart_items')
+    .upsert({
+      user_id: userId,
+      template_id: templateId,
+      quantity: 1
+    }, {
+      onConflict: 'user_id,template_id',
+      ignoreDuplicates: false
+    });
 
   if (error) {
-    console.error('Error fetching templates:', error);
+    console.error('Error adding to cart:', error);
     throw error;
   }
-
-  return data || [];
 };
 
-export const fetchTemplateById = async (id: string): Promise<Template | null> => {
-  console.log("Fetching template details for:", id);
+// Fetch a template by ID
+export const fetchTemplateById = async (templateId: string) => {
+  console.log('Fetching template details for:', templateId);
   
   try {
-    // Use maybeSingle instead of single to avoid 406 errors
     const { data, error } = await supabase
       .from('templates')
       .select('*')
-      .eq('id', id)
+      .eq('id', templateId)
       .maybeSingle();
-
+    
     if (error) {
-      console.error('Error fetching template by id:', error);
+      console.error('Error fetching template:', error);
       throw error;
     }
-
-    if (!data) {
-      console.log(`No template found with id ${id}`);
-    }
-
+    
     return data;
   } catch (error) {
-    console.error('Error in fetchTemplateById:', error);
-    return null;
-  }
-};
-
-// Function to add or update cart item in the database
-export const addToCartDB = async (userId: string, templateId: string, quantity: number = 1) => {
-  try {
-    // First check if the item already exists in the cart
-    const { data: existingItem, error: checkError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('template_id', templateId)
-      .maybeSingle();
-
-    if (checkError) {
-      console.error('Error checking cart item:', checkError);
-      throw checkError;
-    }
-
-    // If item exists, update quantity
-    if (existingItem) {
-      const { error: updateError } = await supabase
-        .from('cart_items')
-        .update({ quantity: existingItem.quantity + quantity })
-        .eq('user_id', userId)
-        .eq('template_id', templateId);
-
-      if (updateError) {
-        console.error('Error updating cart item:', updateError);
-        throw updateError;
-      }
-    } else {
-      // If item doesn't exist, insert new item
-      const { error: insertError } = await supabase
-        .from('cart_items')
-        .insert({
-          user_id: userId,
-          template_id: templateId,
-          quantity
-        });
-
-      if (insertError) {
-        console.error('Error adding item to cart:', insertError);
-        throw insertError;
-      }
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error in addToCartDB:', error);
+    console.error('Error fetching template:', error);
     throw error;
   }
 };
