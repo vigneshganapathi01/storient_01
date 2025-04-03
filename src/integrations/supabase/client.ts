@@ -16,6 +16,11 @@ export const supabase = createClient<Database>(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
-    }
+    },
+    global: {
+      headers: {
+        "Accept": "application/vnd.pgrst.array+json",
+      },
+    },
   }
 );

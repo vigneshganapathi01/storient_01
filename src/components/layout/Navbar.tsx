@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X, Download, Package, FileDown } from 'lucide-react';
@@ -6,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
+
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,6 +19,7 @@ const Navbar: React.FC = () => {
   const {
     totalItems
   } = useCart();
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -28,10 +31,12 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   const handleSignOut = async () => {
     await signOut();
     toast.success('You have been successfully signed out!');
   };
+
   return <nav className="">
       <div className="max-container flex-between">
         <Link to="/" className="flex items-center">
@@ -103,9 +108,6 @@ const Navbar: React.FC = () => {
               <Button onClick={() => navigate('/signin')} variant="outline" className="text-foreground">
                 Sign In
               </Button>
-              <Button onClick={() => navigate('/signup')} className="bg-brand-purple hover:bg-brand-indigo text-white">
-                Sign Up
-              </Button>
             </div>}
         </div>
 
@@ -160,16 +162,11 @@ const Navbar: React.FC = () => {
             }} variant="outline" className="text-foreground">
                     Sign In
                   </Button>
-                  <Button onClick={() => {
-              navigate('/signup');
-              setMobileMenuOpen(false);
-            }} className="bg-brand-purple hover:bg-brand-indigo text-white">
-                    Sign Up
-                  </Button>
                 </div>}
             </div>
           </div>
         </div>}
     </nav>;
 };
+
 export default Navbar;
