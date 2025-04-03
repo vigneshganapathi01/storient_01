@@ -34,6 +34,7 @@ interface CartContextProps {
   fetchCartItems: () => Promise<void>;
 }
 
+// Make sure the context has a default value matching the CartContextProps interface
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -311,29 +312,33 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user, authLoading]);
 
+  // Make sure all required context values are provided
+  const contextValue: CartContextProps = {
+    items,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    subtotal,
+    discount,
+    total,
+    applyPromoCode,
+    promoCode,
+    promoDiscount,
+    isLoading,
+    fetchCartItems
+  };
+
   return (
-    <CartContext.Provider value={{
-      items,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      totalItems,
-      subtotal,
-      discount,
-      total,
-      applyPromoCode,
-      promoCode,
-      promoDiscount,
-      isLoading,
-      fetchCartItems
-    }}>
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );
 };
 
-export const useCart = () => {
+// Fixed useCart hook with proper error checking
+export const useCart = (): CartContextProps => {
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');

@@ -21,6 +21,7 @@ export const fetchTemplateById = async (id: string): Promise<Template | null> =>
   console.log("Fetching template details for:", id);
   
   try {
+    // Use maybeSingle instead of single to avoid 406 errors
     const { data, error } = await supabase
       .from('templates')
       .select('*')
@@ -32,6 +33,10 @@ export const fetchTemplateById = async (id: string): Promise<Template | null> =>
       throw error;
     }
 
+    if (!data) {
+      console.log(`No template found with id ${id}`);
+    }
+
     return data;
   } catch (error) {
     console.error('Error in fetchTemplateById:', error);
@@ -41,46 +46,51 @@ export const fetchTemplateById = async (id: string): Promise<Template | null> =>
 
 // Function to add or update cart item in the database
 export const addToCartDB = async (userId: string, templateId: string, quantity: number = 1) => {
-  // First check if the item already exists in the cart
-  const { data: existingItem, error: checkError } = await supabase
-    .from('cart_items')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('template_id', templateId)
-    .maybeSingle();
-
-  if (checkError && checkError.code !== 'PGRST116') {
-    console.error('Error checking cart item:', checkError);
-    throw checkError;
-  }
-
-  // If item exists, update quantity
-  if (existingItem) {
-    const { error: updateError } = await supabase
+  try {
+    // First check if the item already exists in the cart
+    const { data: existingItem, error: checkError } = await supabase
       .from('cart_items')
-      .update({ quantity: existingItem.quantity + quantity })
+      .select('*')
       .eq('user_id', userId)
-      .eq('template_id', templateId);
+      .eq('template_id', templateId)
+      .maybeSingle();
 
-    if (updateError) {
-      console.error('Error updating cart item:', updateError);
-      throw updateError;
+    if (checkError) {
+      console.error('Error checking cart item:', checkError);
+      throw checkError;
     }
-  } else {
-    // If item doesn't exist, insert new item
-    const { error: insertError } = await supabase
-      .from('cart_items')
-      .insert({
-        user_id: userId,
-        template_id: templateId,
-        quantity
-      });
 
-    if (insertError) {
-      console.error('Error adding item to cart:', insertError);
-      throw insertError;
+    // If item exists, update quantity
+    if (existingItem) {
+      const { error: updateError } = await supabase
+        .from('cart_items')
+        .update({ quantity: existingItem.quantity + quantity })
+        .eq('user_id', userId)
+        .eq('template_id', templateId);
+
+      if (updateError) {
+        console.error('Error updating cart item:', updateError);
+        throw updateError;
+      }
+    } else {
+      // If item doesn't exist, insert new item
+      const { error: insertError } = await supabase
+        .from('cart_items')
+        .insert({
+          user_id: userId,
+          template_id: templateId,
+          quantity
+        });
+
+      if (insertError) {
+        console.error('Error adding item to cart:', insertError);
+        throw insertError;
+      }
     }
+
+    return true;
+  } catch (error) {
+    console.error('Error in addToCartDB:', error);
+    throw error;
   }
-
-  return true;
 };
