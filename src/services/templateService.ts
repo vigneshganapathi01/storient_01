@@ -103,28 +103,32 @@ export const fetchTemplateById = async (templateId: string): Promise<Template | 
     
     // If the template exists, also fetch the review count
     if (data) {
+      const templateWithCount = data as Template;
+      
       // Count reviews for this template
       const { count, error: countError } = await supabase
         .from('reviews')
         .select('*', { count: 'exact', head: true })
-        .eq('template_id', data.id);
+        .eq('template_id', templateWithCount.id);
       
       if (countError) {
         console.error('Error counting reviews:', countError);
       } else if (count !== null) {
         // Add the review count to the template data
-        data.review_count = count;
+        templateWithCount.review_count = count;
       }
+      
+      return templateWithCount;
     }
     
-    return data;
+    return null;
   } catch (error) {
     console.error('Error fetching template:', error);
     throw error;
   }
 };
 
-// Fetch a template by slug (new function)
+// Fetch a template by slug
 export const fetchTemplateBySlug = async (slug: string): Promise<Template | null> => {
   console.log('Fetching template details for slug:', slug);
   
@@ -143,21 +147,25 @@ export const fetchTemplateBySlug = async (slug: string): Promise<Template | null
     
     // If the template exists, also fetch the review count
     if (data) {
+      const templateWithCount = data as Template;
+      
       // Count reviews for this template
       const { count, error: countError } = await supabase
         .from('reviews')
         .select('*', { count: 'exact', head: true })
-        .eq('template_id', data.id);
+        .eq('template_id', templateWithCount.id);
       
       if (countError) {
         console.error('Error counting reviews:', countError);
       } else if (count !== null) {
         // Add the review count to the template data
-        data.review_count = count;
+        templateWithCount.review_count = count;
       }
+      
+      return templateWithCount;
     }
     
-    return data;
+    return null;
   } catch (error) {
     console.error('Error fetching template by slug:', error);
     throw error;

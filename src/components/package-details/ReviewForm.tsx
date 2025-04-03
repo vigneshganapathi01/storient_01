@@ -74,12 +74,39 @@ const ReviewForm = ({ packageId, onReviewSubmitted }: ReviewFormProps) => {
           templateData = await fetchTemplateBySlug(packageId);
         }
       } catch (e) {
+        console.error('Error fetching template data:', e);
         // If fetching by ID fails, try by slug
         templateData = await fetchTemplateBySlug(packageId);
       }
       
       if (!templateData) {
-        throw new Error('Template not found');
+        // Add debugging information
+        console.error('Template data not found for packageId:', packageId);
+        
+        // Try to insert a temporary template for testing
+        // This is just for debugging - remove in production
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Creating temporary template for testing');
+          const { data: tempTemplate, error: tempError } = await supabase
+            .from('templates')
+            .insert({
+              title: `Template ${packageId}`,
+              price: 149,
+              slug: packageId
+            })
+            .select()
+            .single();
+            
+          if (!tempError && tempTemplate) {
+            templateData = tempTemplate;
+          } else {
+            console.error('Error creating temporary template:', tempError);
+          }
+        }
+        
+        if (!templateData) {
+          throw new Error('Template not found');
+        }
       }
       
       // Use the template's ID from the database for the review

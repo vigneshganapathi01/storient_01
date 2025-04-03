@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -10,6 +9,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 import PackageDetailsHeader from '@/components/package-details/PackageDetailsHeader';
 import ReviewSection from '@/components/package-details/ReviewSection';
+import PackageInfo from '@/components/package-details/PackageInfo';
 import { Review } from '@/components/package-details/ReviewList';
 import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
 
@@ -26,7 +26,6 @@ const PackageDetails = () => {
   const [reviewCount, setReviewCount] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   
-  // Sample slides data - in a real app, this would come from the database
   const slides = [
     {
       title: "Part 1:",
@@ -48,7 +47,6 @@ const PackageDetails = () => {
     }
   ];
   
-  // Format package name from URL
   const formatPackageName = (id: string) => {
     return id
       .split('-')
@@ -58,7 +56,6 @@ const PackageDetails = () => {
 
   const packageName = packageId ? formatPackageName(packageId) : 'Package';
   
-  // Carousel navigation
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
@@ -67,7 +64,6 @@ const PackageDetails = () => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
   
-  // Fetch package details and reviews
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -80,26 +76,21 @@ const PackageDetails = () => {
         let templateData = null;
         
         try {
-          // Check if packageId is a valid UUID
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (uuidRegex.test(packageId)) {
             templateData = await fetchTemplateById(packageId);
           } else {
-            // If not a UUID, assume it's a slug
             templateData = await fetchTemplateBySlug(packageId);
           }
         } catch (e) {
-          // If fetching by ID fails, try by slug
           templateData = await fetchTemplateBySlug(packageId);
         }
           
         if (templateData) {
           setPackageDetails(templateData);
-          // Set review count from template data if available, otherwise default to 0
           setReviewCount(templateData.review_count || 0);
         }
         
-        // Fetch reviews
         await fetchReviews();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -116,21 +107,17 @@ const PackageDetails = () => {
     fetchData();
   }, [packageId, user]);
 
-  // Fetch reviews for this package
   const fetchReviews = async () => {
     try {
       if (!packageId) return;
       
-      // Try to get the templateId (whether it's a slug or UUID)
       let templateId;
       
       try {
-        // Check if packageId is a valid UUID
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (uuidRegex.test(packageId)) {
           templateId = packageId;
         } else {
-          // If not a UUID, assume it's a slug and fetch the template
           const templateData = await fetchTemplateBySlug(packageId);
           if (templateData) {
             templateId = templateData.id;
@@ -146,7 +133,6 @@ const PackageDetails = () => {
         return;
       }
       
-      // Use the template ID for fetching reviews
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('*')
@@ -158,11 +144,9 @@ const PackageDetails = () => {
       }
       
       if (reviewsData) {
-        // Get unique user IDs from reviews to fetch their profiles
         const userIds = [...new Set(reviewsData.map(review => review.user_id))];
         
         if (userIds.length > 0) {
-          // Fetch profiles for these users
           const { data: profilesData, error: profilesError } = await supabase
             .from('profiles')
             .select('id, full_name')
@@ -170,13 +154,11 @@ const PackageDetails = () => {
             
           if (profilesError) throw profilesError;
           
-          // Create a map of user IDs to full names for quick lookup
           const userNameMap = new Map();
           profilesData?.forEach(profile => {
             userNameMap.set(profile.id, profile.full_name || 'Anonymous User');
           });
           
-          // Combine the reviews with user names, but omit review_text as per requirements
           const formattedReviews = reviewsData.map(review => ({
             id: review.id,
             user_id: review.user_id,
@@ -187,19 +169,16 @@ const PackageDetails = () => {
           
           setReviews(formattedReviews);
           
-          // Calculate average rating
           if (formattedReviews.length > 0) {
             const sum = formattedReviews.reduce((acc, review) => acc + review.rating, 0);
             setAverageRating(sum / formattedReviews.length);
           }
           
-          // Check if user has already reviewed
           if (user) {
             const userReview = formattedReviews.find(review => review.user_id === user.id);
             setHasUserReviewed(!!userReview);
           }
 
-          // Update review count
           setReviewCount(formattedReviews.length);
         } else {
           setReviews([]);
@@ -221,7 +200,6 @@ const PackageDetails = () => {
       <main className="flex-grow bg-slate-950">
         <div className="max-container pt-32 pb-20">
           <div className="grid md:grid-cols-2 gap-10">
-            {/* Left side content */}
             <PackageDetailsHeader 
               packageName={packageName}
               reviewCount={reviewCount}
@@ -230,7 +208,6 @@ const PackageDetails = () => {
               isLoading={isLoading}
             />
             
-            {/* Right side content - Image carousel */}
             <div className="bg-white rounded-lg p-5 text-black">
               <div className="relative">
                 <h2 className="text-xl font-bold text-blue-800 mb-1">{slides[currentSlide].title}</h2>
@@ -278,7 +255,11 @@ const PackageDetails = () => {
             </div>
           </div>
           
-          <div id="reviews" className="mt-16">
+          <div className="mt-16">
+            <PackageInfo />
+          </div>
+          
+          <div id="reviews" className="mt-8">
             <ReviewSection 
               packageId={packageId}
               reviews={reviews} 
