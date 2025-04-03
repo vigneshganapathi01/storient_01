@@ -6,12 +6,13 @@ import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Check, Download, ChevronRight, ChevronLeft, Play } from 'lucide-react';
+import { Check, Download, ChevronRight, ChevronLeft, Play, File, FileText, Database } from 'lucide-react';
 
 const ThankYouPage = () => {
   const location = useLocation();
   const { packageName = "Package" } = (location.state as { packageName: string }) || {};
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedTab, setSelectedTab] = useState<'curated' | 'bonus'>('curated');
   
   // Auto-rotate slides
   useEffect(() => {
@@ -29,6 +30,20 @@ const ThankYouPage = () => {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 1 ? 0 : 1));
   };
+
+  // Sample content items
+  const curatedContent = [
+    { icon: <FileText className="h-5 w-5 text-blue-500" />, title: "Consulting Proposal Guide", description: "Best practices for structuring proposals", size: "15MB" },
+    { icon: <File className="h-5 w-5 text-blue-500" />, title: "PowerPoint Template Pack", description: "242 slides with professional layouts", size: "25MB" },
+    { icon: <Database className="h-5 w-5 text-blue-500" />, title: "Excel Financial Model", description: "Complete modeling toolkit", size: "8MB" }
+  ];
+
+  const bonusContent = [
+    { icon: <FileText className="h-5 w-5 text-green-500" />, title: "Case Study: Fortune 500", description: "Real-world implementation example", size: "12MB" },
+    { icon: <File className="h-5 w-5 text-green-500" />, title: "Client Presentation Template", description: "Ready-to-use presentation format", size: "10MB" }
+  ];
+
+  const currentContent = selectedTab === 'curated' ? curatedContent : bonusContent;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -58,10 +73,40 @@ const ThankYouPage = () => {
                 
                 <Card className="border-gray-800">
                   <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div className="text-lg font-medium">Curated Content</div>
+                    <div className="flex justify-between items-center mb-4">
+                      <button 
+                        className={`text-lg font-medium pb-2 border-b-2 ${selectedTab === 'curated' ? 'border-blue-500 text-blue-500' : 'border-transparent'}`}
+                        onClick={() => setSelectedTab('curated')}
+                      >
+                        Curated Content
+                      </button>
                       <span className="text-lg">+</span>
-                      <div className="text-lg font-medium">Bonus content</div>
+                      <button 
+                        className={`text-lg font-medium pb-2 border-b-2 ${selectedTab === 'bonus' ? 'border-blue-500 text-blue-500' : 'border-transparent'}`}
+                        onClick={() => setSelectedTab('bonus')}
+                      >
+                        Bonus content
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3 mt-4">
+                      {currentContent.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {item.icon}
+                            <div>
+                              <div className="font-medium">{item.title}</div>
+                              <div className="text-sm text-gray-400">{item.description}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-400">{item.size}</span>
+                            <Button variant="ghost" size="sm">
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>

@@ -33,7 +33,6 @@ const PackageHeader = ({
           packageName={packageName}
           reviewCount={reviewCount}
           averageRating={averageRating}
-          price={price}
           isLoading={isLoading}
         />
         
@@ -42,6 +41,7 @@ const PackageHeader = ({
             packageName={packageName}
             price={price}
             buttonVariant="default"
+            buttonText="Buy now"
           />
         </div>
       </div>
