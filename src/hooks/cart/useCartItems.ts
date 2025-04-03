@@ -3,17 +3,10 @@ import { CartItem } from '@/types/cart';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { addToCartDB } from '@/services/templateService';
-import { handlePromoCode, fetchCartItemsFromDB, calculateCartTotals } from '@/utils/cartUtils';
+import { fetchCartItemsFromDB } from '@/utils/cartUtils';
 
-export const useCartOperations = (user: any) => {
+export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [promoCode, setPromoCode] = useState<string | null>(null);
-  const [promoDiscount, setPromoDiscount] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // Calculate totals 
-  const { totalItems, subtotal, discount } = calculateCartTotals(items);
-  const total = subtotal - promoDiscount;
 
   // Fetch cart items from Supabase
   const fetchCartItems = async () => {
@@ -156,28 +149,12 @@ export const useCartOperations = (user: any) => {
       
       if (error) throw error;
       
-      setPromoCode(null);
-      setPromoDiscount(0);
-      
       toast.success('Cart cleared');
     } catch (error: any) {
       console.error('Error clearing cart:', error);
       toast.error(`Failed to clear cart: ${error.message}`);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Apply promo code
-  const applyPromoCode = (code: string) => {
-    const result = handlePromoCode(code, subtotal);
-    
-    if (result.isValid) {
-      setPromoCode(code);
-      setPromoDiscount(result.discount);
-      toast.success(`Promo code applied! You saved $${result.discount.toFixed(2)}`);
-    } else {
-      toast.error('Invalid promo code');
     }
   };
 
@@ -188,14 +165,6 @@ export const useCartOperations = (user: any) => {
     removeFromCart,
     updateQuantity,
     clearCart,
-    totalItems,
-    subtotal,
-    discount,
-    total,
-    applyPromoCode,
-    promoCode,
-    promoDiscount,
-    isLoading,
     fetchCartItems
   };
 };

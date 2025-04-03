@@ -1,8 +1,9 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { CartContextProps } from '@/types/cart';
-import { useCartOperations } from '@/hooks/useCartOperations';
+import { useCart } from '@/hooks/cart';
 
 // Create context with undefined default value
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -27,7 +28,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     promoDiscount,
     isLoading,
     fetchCartItems
-  } = useCartOperations(user);
+  } = useCart(user);
 
   // Check for pending cart item after login
   useEffect(() => {
