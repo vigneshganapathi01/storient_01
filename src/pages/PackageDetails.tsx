@@ -75,7 +75,7 @@ const PackageDetails = () => {
           rating,
           review_text,
           created_at,
-          profiles:user_id (full_name)
+          profiles(full_name)
         `)
         .eq('template_id', packageId);
       

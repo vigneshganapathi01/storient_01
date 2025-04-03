@@ -19,7 +19,7 @@ export const supabase = createClient<Database>(
     },
     global: {
       headers: {
-        "Accept": "application/vnd.pgrst.array+json",
+        "Accept": "application/json",
       },
     },
   }
