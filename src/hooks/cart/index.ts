@@ -1,2 +1,2 @@
 
-export { useCart } from './useCart';
+export { useCart as useCartHook } from './useCart';
