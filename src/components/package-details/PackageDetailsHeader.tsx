@@ -47,9 +47,6 @@ const PackageDetailsHeader = ({
         <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg text-lg font-medium">
           Buy now ${price || '149'}
         </button>
-        <button className="border border-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-white/10">
-          Download free sample
-        </button>
       </div>
       
       <div className="flex items-center gap-2">

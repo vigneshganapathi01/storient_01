@@ -16,6 +16,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import CartPage from "./pages/CartPage";
 import NotFound from "./pages/NotFound";
+import DemoPaymentPage from "./pages/DemoPaymentPage";
+import ThankYouPage from "./pages/ThankYouPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const App = () => (
               <Route path="/signup" element={<Auth tab="signup" />} />
               <Route path="/dashboard/*" element={<Dashboard />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/payment" element={<DemoPaymentPage />} />
+              <Route path="/thank-you" element={<ThankYouPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>

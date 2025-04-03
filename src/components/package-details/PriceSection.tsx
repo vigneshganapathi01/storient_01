@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,10 +16,10 @@ const PriceSection = ({ price, packageName }: PriceSectionProps) => {
 
   const handleBuyNow = () => {
     toast({
-      title: "Added to cart",
-      description: `${packageName} has been added to your cart`,
+      title: "Proceeding to payment",
+      description: `You're purchasing ${packageName}`,
     });
-    navigate('/cart');
+    navigate('/payment', { state: { price, packageName } });
   };
 
   return (
