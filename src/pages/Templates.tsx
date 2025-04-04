@@ -201,9 +201,9 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div onClick={() => navigateToPackageDetails("Full Access Bundle")} className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all bg-[#060060]/[0.84]">
-                  <h3 className="font-bold text-xl text-brand-blue mb-3">Full Access Bundle</h3>
-                  <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
+                <div onClick={() => navigateToPackageDetails("Full Access Bundle")} className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all bg-brand-blue">
+                  <h3 className="font-bold text-xl mb-3 text-zinc-50">Full Access Bundle</h3>
+                  <p className="text-sm mb-4 text-zinc-50">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/50">
                     100+ Templates
                   </Badge>
