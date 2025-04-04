@@ -7,7 +7,6 @@ interface TemplateGridProps {
   handleAddToCart: (packageName: string, price: number) => void;
   navigateToPackageDetails: (packageName: string) => void;
   selectedCategory?: string;
-  priceRange?: [number, number];
   sortBy?: string;
 }
 
@@ -15,7 +14,6 @@ const TemplateGrid = ({
   handleAddToCart, 
   navigateToPackageDetails,
   selectedCategory = 'All Categories',
-  priceRange = [0, 999],
   sortBy = 'featured'
 }: TemplateGridProps) => {
   const packageData = [
@@ -137,11 +135,6 @@ const TemplateGrid = ({
 
   const filteredPackages = useMemo(() => {
     return packageData.filter(pkg => {
-      // Filter by price range
-      if (pkg.price < priceRange[0] || pkg.price > priceRange[1]) {
-        return false;
-      }
-      
       // Filter by category if not "All Categories"
       if (selectedCategory !== 'All Categories' && pkg.category !== selectedCategory) {
         return false;
@@ -149,15 +142,10 @@ const TemplateGrid = ({
       
       return true;
     });
-  }, [packageData, selectedCategory, priceRange]);
+  }, [packageData, selectedCategory]);
 
   const filteredPremiumPackages = useMemo(() => {
     return premiumPackages.filter(pkg => {
-      // Filter by price range
-      if (pkg.price < priceRange[0] || pkg.price > priceRange[1]) {
-        return false;
-      }
-      
       // Filter by category if not "All Categories"
       if (selectedCategory !== 'All Categories' && pkg.category !== selectedCategory) {
         return false;
@@ -165,7 +153,7 @@ const TemplateGrid = ({
       
       return true;
     });
-  }, [premiumPackages, selectedCategory, priceRange]);
+  }, [premiumPackages, selectedCategory]);
 
   // Sort all packages based on the selected sort option
   const sortedPackages = useMemo(() => {
@@ -219,7 +207,7 @@ const TemplateGrid = ({
       
       {filteredPackages.length === 0 && filteredPremiumPackages.length === 0 && (
         <div className="col-span-full text-center py-12">
-          <p className="text-lg text-muted-foreground">No templates match your filters. Try adjusting your price range or category.</p>
+          <p className="text-lg text-muted-foreground">No templates match your filters. Try adjusting your category.</p>
         </div>
       )}
     </div>

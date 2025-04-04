@@ -1,27 +1,19 @@
 
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { SlidersHorizontal } from 'lucide-react';
 
 interface TemplateFiltersProps {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
   sortBy: string;
   setSortBy: (sortBy: string) => void;
-  priceRange: [number, number];
-  setPriceRange: (priceRange: [number, number]) => void;
-  maxPrice: number;
 }
 
 const TemplateFilters = ({
   selectedCategory,
   setSelectedCategory,
   sortBy,
-  setSortBy,
-  priceRange,
-  setPriceRange,
-  maxPrice
+  setSortBy
 }: TemplateFiltersProps) => {
   return (
     <div className="flex flex-col space-y-4 mt-6 md:mt-0">
@@ -49,26 +41,6 @@ const TemplateFilters = ({
             <SelectItem value="newest">Newest</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-      
-      <div className="w-full space-y-2">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Price Range</span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            ${priceRange[0]} - ${priceRange[1]}
-          </div>
-        </div>
-        <Slider 
-          min={0}
-          max={maxPrice}
-          step={10}
-          value={priceRange}
-          onValueChange={(value) => setPriceRange(value as [number, number])}
-          className="py-2"
-        />
       </div>
     </div>
   );
