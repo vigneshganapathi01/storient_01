@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/context/CartContext';
-import { toast as sonnerToast } from 'sonner';
+import { toast } from 'sonner';
 
 import PackageHeader from '@/components/package-details/PackageHeader';
 import ReviewSection from '@/components/package-details/ReviewSection';
@@ -71,22 +71,11 @@ const PackageDetails = () => {
         image: packageSlides[0]?.image || '/placeholder.svg'
       });
       
-      // Using the shadcn/ui toast
-      toast({
-        title: "Success",
-        description: `${packageName} added to cart!`,
-        variant: "default"
-      });
-      
+      toast.success(`${packageName} added to cart!`);
       navigate('/cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      // Using the shadcn/ui toast
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart. Please try again.",
-        variant: "destructive"
-      });
+      toast.error('Failed to add item to cart. Please try again.');
     }
   };
   
