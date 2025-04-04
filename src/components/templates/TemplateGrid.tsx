@@ -1,9 +1,9 @@
 
 import React from 'react';
-import PackageCard from './PackageCard';
-import PremiumPackageCard from './PremiumPackageCard';
 import EmptyTemplateState from './EmptyTemplateState';
 import { useTemplateFiltering } from '@/hooks/useTemplateFiltering';
+import StandardPackageGrid from './StandardPackageGrid';
+import PremiumPackageGrid from './PremiumPackageGrid';
 
 interface TemplateGridProps {
   handleAddToCart: (packageName: string, price: number) => void;
@@ -23,39 +23,23 @@ const TemplateGrid = ({
     sortBy
   });
 
+  const hasNoTemplates = sortedPackages.length === 0 && filteredPremiumPackages.length === 0;
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-5 gap-4 mt-8 border-t pt-6">
-      {sortedPackages.map((pkg, idx) => (
-        <PackageCard 
-          key={idx}
-          price={pkg.price}
-          priceText={pkg.priceText}
-          backgroundColor={pkg.backgroundColor}
-          headerBackground={pkg.headerBackground}
-          textColor={pkg.textColor}
-          packageItems={pkg.items}
-          onAddToCart={handleAddToCart}
-          onPackageClick={navigateToPackageDetails}
-        />
-      ))}
+      <StandardPackageGrid 
+        packages={sortedPackages}
+        onAddToCart={handleAddToCart}
+        onPackageClick={navigateToPackageDetails}
+      />
       
-      {/* Premium Package Cards */}
-      {filteredPremiumPackages.map((pkg, idx) => (
-        <PremiumPackageCard
-          key={`premium-${idx}`}
-          price={pkg.price}
-          title={pkg.title}
-          description={pkg.description}
-          templateCount={pkg.templateCount}
-          backgroundColor={pkg.backgroundColor}
-          onAddToCart={handleAddToCart}
-          onPackageClick={navigateToPackageDetails}
-          consultText={pkg.consultText}
-          lifetimeUpdates={pkg.lifetimeUpdates}
-        />
-      ))}
+      <PremiumPackageGrid 
+        packages={filteredPremiumPackages}
+        onAddToCart={handleAddToCart}
+        onPackageClick={navigateToPackageDetails}
+      />
       
-      {sortedPackages.length === 0 && filteredPremiumPackages.length === 0 && <EmptyTemplateState />}
+      {hasNoTemplates && <EmptyTemplateState />}
     </div>
   );
 };

@@ -1,20 +1,20 @@
 
 import React, { useState } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
 import TemplateHeader from '@/components/templates/TemplateHeader';
 import TemplateFilters from '@/components/templates/TemplateFilters';
 import TemplateGrid from '@/components/templates/TemplateGrid';
+import TemplatesContainer from '@/components/templates/TemplatesContainer';
+import TemplateActions from '@/components/templates/TemplateActions';
 
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
   const navigate = useNavigate();
   const { addToCart } = useCart();
-
+  
   const handleAddToCart = async (packageName: string, price: number) => {
     try {
       await addToCart({
@@ -36,30 +36,24 @@ const Templates = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <div className="max-container pt-32 pb-20">
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-6">
-            <TemplateHeader />
-            <TemplateFilters
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-            />
-          </div>
+    <TemplatesContainer>
+      <div className="flex flex-col md:flex-row md:items-start justify-between mb-6">
+        <TemplateHeader />
+        <TemplateFilters
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+      </div>
 
-          <TemplateGrid 
-            handleAddToCart={handleAddToCart}
-            navigateToPackageDetails={navigateToPackageDetails}
-            selectedCategory={selectedCategory}
-            sortBy={sortBy}
-          />
-        </div>
-      </main>
-      <Footer />
-    </div>
+      <TemplateGrid 
+        handleAddToCart={handleAddToCart}
+        navigateToPackageDetails={navigateToPackageDetails}
+        selectedCategory={selectedCategory}
+        sortBy={sortBy}
+      />
+    </TemplatesContainer>
   );
 };
 
