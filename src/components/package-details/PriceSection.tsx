@@ -22,6 +22,7 @@ interface PriceSectionProps {
   buttonVariant?: 'default' | 'outline' | 'secondary' | 'destructive';
   buttonText?: string;
   onAddToCart?: () => void;
+  onBuyNow?: () => void;
 }
 
 const PriceSection = ({ 
@@ -32,7 +33,8 @@ const PriceSection = ({
   onTierSelect,
   buttonVariant = 'default',
   buttonText = 'Buy now',
-  onAddToCart
+  onAddToCart,
+  onBuyNow
 }: PriceSectionProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -43,11 +45,15 @@ const PriceSection = ({
     : (price ? [{ name: packageName || 'Standard', price: Number(price) }] : []);
 
   const handleBuyNow = (tier: PriceTier) => {
-    toast({
-      title: "Proceeding to payment",
-      description: `You're purchasing ${tier.name}`,
-    });
-    navigate('/payment', { state: { packageName: tier.name, price: tier.price } });
+    if (onBuyNow) {
+      onBuyNow();
+    } else {
+      toast({
+        title: "Proceeding to payment",
+        description: `You're purchasing ${tier.name}`,
+      });
+      navigate('/payment', { state: { packageName: tier.name, price: tier.price } });
+    }
   };
 
   // Find selected tier or default to first tier

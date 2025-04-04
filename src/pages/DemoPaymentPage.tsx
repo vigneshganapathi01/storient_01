@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -27,25 +26,25 @@ const DemoPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { items, clearCart } = useCart();
+  const { items, clearCart, total } = useCart();
   
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Get data from location state or use defaults
-  const { packageName = "Package", price = 149 } = (location.state as { packageName: string; price: number }) || {};
+  const locationState = location.state as { packageName?: string; price?: number } | undefined;
+  const packageName = locationState?.packageName || `Cart (${items.length} items)`;
+  const price = locationState?.price || total;
 
-  // Check if user directly accessed this page without going through checkout
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state && items.length === 0) {
       toast({
-        title: "Invalid Access",
+        title: "Empty Cart",
         description: "Please select items before proceeding to payment",
         variant: "destructive"
       });
       navigate('/templates');
     }
-  }, [location.state]);
+  }, [location.state, items.length]);
 
   const form = useForm<PaymentFormData>({
     defaultValues: {
@@ -60,16 +59,13 @@ const DemoPaymentPage = () => {
   const processPayment = (data: PaymentFormData) => {
     setIsProcessing(true);
     
-    // Simulate payment processing
     toast({
       title: "Processing payment",
       description: "Please wait while we process your payment",
     });
     
-    // Simulate a delay before redirecting
     setTimeout(() => {
       setIsProcessing(false);
-      // Clear the cart if payment is successful
       clearCart();
       navigate('/thank-you', { state: { packageName, price } });
     }, 2000);

@@ -42,10 +42,25 @@ const PackageHeader = ({
       });
       
       toast.success(`${packageName} added to cart!`);
-      navigate('/cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart. Please try again.');
+    }
+  };
+  
+  const handleBuyNow = async () => {
+    try {
+      await addToCart({
+        id: packageName.toLowerCase().replace(/\s+/g, '-'),
+        title: packageName,
+        price: price,
+        image: slides[0]?.image || '/placeholder.svg'
+      });
+      
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error processing purchase:', error);
+      toast.error('Failed to process purchase. Please try again.');
     }
   };
 
@@ -66,6 +81,7 @@ const PackageHeader = ({
             buttonVariant="default"
             buttonText="Buy now"
             onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
           />
         </div>
       </div>
