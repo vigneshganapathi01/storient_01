@@ -38,7 +38,7 @@ const packageSlides = [
 
 const PackageDetails = () => {
   const { packageId } = useParams();
-  const { toast } = useToast();
+  const { toast: toastNotification } = useToast();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   
@@ -71,11 +71,13 @@ const PackageDetails = () => {
         image: packageSlides[0]?.image || '/placeholder.svg'
       });
       
-      toast.success(`${packageName} added to cart!`);
+      toast(`${packageName} added to cart!`);
       navigate('/cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error('Failed to add item to cart. Please try again.');
+      toast(`Failed to add item to cart. Please try again.`, {
+        style: { backgroundColor: 'red', color: 'white' }
+      });
     }
   };
   
@@ -106,7 +108,7 @@ const PackageDetails = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        toast({
+        toastNotification({
           title: "Error",
           description: "Failed to load data. Please try again later.",
           variant: "destructive"
