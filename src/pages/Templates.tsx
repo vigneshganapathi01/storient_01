@@ -22,7 +22,7 @@ const PackageContent = ({
   color: string;
   templateCount?: number;
   onClick?: () => void;
-}) => <div onClick={onClick} className="bg-[#f2f2f2]">
+}) => <div onClick={onClick} className={`${color}`}>
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
     {templateCount && <div className="mt-2">
@@ -102,21 +102,21 @@ const Templates = () => {
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-4 mt-8 border-t pt-6">
             {/* Package 1 - $99 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b bg-[#f2f2f2]">
-                <h2 className="text-3xl font-bold text-brand-blue">$99</h2>
+              <div className="p-4 text-center border-b bg-[#f2f2f2] text-black">
+                <h2 className="text-3xl font-bold text-[#0074bf]">$99</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Field Set of Questions" description="Turn your cards into winning recipes for clear, structured frameworks that build trust and urgency." color="from-blue-50 to-blue-100" templateCount={12} onClick={() => navigateToPackageDetails("Field Set of Questions")} />
+              <div className="flex-1 p-4 flex flex-col space-y-4 bg-[#f2f2f2]">
+                <PackageContent title="Pitches & Proof of Concepts" description="Turn your ideas into winning pitches with clear, structured frameworks that build trust and urgency." color="" templateCount={12} onClick={() => navigateToPackageDetails("Pitches and Proof of Concepts")} />
                 
-                <PackageContent title="Case Studies" description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories." color="from-purple-50 to-purple-100" templateCount={8} onClick={() => navigateToPackageDetails("Case Studies")} />
+                <PackageContent title="Case Studies" description="Prove your worth with compelling case study templates designed to highlight impact, ROI, and customer success stories." color="" templateCount={8} onClick={() => navigateToPackageDetails("Case Studies")} />
                 
-                <PackageContent title="Point of Views" description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms." color="from-green-50 to-green-100" templateCount={10} onClick={() => navigateToPackageDetails("Point of Views")} />
+                <PackageContent title="Point of Views" description="Establish thought leadership with impactful POV templates that simplify complex topics, articulate insights and challenge norms." color="" templateCount={10} onClick={() => navigateToPackageDetails("Point of Views")} />
               </div>
               
-              <div className="p-4 mt-auto">
+              <div className="p-4 mt-auto bg-[#f2f2f2]">
                 <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$99 Package", 99)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
@@ -126,21 +126,21 @@ const Templates = () => {
             
             {/* Package 2 - $149 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b bg-[#ccebff]">
-                <h2 className="text-3xl font-bold text-brand-blue">$149</h2>
+              <div className="p-4 text-center border-b bg-[#ccebff] text-black">
+                <h2 className="text-3xl font-bold text-[#0074bf]">$149</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Workshops" description="Facilitate engaging and productive brainstorming sessions." color="from-cyan-50 to-cyan-100" templateCount={15} onClick={() => navigateToPackageDetails("Workshops")} />
+              <div className="flex-1 p-4 flex flex-col space-y-4 bg-[#ccebff]">
+                <PackageContent title="Workshops" description="Facilitate engaging and productive brainstorming sessions." color="" templateCount={15} onClick={() => navigateToPackageDetails("Workshops")} />
                 
-                <PackageContent title="Proposals" description="Win pitch-ready deals with proposal templates designed to connect with decision-makers." color="from-amber-50 to-amber-100" templateCount={7} onClick={() => navigateToPackageDetails("Proposals")} />
+                <PackageContent title="Proposals" description="Win high-value deals with proposal templates designed to connect with decision-makers." color="" templateCount={7} onClick={() => navigateToPackageDetails("Proposals")} />
                 
-                <PackageContent title="Client Proposals" description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points." color="from-rose-50 to-rose-100" templateCount={9} onClick={() => navigateToPackageDetails("Client Proposals")} />
+                <PackageContent title="Request for Proposals" description="Respond confidently to RFPs and RFIs with structured templates that demonstrate expertise, address client pain points." color="" templateCount={9} onClick={() => navigateToPackageDetails("Request for Proposals")} />
               </div>
               
-              <div className="p-4 mt-auto">
+              <div className="p-4 mt-auto bg-[#ccebff]">
                 <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$149 Package", 149)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
@@ -150,21 +150,21 @@ const Templates = () => {
             
             {/* Package 3 - $199 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b bg-[#99d7fe]">
-                <h2 className="text-3xl font-bold text-brand-blue">$199</h2>
+              <div className="p-4 text-center border-b bg-[#99d7fe] text-black">
+                <h2 className="text-3xl font-bold text-[#0074bf]">$199</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Business Review Pack" description="MEPS, QBRs, and EBRs." color="from-blue-100 to-blue-200" templateCount={18} onClick={() => navigateToPackageDetails("Business Review Pack")} />
+              <div className="flex-1 p-4 flex flex-col space-y-4 bg-[#99d7fe]">
+                <PackageContent title="Business Review Pack" description="(MBR, QBR, SBR, ABR)" color="" templateCount={18} onClick={() => navigateToPackageDetails("Business Review Pack")} />
                 
-                <PackageContent title="C-Suite Communication Strategy Pack" description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions." color="from-indigo-100 to-indigo-200" templateCount={14} onClick={() => navigateToPackageDetails("C-Suite Communication Strategy Pack")} />
+                <PackageContent title="C-Suite Communication Strategy Pack" description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions." color="" templateCount={14} onClick={() => navigateToPackageDetails("C-Suite Communication Strategy Pack")} />
                 
-                <PackageContent title="The Divergent Deck" description="Frameworks for Upcoming Training & Communication." color="from-sky-100 to-sky-200" templateCount={20} onClick={() => navigateToPackageDetails("The Divergent Deck")} />
+                <PackageContent title="The Divergent Deck" description="Frameworks for Uncommon Thinking & Communication." color="" templateCount={20} onClick={() => navigateToPackageDetails("The Divergent Deck")} />
               </div>
               
-              <div className="p-4 mt-auto">
+              <div className="p-4 mt-auto bg-[#99d7fe]">
                 <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$199 Package", 199)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
@@ -175,23 +175,23 @@ const Templates = () => {
             {/* Package 4 - $499 */}
             <div className="border rounded-md flex flex-col">
               <div className="p-4 text-center border-b bg-[#0074bf]">
-                <h2 className="text-3xl font-bold text-zinc-50">$499</h2>
-                <p className="text-xs text-muted-foreground">Includes an exclusive 1:1</p>
-                <p className="text-xs text-muted-foreground">consult with our team</p>
+                <h2 className="text-3xl font-bold text-white">$499</h2>
+                <p className="text-xs text-white/90">Includes an exclusive 1:1</p>
+                <p className="text-xs text-white/90">consult with our team</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-gradient-to-b from-blue-50 to-blue-100 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all" onClick={() => navigateToPackageDetails("Storytelling Masterclass")}>
-                  <h3 className="font-bold text-xl text-brand-blue mb-3">Storytelling Masterclass</h3>
-                  <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
-                  <Badge variant="outline" className="bg-white/50">
+              <div className="flex-1 p-4 flex flex-col space-y-4 bg-[#0074bf] text-white">
+                <div className="rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all" onClick={() => navigateToPackageDetails("Storytelling Masterclass")}>
+                  <h3 className="font-bold text-xl mb-3">Storytelling Masterclass</h3>
+                  <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, Packed with strategies and templates for high-stakes business contexts.</p>
+                  <Badge variant="outline" className="bg-white/20 text-white">
                     35 Templates
                   </Badge>
                 </div>
               </div>
               
-              <div className="p-4 mt-auto">
-                <Button className="w-full bg-brand-purple hover:bg-brand-purple/90 flex items-center justify-center" onClick={() => handleAddToCart("Storytelling Masterclass", 499)}>
+              <div className="p-4 mt-auto bg-[#0074bf]">
+                <Button className="w-full bg-white hover:bg-white/90 text-[#0074bf] flex items-center justify-center" onClick={() => handleAddToCart("Storytelling Masterclass", 499)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -201,23 +201,23 @@ const Templates = () => {
             {/* Package 5 - $999 */}
             <div className="border rounded-md flex flex-col">
               <div className="p-4 text-center border-b bg-[#002060]">
-                <h2 className="text-3xl font-bold text-zinc-50">$999</h2>
-                <p className="text-xs text-muted-foreground">All 10 packs with</p>
-                <p className="text-xs text-muted-foreground">Lifetime Updates</p>
+                <h2 className="text-3xl font-bold text-white">$999</h2>
+                <p className="text-xs text-white/90">All 10 packs with</p>
+                <p className="text-xs text-white/90">Lifetime Updates</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div onClick={() => navigateToPackageDetails("Full Access Bundle")} className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all bg-brand-blue">
-                  <h3 className="font-bold text-xl mb-3 text-zinc-50">Full Access Bundle</h3>
-                  <p className="text-sm mb-4 text-zinc-50">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
-                  <Badge variant="outline" className="bg-white/50">
+              <div className="flex-1 p-4 flex flex-col space-y-4 bg-[#002060] text-white">
+                <div onClick={() => navigateToPackageDetails("Full Access Bundle")} className="rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all">
+                  <h3 className="font-bold text-xl mb-3">Full Access Bundle</h3>
+                  <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Fortune 2000 Enterprise Accounts</p>
+                  <Badge variant="outline" className="bg-white/20 text-white">
                     100+ Templates
                   </Badge>
                 </div>
               </div>
               
-              <div className="p-4 mt-auto">
-                <Button className="w-full bg-brand-purple hover:bg-brand-purple/90 flex items-center justify-center" onClick={() => handleAddToCart("Full Access Bundle", 999)}>
+              <div className="p-4 mt-auto bg-[#002060]">
+                <Button className="w-full bg-white hover:bg-white/90 text-[#002060] flex items-center justify-center" onClick={() => handleAddToCart("Full Access Bundle", 999)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
