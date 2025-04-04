@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PackageCard from './PackageCard';
+import PackageCard from './package-card/PackageCard';
 import { TemplatePackage } from '@/data/templatePackageData';
 
 interface StandardPackageGridProps {
