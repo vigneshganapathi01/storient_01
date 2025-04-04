@@ -120,7 +120,7 @@ const Templates = () => {
             
             {/* Package 2 - $149 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b">
+              <div className="p-4 text-center border-b bg-[#ccebff]">
                 <h2 className="text-3xl font-bold text-brand-blue">$149</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
@@ -144,7 +144,7 @@ const Templates = () => {
             
             {/* Package 3 - $199 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b bg-[#ccebff]">
+              <div className="p-4 text-center border-b bg-[#99d7fe]">
                 <h2 className="text-3xl font-bold text-brand-blue">$199</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
@@ -168,8 +168,8 @@ const Templates = () => {
             
             {/* Package 4 - $499 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b">
-                <h2 className="text-3xl font-bold text-brand-blue">$499</h2>
+              <div className="p-4 text-center border-b bg-[#0074bf]">
+                <h2 className="text-3xl font-bold text-zinc-50">$499</h2>
                 <p className="text-xs text-muted-foreground">Includes an exclusive 1:1</p>
                 <p className="text-xs text-muted-foreground">consult with our team</p>
               </div>
@@ -194,14 +194,14 @@ const Templates = () => {
             
             {/* Package 5 - $999 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b">
-                <h2 className="text-3xl font-bold text-brand-blue">$999</h2>
+              <div className="p-4 text-center border-b bg-brand-blue">
+                <h2 className="text-3xl font-bold text-zinc-50">$999</h2>
                 <p className="text-xs text-muted-foreground">All 10 packs with</p>
                 <p className="text-xs text-muted-foreground">Lifetime Updates</p>
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all" onClick={() => navigateToPackageDetails("Full Access Bundle")}>
+                <div onClick={() => navigateToPackageDetails("Full Access Bundle")} className="bg-gradient-to-b from-purple-100 to-purple-200 rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all bg-[#060060]/[0.84]">
                   <h3 className="font-bold text-xl text-brand-blue mb-3">Full Access Bundle</h3>
                   <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/50">
