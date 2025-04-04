@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
+
 const PackageContent = ({
   title,
   description,
@@ -29,6 +31,7 @@ const PackageContent = ({
         </Badge>
       </div>}
   </div>;
+
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
@@ -36,6 +39,7 @@ const Templates = () => {
   const {
     addToCart
   } = useCart();
+
   const handleAddToCart = async (packageName: string, price: number) => {
     try {
       await addToCart({
@@ -51,9 +55,11 @@ const Templates = () => {
       toast.error('Failed to add to cart. Please try again.');
     }
   };
+
   const navigateToPackageDetails = (packageName: string) => {
     navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
   };
+
   return <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">
@@ -194,7 +200,7 @@ const Templates = () => {
             
             {/* Package 5 - $999 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b bg-brand-blue">
+              <div className="p-4 text-center border-b bg-[#002060]">
                 <h2 className="text-3xl font-bold text-zinc-50">$999</h2>
                 <p className="text-xs text-muted-foreground">All 10 packs with</p>
                 <p className="text-xs text-muted-foreground">Lifetime Updates</p>
@@ -223,4 +229,5 @@ const Templates = () => {
       <Footer />
     </div>;
 };
+
 export default Templates;
