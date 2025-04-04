@@ -20,7 +20,7 @@ const PackageContent = ({
   color: string;
   templateCount?: number;
   onClick?: () => void;
-}) => <div className={`p-4 h-full bg-gradient-to-b ${color} rounded-md cursor-pointer hover:shadow-md transition-all`} onClick={onClick}>
+}) => <div onClick={onClick} className="bg-[#f2f2f2]">
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
     {templateCount && <div className="mt-2">
