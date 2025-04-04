@@ -144,7 +144,7 @@ const Templates = () => {
             
             {/* Package 3 - $199 */}
             <div className="border rounded-md flex flex-col">
-              <div className="p-4 text-center border-b">
+              <div className="p-4 text-center border-b bg-[#ccebff]">
                 <h2 className="text-3xl font-bold text-brand-blue">$199</h2>
                 <p className="text-sm text-muted-foreground">per pack</p>
                 <p className="text-xs text-muted-foreground">from below list</p>
