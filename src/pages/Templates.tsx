@@ -11,20 +11,31 @@ import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { fetchTemplates } from '@/services/templateService';
+import { Card } from '@/components/ui/card';
 
 const PackageContent = ({
   title,
   description,
   color,
   templateCount,
-  onClick
+  onClick,
+  imageUrl
 }: {
   title: string;
   description: string;
   color: string;
   templateCount?: number;
   onClick?: () => void;
-}) => <div className={`p-4 h-full ${color} rounded-md cursor-pointer hover:shadow-md transition-all`} onClick={onClick}>
+  imageUrl?: string;
+}) => (
+  <div className={`p-4 h-full ${color} rounded-md cursor-pointer hover:shadow-md transition-all`} onClick={onClick}>
+    {imageUrl && (
+      <div className="flex justify-center mb-3">
+        <div className="bg-white/30 rounded-full w-16 h-16 flex items-center justify-center">
+          <img src={imageUrl} alt={title} className="w-10 h-10 object-contain" />
+        </div>
+      </div>
+    )}
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
     {templateCount && <div className="mt-2">
@@ -32,7 +43,8 @@ const PackageContent = ({
           {templateCount} Templates
         </Badge>
       </div>}
-  </div>;
+  </div>
+);
 
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -57,7 +69,7 @@ const Templates = () => {
         id: packageId,
         title: packageName,
         price: price,
-        image: '/placeholder.svg'
+        image: '/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png'
       });
       toast.success(`${packageName} added to cart!`);
       navigate('/cart');
@@ -125,11 +137,32 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Pitches & Proof of Concepts" description="Turn your ideas into winning pitches that build trust and urgency." color="bg-[#f2f2f2]" templateCount={12} onClick={() => navigateToPackageDetails("pitches-proof-of-concepts")} />
+                <PackageContent 
+                  title="Pitches & Proof of Concepts" 
+                  description="Turn your ideas into winning pitches that build trust and urgency." 
+                  color="bg-[#f2f2f2]" 
+                  templateCount={12} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("pitches-proof-of-concepts")}
+                />
                 
-                <PackageContent title="Case Studies" description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories." color="bg-[#f2f2f2]" templateCount={8} onClick={() => navigateToPackageDetails("case-studies")} />
+                <PackageContent 
+                  title="Case Studies" 
+                  description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories." 
+                  color="bg-[#f2f2f2]" 
+                  templateCount={8} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("case-studies")}
+                />
                 
-                <PackageContent title="Point of Views" description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms." color="bg-[#f2f2f2]" templateCount={10} onClick={() => navigateToPackageDetails("point-of-views")} />
+                <PackageContent 
+                  title="Point of Views" 
+                  description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms." 
+                  color="bg-[#f2f2f2]" 
+                  templateCount={10} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("point-of-views")} 
+                />
               </div>
               
               <div className="p-4 mt-auto">
@@ -150,11 +183,32 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Workshops" description="Facilitate engaging and productive brainstorming sessions." color="bg-[#ccebff]" templateCount={15} onClick={() => navigateToPackageDetails("workshops")} />
+                <PackageContent 
+                  title="Workshops" 
+                  description="Facilitate engaging and productive brainstorming sessions." 
+                  color="bg-[#ccebff]" 
+                  templateCount={15} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("workshops")} 
+                />
                 
-                <PackageContent title="Proposals" description="Win pitch-ready deals with proposal templates designed to connect with decision-makers." color="bg-[#ccebff]" templateCount={7} onClick={() => navigateToPackageDetails("proposals")} />
+                <PackageContent 
+                  title="Proposals" 
+                  description="Win pitch-ready deals with proposal templates designed to connect with decision-makers." 
+                  color="bg-[#ccebff]" 
+                  templateCount={7} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("proposals")} 
+                />
                 
-                <PackageContent title="Request for Proposals" description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points." color="bg-[#ccebff]" templateCount={9} onClick={() => navigateToPackageDetails("request-for-proposals")} />
+                <PackageContent 
+                  title="Request for Proposals" 
+                  description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points." 
+                  color="bg-[#ccebff]" 
+                  templateCount={9} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("request-for-proposals")} 
+                />
               </div>
               
               <div className="p-4 mt-auto">
@@ -175,11 +229,32 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <PackageContent title="Business Review Pack" description="MEPS, QBRs, and EBRs." color="bg-[#99d7fe]" templateCount={18} onClick={() => navigateToPackageDetails("business-review-pack")} />
+                <PackageContent 
+                  title="Business Review Pack" 
+                  description="MEPS, QBRs, and EBRs." 
+                  color="bg-[#99d7fe]" 
+                  templateCount={18} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("business-review-pack")} 
+                />
                 
-                <PackageContent title="C-Suite Communication Strategy Pack" description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions." color="bg-[#99d7fe]" templateCount={14} onClick={() => navigateToPackageDetails("c-suite-communication-strategy-pack")} />
+                <PackageContent 
+                  title="C-Suite Communication Strategy Pack" 
+                  description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions." 
+                  color="bg-[#99d7fe]" 
+                  templateCount={14} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("c-suite-communication-strategy-pack")} 
+                />
                 
-                <PackageContent title="The Divergent Deck" description="Frameworks for Upcoming Training & Communication." color="bg-[#99d7fe]" templateCount={20} onClick={() => navigateToPackageDetails("the-divergent-deck")} />
+                <PackageContent 
+                  title="The Divergent Deck" 
+                  description="Frameworks for Upcoming Training & Communication." 
+                  color="bg-[#99d7fe]" 
+                  templateCount={20} 
+                  imageUrl="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png"
+                  onClick={() => navigateToPackageDetails("the-divergent-deck")} 
+                />
               </div>
               
               <div className="p-4 mt-auto">
@@ -199,8 +274,11 @@ const Templates = () => {
                 <p className="text-xs text-white/90">consult with our team</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
+              <div className="flex-1 p-4 flex flex-col">
                 <div className="bg-[#0074bf] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails("storytelling-masterclass")}>
+                  <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-3">
+                    <img src="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png" alt="Storytelling Masterclass" className="w-10 h-10 object-contain" />
+                  </div>
                   <h3 className="font-bold text-xl mb-3">Storytelling Masterclass</h3>
                   <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
                   <Badge variant="outline" className="bg-white/20 text-white">
@@ -226,8 +304,11 @@ const Templates = () => {
                 <p className="text-xs text-white/90">Lifetime Updates</p>
               </div>
               
-              <div className="flex-1 p-4 flex flex-col space-y-4">
+              <div className="flex-1 p-4 flex flex-col">
                 <div className="bg-[#002060] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails("full-access-bundle")}>
+                  <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-3">
+                    <img src="/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png" alt="Full Access Bundle" className="w-10 h-10 object-contain" />
+                  </div>
                   <h3 className="font-bold text-xl mb-3">Full Access Bundle</h3>
                   <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/20 text-white">
