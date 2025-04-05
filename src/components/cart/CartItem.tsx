@@ -1,8 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { MinusCircle, PlusCircle } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Minus, Plus } from 'lucide-react';
 import { CartItem as CartItemType } from '@/types/cart';
 
 interface CartItemProps {
@@ -17,7 +16,7 @@ const CartItem: React.FC<CartItemProps> = ({
   handleRemoveItem 
 }) => {
   return (
-    <div className="pb-6">
+    <div className="py-6">
       <div className="flex flex-col sm:flex-row gap-4">
         {item.image && (
           <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden flex-shrink-0">
@@ -28,7 +27,7 @@ const CartItem: React.FC<CartItemProps> = ({
           <div>
             <h3 className="font-semibold text-lg">{item.title}</h3>
             {item.type && (
-              <span className="text-sm text-muted-foreground">Template ID: {item.id}</span>
+              <span className="text-sm text-muted-foreground">{item.type}</span>
             )}
           </div>
           
@@ -41,7 +40,7 @@ const CartItem: React.FC<CartItemProps> = ({
                 onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}
                 disabled={item.quantity <= 1}
               >
-                <MinusCircle className="h-4 w-4" />
+                <Minus className="h-4 w-4" />
               </Button>
               
               <span className="font-medium w-8 text-center">{item.quantity}</span>
@@ -52,7 +51,7 @@ const CartItem: React.FC<CartItemProps> = ({
                 className="h-8 w-8 rounded-full"
                 onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}
               >
-                <PlusCircle className="h-4 w-4" />
+                <Plus className="h-4 w-4" />
               </Button>
             </div>
             
@@ -80,7 +79,6 @@ const CartItem: React.FC<CartItemProps> = ({
           </div>
         </div>
       </div>
-      <Separator className="mt-6" />
     </div>
   );
 };

@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import CartLoading from './CartLoading';
 import EmptyCartState from './EmptyCartState';
 import CartItemList from './CartItemList';
@@ -55,8 +55,8 @@ const Cart: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
+    <Card className="shadow-none border-0">
+      <div className="p-0">
         <CartItemList 
           items={items}
           totalItems={totalItems}
@@ -64,7 +64,7 @@ const Cart: React.FC = () => {
           handleRemoveItem={handleRemoveItem}
           clearCart={clearCart}
         />
-      </CardContent>
+      </div>
     </Card>
   );
 };

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Plus, Minus } from 'lucide-react';
 import CartItem from './CartItem';
 import { CartItem as CartItemType } from '@/types/cart';
 
@@ -23,11 +23,11 @@ const CartItemList: React.FC<CartItemListProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Cart Items ({totalItems})</h2>
+        <h2 className="text-xl font-semibold">Items ({totalItems})</h2>
         <Button 
           variant="outline" 
           size="sm"
-          className="flex items-center gap-1 text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
+          className="flex items-center gap-1"
           onClick={() => clearCart()}
         >
           <Trash2 className="h-4 w-4" />
@@ -35,7 +35,7 @@ const CartItemList: React.FC<CartItemListProps> = ({
         </Button>
       </div>
       
-      <div className="space-y-6">
+      <div className="space-y-0 divide-y divide-gray-100">
         {items.map((item) => (
           <CartItem
             key={item.id}
