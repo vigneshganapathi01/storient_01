@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PackageDetailsHeader from './PackageDetailsHeader';
 import PackageImageCarousel from './PackageImageCarousel';
@@ -9,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { LogIn } from 'lucide-react';
-
 interface PackageHeaderProps {
   packageName: string;
   packageId: string;
@@ -24,17 +22,20 @@ interface PackageHeaderProps {
     image: string;
   }>;
 }
-
-const PackageHeader = ({ 
+const PackageHeader = ({
   packageName,
-  packageId, 
-  reviewCount, 
-  averageRating, 
-  price, 
+  packageId,
+  reviewCount,
+  averageRating,
+  price,
   isLoading,
-  slides 
+  slides
 }: PackageHeaderProps) => {
-  const { addToCart, items, isAuthenticated } = useCart();
+  const {
+    addToCart,
+    items,
+    isAuthenticated
+  } = useCart();
   const navigate = useNavigate();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
@@ -44,9 +45,8 @@ const PackageHeader = ({
       setLoginDialogOpen(true);
       return;
     }
-    
-    navigate('/payment', { 
-      state: { 
+    navigate('/payment', {
+      state: {
         packageName: packageName,
         price: price
       }
@@ -59,20 +59,17 @@ const PackageHeader = ({
       setLoginDialogOpen(true);
       return;
     }
-
     try {
       const templateId = packageId || packageName.toLowerCase().replace(/\s+/g, '-');
-      
+
       // Check if this item is already in cart
       const existingItem = items.find(item => item.id === templateId);
-      
       await addToCart({
         id: templateId,
         title: packageName,
         price: price,
         image: slides[0]?.image || '/placeholder.svg'
       });
-      
       if (existingItem) {
         toast.success(`${packageName} quantity updated in cart!`);
       } else {
@@ -84,32 +81,17 @@ const PackageHeader = ({
       toast.error('Failed to add item to cart. Please try again.');
     }
   };
-
   const handleLogin = () => {
     setLoginDialogOpen(false);
     navigate('/signin');
   };
-
-  return (
-    <>
-      <div className="grid md:grid-cols-2 gap-10">
+  return <>
+      <div className="grid md:grid-cols-2 gap-10 bg-[s#002060] bg-brand-blue">
         <div>
-          <PackageDetailsHeader 
-            packageName={packageName}
-            reviewCount={reviewCount}
-            averageRating={averageRating}
-            isLoading={isLoading}
-          />
+          <PackageDetailsHeader packageName={packageName} reviewCount={reviewCount} averageRating={averageRating} isLoading={isLoading} />
           
           <div className="mt-8">
-            <PriceSection 
-              packageName={packageName}
-              price={price}
-              buttonVariant="default"
-              buttonText="Buy Now"
-              onBuyNow={handleBuyNow}
-              onAddToCart={handleAddToCart}
-            />
+            <PriceSection packageName={packageName} price={price} buttonVariant="default" buttonText="Buy Now" onBuyNow={handleBuyNow} onAddToCart={handleAddToCart} />
           </div>
         </div>
         
@@ -138,8 +120,6 @@ const PackageHeader = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
-  );
+    </>;
 };
-
 export default PackageHeader;
