@@ -23,16 +23,16 @@ const TestimonialsSection: React.FC = () => {
       name: "Sarah Johnson",
       role: "Marketing Director",
       company: "TechScale Inc",
-      content: "TemplatePro has been a game-changer for our marketing team. The templates are not only beautiful but also incredibly easy to customize. We've cut our design time in half!",
+      content: "Storient has been a game-changer for our marketing team. The templates are not only stunning but also incredibly easy to tailor to our brand. We've cut our design time in half!",
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      rating: 5
+      rating: 4
     },
     {
       id: 2,
       name: "Michael Chen",
       role: "UI/UX Designer",
       company: "Design Forward",
-      content: "As a designer, I'm picky about templates. But TemplatePro's collection is outstanding. The attention to detail and modern aesthetics have impressed both me and my clients.",
+      content: "As a designer, I'm very selective about the templates I use. Storient’s collection is exceptional. The modern design and attention to detail have wowed both me and my clients.",
       avatar: "https://randomuser.me/api/portraits/men/46.jpg",
       rating: 5
     },
@@ -41,7 +41,7 @@ const TestimonialsSection: React.FC = () => {
       name: "Emma Rodriguez",
       role: "Startup Founder",
       company: "Novus Technologies",
-      content: "Starting a business is hard enough. TemplatePro made our branding and presentation materials look professional from day one, helping us win over investors and customers.",
+      content: "Launching a startup is challenging. But with Storient, our branding and presentations looked polished from day one. It played a key role in helping us secure funding and build customer trust.",
       avatar: "https://randomuser.me/api/portraits/women/65.jpg",
       rating: 4
     }

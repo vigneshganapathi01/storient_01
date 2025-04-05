@@ -1,34 +1,39 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroMessage {
   title: string;
   description: string;
   cta: string;
+  path: string;
 }
 
 const HeroSection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const intervalRef = useRef<number | null>(null);
+  const navigate = useNavigate();
 
   const messages: HeroMessage[] = [
     {
-      title: "Premium Templates for Professionals",
+      title: "Storient Premium Templates for Professionals",
       description: "Elevate your projects with our expertly crafted designs. Save time and impress your clients.",
-      cta: "Browse Templates"
+      cta: "Browse Templates",
+      path: "/templates"
     },
     {
       title: "Customize with Ease",
       description: "All templates are fully customizable. Make them yours with our intuitive editor.",
-      cta: "Start Creating"
+      cta: "Start Creating",
+      path: "/templates"
     },
     {
       title: "New Templates Every Week",
       description: "Stay ahead of the curve with our regularly updated collection of modern designs.",
-      cta: "See What's New"
+      cta: "See What's New",
+      path: "/blog"
     }
   ];
 
@@ -51,6 +56,10 @@ const HeroSection: React.FC = () => {
     setIsAnimating(true);
     setActiveIndex(index);
     setTimeout(() => setIsAnimating(false), 400);
+  };
+
+  const handleCtaClick = (path: string) => {
+    navigate(path);
   };
 
   // Auto rotate messages
@@ -88,7 +97,10 @@ const HeroSection: React.FC = () => {
                 <p className="text-lg text-muted-foreground mb-8 max-w-md">
                   {message.description}
                 </p>
-                <Button className="bg-brand-purple hover:bg-brand-indigo text-white px-8 py-6 rounded-lg text-lg">
+                <Button 
+                  className="bg-brand-purple hover:bg-brand-indigo text-white px-8 py-6 rounded-lg text-lg"
+                  onClick={() => handleCtaClick(message.path)}
+                >
                   {message.cta}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -121,7 +133,7 @@ const HeroSection: React.FC = () => {
             className="hero-video w-full h-full object-cover"
             poster="/placeholder.svg"
           >
-            <source src="https://videos.pexels.com/video-files/5519939/5519939-uhd_2560_1440_30fps.mp4" type="video/mp4" />
+            <source src="https://videos.pexels.com/video-files/3249940/3249940-uhd_2560_1440_25fps.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>

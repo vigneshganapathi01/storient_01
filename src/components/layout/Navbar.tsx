@@ -39,14 +39,18 @@ const Navbar: React.FC = () => {
 
   return <nav className="">
       <div className="max-container flex-between">
-        <Link to="/" className="flex items-center">
-          <span className="text-2xl font-bold text-gradient">TemplatePro</span>
+      <Link to="/" className="flex items-center space-x-2">
+          <img 
+            src="/uploads/logo.jpg" 
+            alt="Storient Logo" 
+            className="h-8 w-8 rounded-full object-cover"
+          />
+          <span className="font-bold text-2xl bg-gradient-to-r from-violet-DEFAULT to-darkblue-DEFAULT bg-clip-text">
+            Storient
+          </span>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-foreground hover:text-primary transition-colors">
-            Home
-          </Link>
+        <div className="hidden md:flex items-center space-x-8">  
           <Link to="/templates" className="text-foreground hover:text-primary transition-colors">
             Templates
           </Link>

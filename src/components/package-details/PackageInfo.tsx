@@ -8,7 +8,7 @@ const PackageInfo = () => {
       <CardContent className="p-6">
         <div className="space-y-6">
           <div>
-            <h3 className="text-2xl font-bold mb-2">1) Structure of pack + template details</h3>
+            <h3 className="text-2xl font-bold mb-2">1) Structure of pack & template details</h3>
             <p className="text-muted-foreground">
               This package contains a structured set of templates designed to help you create
               professional content efficiently. Each template is customizable and follows

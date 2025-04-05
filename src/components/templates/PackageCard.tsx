@@ -31,11 +31,6 @@ export const PackageContent = ({
     )}
     <h3 className="font-bold text-lg mb-1">{title}</h3>
     <p className="text-sm">{description}</p>
-    {templateCount && <div className="mt-2">
-        <Badge variant="outline" className="bg-white/50">
-          {templateCount} Templates
-        </Badge>
-      </div>}
   </div>
 );
 
@@ -95,9 +90,7 @@ export const PackageCard = ({
             </div>
             <h3 className="font-bold text-xl mb-3">{singlePackage.title}</h3>
             <p className="text-sm mb-4">{singlePackage.description}</p>
-            <Badge variant="outline" className="bg-white/20 text-white">
-              {singlePackage.templateCount} Templates
-            </Badge>
+          
           </div>
         ) : (
           items?.map((item, index) => (

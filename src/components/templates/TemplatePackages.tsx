@@ -30,7 +30,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Turn your ideas into winning pitches that build trust and urgency.",
             color: "bg-[#f2f2f2]",
             templateCount: 12,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/poc.png",
             onClick: () => navigateToPackageDetails("pitches-proof-of-concepts")
           },
           {
@@ -38,7 +38,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories.",
             color: "bg-[#f2f2f2]",
             templateCount: 8,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/case-study.png",
             onClick: () => navigateToPackageDetails("case-studies")
           },
           {
@@ -46,7 +46,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms.",
             color: "bg-[#f2f2f2]",
             templateCount: 10,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/3d-view.png",
             onClick: () => navigateToPackageDetails("point-of-views")
           }
         ]}
@@ -65,7 +65,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Facilitate engaging and productive brainstorming sessions.",
             color: "bg-[#ccebff]",
             templateCount: 15,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/workshop.png",
             onClick: () => navigateToPackageDetails("workshops")
           },
           {
@@ -73,7 +73,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Win pitch-ready deals with proposal templates designed to connect with decision-makers.",
             color: "bg-[#ccebff]",
             templateCount: 7,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/business-proposal.png",
             onClick: () => navigateToPackageDetails("proposals")
           },
           {
@@ -81,7 +81,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points.",
             color: "bg-[#ccebff]",
             templateCount: 9,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/request-for-proposal.png",
             onClick: () => navigateToPackageDetails("request-for-proposals")
           }
         ]}
@@ -100,7 +100,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "MEPS, QBRs, and EBRs.",
             color: "bg-[#99d7fe]",
             templateCount: 18,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/review.png",
             onClick: () => navigateToPackageDetails("business-review-pack")
           },
           {
@@ -108,7 +108,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Craft high-impact C-15s, Newsletter and Readouts that drive decisions.",
             color: "bg-[#99d7fe]",
             templateCount: 14,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/communication.png",
             onClick: () => navigateToPackageDetails("c-suite-communication-strategy-pack")
           },
           {
@@ -116,7 +116,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
             description: "Frameworks for Upcoming Training & Communication.",
             color: "bg-[#99d7fe]",
             templateCount: 20,
-            imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+            imageUrl: "/uploads/divergent.png",
             onClick: () => navigateToPackageDetails("the-divergent-deck")
           }
         ]}
@@ -133,7 +133,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
           title: "Storytelling Masterclass",
           description: "Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.",
           templateCount: 35,
-          imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+          imageUrl: "/uploads/Storytelling Masterclass.png",
           onClick: () => navigateToPackageDetails("storytelling-masterclass")
         }}
         onAddToCart={() => onAddToCart("storytelling-masterclass", "Storytelling Masterclass", 499)}
@@ -150,7 +150,7 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
           title: "Full Access Bundle",
           description: "Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success",
           templateCount: 100,
-          imageUrl: "/lovable-uploads/9903a68a-a5af-40c5-97ab-14d9e8d8d83a.png",
+          imageUrl: "/uploads/access.png",
           onClick: () => navigateToPackageDetails("full-access-bundle")
         }}
         onAddToCart={() => onAddToCart("full-access-bundle", "Full Access Bundle", 999)}
