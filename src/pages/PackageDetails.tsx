@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -70,11 +71,13 @@ const PackageDetails = () => {
         image: packageSlides[0]?.image || '/placeholder.svg'
       });
       
-      toast.success(`${packageName} added to cart!`);
+      toast(`${packageName} added to cart!`);
       navigate('/cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error('Failed to add item to cart. Please try again.');
+      toast(`Failed to add item to cart. Please try again.`, {
+        style: { backgroundColor: 'red', color: 'white' }
+      });
     }
   };
   

@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer';
 import Cart from '@/components/cart/Cart';
 import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
-import { CreditCard, ShieldCheck, Lock } from 'lucide-react';
+import { Lock, ShieldCheck, CreditCard } from 'lucide-react';
 
 const CartPage: React.FC = () => {
   const { totalItems, total } = useCart();
@@ -13,8 +13,8 @@ const CartPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow bg-white">
-        <div className="max-container pt-16 pb-20">
+      <main className="flex-grow bg-gray-50">
+        <div className="max-container pt-24 pb-20">
           {/* Page heading */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-brand-blue">Shopping Cart</h1>
@@ -26,7 +26,7 @@ const CartPage: React.FC = () => {
             </div>
             <div className="lg:col-span-1 space-y-6">
               {/* Order summary */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6">
                 <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
@@ -41,33 +41,55 @@ const CartPage: React.FC = () => {
               </div>
               
               {/* Secure checkout info */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold mb-5">Secure Checkout</h3>
-                <div className="space-y-5">
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold mb-3">Secure Checkout</h3>
+                <div className="space-y-4">
                   <div className="flex items-start">
-                    <Lock className="h-5 w-5 mt-0.5 text-brand-blue mr-3" />
+                    <Lock className="h-5 w-5 mt-0.5 text-brand-blue mr-2" />
                     <div>
                       <p className="font-medium">Secure Transaction</p>
                       <p className="text-sm text-muted-foreground">Your payment information is protected</p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <ShieldCheck className="h-5 w-5 mt-0.5 text-brand-blue mr-3" />
+                    <ShieldCheck className="h-5 w-5 mt-0.5 text-brand-blue mr-2" />
                     <div>
                       <p className="font-medium">Money-Back Guarantee</p>
                       <p className="text-sm text-muted-foreground">30-day satisfaction guarantee</p>
                     </div>
                   </div>
                   <div className="flex items-start">
-                    <CreditCard className="h-5 w-5 mt-0.5 text-brand-blue mr-3" />
+                    <CreditCard className="h-5 w-5 mt-0.5 text-brand-blue mr-2" />
                     <div>
                       <p className="font-medium">Accepted Payment Methods</p>
-                      <div className="flex gap-3 mt-2">
-                        <Badge variant="outline" className="bg-slate-100 px-3">Visa</Badge>
-                        <Badge variant="outline" className="bg-slate-100 px-3">Mastercard</Badge>
-                        <Badge variant="outline" className="bg-slate-100 px-3">PayPal</Badge>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="outline" className="bg-slate-100">Visa</Badge>
+                        <Badge variant="outline" className="bg-slate-100">Mastercard</Badge>
+                        <Badge variant="outline" className="bg-slate-100">PayPal</Badge>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Need help section */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold mb-4">Need Help?</h3>
+                <p className="text-muted-foreground mb-4">
+                  If you have any questions about your purchase or our templates, please don't hesitate to contact our support team.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <span className="text-brand-blue font-medium mr-2">Email:</span>
+                    <span>support@templatepro.com</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-brand-blue font-medium mr-2">Phone:</span>
+                    <span>+1 (800) 123-4567</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-brand-blue font-medium mr-2">Hours:</span>
+                    <span>Mon-Fri 9am-5pm EST</span>
                   </div>
                 </div>
               </div>
