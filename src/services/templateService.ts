@@ -1,4 +1,6 @@
+
 import { supabase } from '@/integrations/supabase/client';
+import { CartItem } from '@/types/cart';
 
 // Define Template type
 export interface Template {
@@ -35,7 +37,7 @@ export const fetchTemplates = async (): Promise<Template[]> => {
   }
 };
 
-// Add an item to a user's cart
+// Add an item to a user's cart - now delegated to useCartItems hook
 export const addToCartDB = async (userId: string, templateId: string): Promise<void> => {
   // First check if the item already exists in the cart
   const { data, error: fetchError } = await supabase
@@ -172,8 +174,8 @@ export const fetchTemplateBySlug = async (slug: string): Promise<Template | null
   }
 };
 
-// Create a purchase history record - Fixed TypeScript errors
-export const createPurchaseHistory = async (userId: string, items: any[], totalAmount: number): Promise<void> => {
+// Create a purchase history record with proper type handling
+export const createPurchaseHistory = async (userId: string, items: CartItem[], totalAmount: number): Promise<void> => {
   try {
     // Only proceed if user is logged in
     if (!userId) {
@@ -183,16 +185,15 @@ export const createPurchaseHistory = async (userId: string, items: any[], totalA
     
     console.log('Creating purchase history for user:', userId);
     
-    // Use type assertion to fix TypeScript error
-    const { error } = await supabase.from('purchase_history' as any)
-      .insert({
-        user_id: userId,
-        items: items,
-        total_amount: totalAmount,
-        purchase_date: new Date().toISOString(),
-        payment_status: 'completed'
-      });
-      
+    // Use RPC call to avoid TypeScript errors with supabase generated types
+    const { error } = await supabase.rpc('create_purchase_history', {
+      p_user_id: userId,
+      p_items: items,
+      p_total_amount: totalAmount,
+      p_purchase_date: new Date().toISOString(),
+      p_payment_status: 'completed'
+    });
+    
     if (error) {
       console.error('Error creating purchase history:', error);
       throw error;

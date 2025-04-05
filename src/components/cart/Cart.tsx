@@ -21,7 +21,8 @@ const Cart: React.FC = () => {
     promoCode, 
     promoDiscount, 
     isLoading,
-    fetchCartItems 
+    fetchCartItems,
+    isAuthenticated 
   } = useCart();
   
   const [promoInput, setPromoInput] = useState('');
@@ -33,15 +34,31 @@ const Cart: React.FC = () => {
   }, [fetchCartItems]);
 
   const handleRemoveItem = async (id: string) => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to modify your cart");
+      navigate('/signin');
+      return;
+    }
     await removeFromCart(id);
   };
 
   const handleUpdateQuantity = async (id: string, currentQuantity: number, amount: number) => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to modify your cart");
+      navigate('/signin');
+      return;
+    }
     const newQuantity = Math.max(1, currentQuantity + amount);
     await updateQuantity(id, newQuantity);
   };
 
   const handleApplyPromo = () => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to apply promo codes");
+      navigate('/signin');
+      return;
+    }
+    
     if (promoInput.trim()) {
       applyPromoCode(promoInput.trim());
       setPromoInput('');
@@ -115,7 +132,7 @@ const Cart: React.FC = () => {
                       size="icon" 
                       className="h-8 w-8 rounded-full"
                       onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}
-                      disabled={item.quantity <= 1}
+                      disabled={item.quantity <= 1 || !isAuthenticated}
                     >
                       <MinusCircle className="h-4 w-4" />
                     </Button>
@@ -127,6 +144,7 @@ const Cart: React.FC = () => {
                       size="icon" 
                       className="h-8 w-8 rounded-full"
                       onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}
+                      disabled={!isAuthenticated}
                     >
                       <PlusCircle className="h-4 w-4" />
                     </Button>
@@ -148,6 +166,7 @@ const Cart: React.FC = () => {
                       onClick={() => handleRemoveItem(item.id)}
                       className="text-muted-foreground hover:text-destructive transition-colors"
                       aria-label="Remove item"
+                      disabled={!isAuthenticated}
                     >
                       <XCircle size={20} />
                     </button>
@@ -175,10 +194,12 @@ const Cart: React.FC = () => {
             value={promoInput}
             onChange={(e) => setPromoInput(e.target.value)}
             className="rounded-r-none"
+            disabled={!isAuthenticated}
           />
           <Button 
             className="rounded-l-none bg-brand-lightBlue hover:bg-brand-lightBlue/90"
             onClick={handleApplyPromo}
+            disabled={!isAuthenticated}
           >
             Apply
           </Button>

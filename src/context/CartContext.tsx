@@ -1,9 +1,10 @@
 
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { CartContextProps } from '@/types/cart';
 import { useCartHook } from '@/hooks/cart';
+import { toast } from 'sonner';
 
 // Create context with undefined default value
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -30,34 +31,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCartItems
   } = useCartHook(user);
 
-  // Check for pending cart items after login
-  useEffect(() => {
-    const handlePendingCartItems = async () => {
-      const pendingItems = sessionStorage.getItem('pendingCartItems');
-      
-      if (user && pendingItems) {
-        try {
-          const items = JSON.parse(pendingItems);
-          
-          // Clear existing cart first
-          await clearCart();
-          
-          // Add each pending item to the cart
-          for (const item of items) {
-            await addToCart(item);
-          }
-          
-          // Clear pending items
-          sessionStorage.removeItem('pendingCartItems');
-        } catch (error) {
-          console.error('Error adding pending items to cart:', error);
-        }
-      }
-    };
-    
-    handlePendingCartItems();
-  }, [user]);
-
   // Load cart when user logs in or out
   useEffect(() => {
     if (!authLoading) {
@@ -80,7 +53,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     promoCode,
     promoDiscount,
     isLoading,
-    fetchCartItems
+    fetchCartItems,
+    isAuthenticated: !!user
   };
 
   return (

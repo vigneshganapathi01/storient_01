@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { CartItem } from '@/types/cart';
 import { supabase } from '@/integrations/supabase/client';
@@ -61,13 +62,9 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
           setItems([]);
         }
       } else {
-        // If no user, get from local storage
-        const storedCartItems = localStorage.getItem('cartItems');
-        if (storedCartItems) {
-          setItems(JSON.parse(storedCartItems));
-        } else {
-          setItems([]);
-        }
+        // If user is not logged in, don't show any cart items
+        setItems([]);
+        console.log("User not logged in, cart is empty");
       }
     } catch (error: any) {
       console.error('Error in fetchCartItems:', error);
@@ -82,6 +79,11 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     try {
       setIsLoading(true);
       
+      if (!user) {
+        toast.error("Please log in to add items to your cart");
+        return;
+      }
+      
       // Check if item already exists in cart
       const existingItemIndex = items.findIndex(i => i.id === item.id);
       
@@ -95,21 +97,11 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         // Otherwise add new item
         const newItem: CartItem = { ...item, quantity: 1, addedAt: new Date().toISOString() };
         
-        if (user) {
-          // Add item to database if user is logged in
-          await addToCartDB(user.id, item.id);
-          
-          // Update local state
-          setItems(prev => [...prev, newItem]);
-        } else {
-          // Store in localStorage if no user
-          const updatedItems = [...items, newItem];
-          localStorage.setItem('cartItems', JSON.stringify(updatedItems));
-          setItems(updatedItems);
-          
-          // Store the item in session storage to add after sign in
-          sessionStorage.setItem('pendingCartItems', JSON.stringify(updatedItems));
-        }
+        // Add item to database since user is logged in
+        await addToCartDB(user.id, item.id, item.price);
+        
+        // Update local state
+        setItems(prev => [...prev, newItem]);
         
         toast.success(`${item.title} added to cart!`);
       }
@@ -126,23 +118,23 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     try {
       setIsLoading(true);
       
+      if (!user) {
+        toast.error("Please log in to remove items from your cart");
+        return;
+      }
+      
       // Remove from local state
       const updatedItems = items.filter(item => item.id !== itemId);
       setItems(updatedItems);
       
-      if (user) {
-        // Remove from database if user is logged in
-        const { error } = await supabase
-          .from('cart_items')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('template_id', itemId);
-        
-        if (error) throw error;
-      } else {
-        // Update localStorage if no user
-        localStorage.setItem('cartItems', JSON.stringify(updatedItems));
-      }
+      // Remove from database since user is logged in
+      const { error } = await supabase
+        .from('cart_items')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('template_id', itemId);
+      
+      if (error) throw error;
       
       toast.success('Item removed from cart');
     } catch (error: any) {
@@ -163,25 +155,39 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     try {
       setIsLoading(true);
       
+      if (!user) {
+        toast.error("Please log in to update item quantities");
+        return;
+      }
+      
+      // Find the item to get its price
+      const item = items.find(item => item.id === itemId);
+      if (!item) {
+        toast.error("Item not found");
+        return;
+      }
+      
       // Update local state
       const updatedItems = items.map(item => 
         item.id === itemId ? { ...item, quantity } : item
       );
       setItems(updatedItems);
       
-      if (user) {
-        // Update in database if user is logged in
-        const { error } = await supabase
-          .from('cart_items')
-          .update({ quantity })
-          .eq('user_id', user.id)
-          .eq('template_id', itemId);
-        
-        if (error) throw error;
-      } else {
-        // Update localStorage if no user
-        localStorage.setItem('cartItems', JSON.stringify(updatedItems));
-      }
+      // Calculate the total price for this item
+      const itemPrice = item.discountPrice || item.price;
+      const totalPrice = itemPrice * quantity;
+      
+      // Update in database since user is logged in
+      const { error } = await supabase
+        .from('cart_items')
+        .update({ 
+          quantity,
+          total_price: totalPrice
+        })
+        .eq('user_id', user.id)
+        .eq('template_id', itemId);
+      
+      if (error) throw error;
     } catch (error: any) {
       console.error('Error updating quantity:', error);
       toast.error(`Failed to update quantity: ${error.message}`);
@@ -195,21 +201,21 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     try {
       setIsLoading(true);
       
+      if (!user) {
+        toast.error("Please log in to clear your cart");
+        return;
+      }
+      
       // Clear local state
       setItems([]);
       
-      if (user) {
-        // Clear from database if user is logged in
-        const { error } = await supabase
-          .from('cart_items')
-          .delete()
-          .eq('user_id', user.id);
-        
-        if (error) throw error;
-      } else {
-        // Clear localStorage if no user
-        localStorage.removeItem('cartItems');
-      }
+      // Clear from database since user is logged in
+      const { error } = await supabase
+        .from('cart_items')
+        .delete()
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
       
       toast.success('Cart cleared');
     } catch (error: any) {
@@ -221,7 +227,7 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
   };
 
   // Add to cart database helper
-  const addToCartDB = async (userId: string, templateId: string): Promise<void> => {
+  const addToCartDB = async (userId: string, templateId: string, price: number): Promise<void> => {
     // First check if the item already exists in the cart
     const { data, error: fetchError } = await supabase
       .from('cart_items')
@@ -238,10 +244,14 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     // If the item already exists, update the quantity, otherwise insert a new item
     if (data) {
       // Item exists, update the quantity
+      const newQuantity = data.quantity + 1;
+      const totalPrice = price * newQuantity;
+      
       const { error: updateError } = await supabase
         .from('cart_items')
         .update({ 
-          quantity: data.quantity + 1,
+          quantity: newQuantity,
+          total_price: totalPrice,
           updated_at: new Date().toISOString() // Convert Date to ISO string
         })
         .eq('user_id', userId)
@@ -258,7 +268,9 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         .insert({
           user_id: userId,
           template_id: templateId,
-          quantity: 1
+          quantity: 1,
+          price_per_item: price,
+          total_price: price
         });
         
       if (insertError) {

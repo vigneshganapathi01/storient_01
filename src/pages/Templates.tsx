@@ -4,11 +4,12 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ChevronDown, ShoppingCart } from 'lucide-react';
+import { Check, ChevronDown, ShoppingCart, LogIn } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const PackageContent = ({
   title,
@@ -35,12 +36,21 @@ const PackageContent = ({
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [pendingPackage, setPendingPackage] = useState<{ name: string, price: number } | null>(null);
   const navigate = useNavigate();
   const {
-    addToCart
+    addToCart,
+    isAuthenticated
   } = useCart();
 
   const handleAddToCart = async (packageName: string, price: number) => {
+    if (!isAuthenticated) {
+      setPendingPackage({ name: packageName, price });
+      setLoginDialogOpen(true);
+      return;
+    }
+
     try {
       await addToCart({
         id: packageName.toLowerCase().replace(/\s+/g, '-'),
@@ -58,6 +68,11 @@ const Templates = () => {
 
   const navigateToPackageDetails = (packageName: string) => {
     navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
+  };
+
+  const handleLogin = () => {
+    setLoginDialogOpen(false);
+    navigate('/signin');
   };
 
   return <div className="flex flex-col min-h-screen">
@@ -227,6 +242,29 @@ const Templates = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* Login Dialog */}
+      <Dialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to be logged in to add items to your cart
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-center py-4">
+            <LogIn className="h-16 w-16 text-brand-blue" />
+          </div>
+          <DialogFooter className="flex flex-col sm:flex-row sm:justify-between">
+            <Button variant="outline" onClick={() => setLoginDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button className="mt-2 sm:mt-0 bg-brand-blue" onClick={handleLogin}>
+              Login Now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>;
 };
 

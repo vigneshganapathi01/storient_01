@@ -28,4 +28,5 @@ export interface CartContextProps {
   promoDiscount: number;
   isLoading: boolean;
   fetchCartItems: () => Promise<void>;
+  isAuthenticated: boolean;
 }
