@@ -6,7 +6,7 @@ import {
   updateCartItemQuantityDB, 
   clearCartDB, 
   fetchCartItemsFromDB 
-} from './cartDB';
+} from './cartDatabase';
 
 /**
  * Fetches cart items and updates the state

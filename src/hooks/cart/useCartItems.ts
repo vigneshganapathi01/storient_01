@@ -7,7 +7,7 @@ import {
   removeItemFromCart,
   updateItemQuantity,
   clearAllCartItems
-} from './cartActions';
+} from './cartOperations';
 
 export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void) => {
   const [items, setItems] = useState<CartItem[]>([]);
