@@ -96,6 +96,36 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_history: {
+        Row: {
+          created_at: string | null
+          id: string
+          items: Json
+          payment_status: string | null
+          purchase_date: string | null
+          total_amount: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          items: Json
+          payment_status?: string | null
+          purchase_date?: string | null
+          total_amount: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          items?: Json
+          payment_status?: string | null
+          purchase_date?: string | null
+          total_amount?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           created_at: string | null

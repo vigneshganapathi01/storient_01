@@ -27,7 +27,7 @@ const DemoPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { items, clearCart } = useCart();
+  const { items, clearCart, total } = useCart();
   
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -37,7 +37,7 @@ const DemoPaymentPage = () => {
 
   // Check if user directly accessed this page without going through checkout
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state && items.length === 0) {
       toast({
         title: "Invalid Access",
         description: "Please select items before proceeding to payment",
@@ -45,7 +45,7 @@ const DemoPaymentPage = () => {
       });
       navigate('/templates');
     }
-  }, [location.state]);
+  }, [location.state, items.length]);
 
   const form = useForm<PaymentFormData>({
     defaultValues: {
@@ -69,13 +69,23 @@ const DemoPaymentPage = () => {
     // Simulate a delay before redirecting
     setTimeout(() => {
       setIsProcessing(false);
+      
+      // Pass cart items and total to the thank you page
+      navigate('/thank-you', { 
+        state: { 
+          packageName: packageName || `Cart (${items.length} items)`, 
+          price: price || total,
+          items: items,
+          totalAmount: price || total
+        } 
+      });
+      
       // Clear the cart if payment is successful
       clearCart();
-      navigate('/thank-you', { state: { packageName, price } });
     }, 2000);
   };
 
-  const isFromCart = packageName.includes('Cart');
+  const isFromCart = packageName?.includes('Cart') || items.length > 0;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,7 +94,7 @@ const DemoPaymentPage = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-white mb-2">Complete Your Purchase</h1>
-            <p className="text-gray-400">{packageName} - ${price.toFixed(2)}</p>
+            <p className="text-gray-400">{packageName || `Cart (${items.length} items)`} - ${(price || total).toFixed(2)}</p>
           </div>
           
           {isFromCart && items.length > 0 && (
@@ -115,7 +125,7 @@ const DemoPaymentPage = () => {
                   ))}
                   <div className="flex justify-between font-bold pt-2">
                     <span>Total</span>
-                    <span className="text-blue-600">${price.toFixed(2)}</span>
+                    <span className="text-blue-600">${(price || total).toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -239,7 +249,7 @@ const DemoPaymentPage = () => {
                         className="w-full bg-blue-600 hover:bg-blue-700"
                         disabled={isProcessing}
                       >
-                        {isProcessing ? "Processing..." : `Pay $${price.toFixed(2)}`}
+                        {isProcessing ? "Processing..." : `Pay $${(price || total).toFixed(2)}`}
                       </Button>
                     </div>
                   </form>
