@@ -21,7 +21,10 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
           .select('*')
           .eq('user_id', user.id);
         
-        if (cartError) throw cartError;
+        if (cartError) {
+          console.error('Error fetching cart items:', cartError);
+          throw cartError;
+        }
         
         console.log("Cart items fetched:", cartItems);
         
@@ -69,6 +72,8 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     } catch (error: any) {
       console.error('Error in fetchCartItems:', error);
       toast.error(`Failed to load cart: ${error.message}`);
+      // Reset items to prevent displaying stale data
+      setItems([]);
     } finally {
       setIsLoading(false);
     }
@@ -134,12 +139,17 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         .eq('user_id', user.id)
         .eq('template_id', itemId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error removing from cart:', error);
+        throw error;
+      }
       
       toast.success('Item removed from cart');
     } catch (error: any) {
       console.error('Error removing from cart:', error);
       toast.error(`Failed to remove item: ${error.message}`);
+      // Refresh cart items if there was an error
+      fetchCartItems();
     } finally {
       setIsLoading(false);
     }
@@ -182,15 +192,21 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         .from('cart_items')
         .update({ 
           quantity,
-          total_price: totalPrice
+          total_price: totalPrice,
+          updated_at: new Date().toISOString()
         })
         .eq('user_id', user.id)
         .eq('template_id', itemId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating quantity:', error);
+        throw error;
+      }
     } catch (error: any) {
       console.error('Error updating quantity:', error);
       toast.error(`Failed to update quantity: ${error.message}`);
+      // Refresh cart items if there was an error
+      fetchCartItems();
     } finally {
       setIsLoading(false);
     }
@@ -215,12 +231,17 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         .delete()
         .eq('user_id', user.id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error clearing cart:', error);
+        throw error;
+      }
       
       toast.success('Cart cleared');
     } catch (error: any) {
       console.error('Error clearing cart:', error);
       toast.error(`Failed to clear cart: ${error.message}`);
+      // Refresh cart items if there was an error
+      fetchCartItems();
     } finally {
       setIsLoading(false);
     }
@@ -228,55 +249,61 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
 
   // Add to cart database helper
   const addToCartDB = async (userId: string, templateId: string, price: number): Promise<void> => {
-    // First check if the item already exists in the cart
-    const { data, error: fetchError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('template_id', templateId)
-      .maybeSingle();
-    
-    if (fetchError) {
-      console.error('Error checking if item exists in cart:', fetchError);
-      throw fetchError;
-    }
-    
-    // If the item already exists, update the quantity, otherwise insert a new item
-    if (data) {
-      // Item exists, update the quantity
-      const newQuantity = data.quantity + 1;
-      const totalPrice = price * newQuantity;
-      
-      const { error: updateError } = await supabase
+    try {
+      // First check if the item already exists in the cart
+      const { data, error: fetchError } = await supabase
         .from('cart_items')
-        .update({ 
-          quantity: newQuantity,
-          total_price: totalPrice,
-          updated_at: new Date().toISOString() // Convert Date to ISO string
-        })
+        .select('*')
         .eq('user_id', userId)
-        .eq('template_id', templateId);
-        
-      if (updateError) {
-        console.error('Error updating cart item quantity:', updateError);
-        throw updateError;
+        .eq('template_id', templateId)
+        .maybeSingle();
+      
+      if (fetchError) {
+        console.error('Error checking if item exists in cart:', fetchError);
+        throw fetchError;
       }
-    } else {
-      // Item doesn't exist, insert a new one
-      const { error: insertError } = await supabase
-        .from('cart_items')
-        .insert({
-          user_id: userId,
-          template_id: templateId,
-          quantity: 1,
-          price_per_item: price,
-          total_price: price
-        });
+      
+      // If the item already exists, update the quantity, otherwise insert a new item
+      if (data) {
+        // Item exists, update the quantity
+        const newQuantity = data.quantity + 1;
+        const totalPrice = price * newQuantity;
         
-      if (insertError) {
-        console.error('Error adding item to cart:', insertError);
-        throw insertError;
+        const { error: updateError } = await supabase
+          .from('cart_items')
+          .update({ 
+            quantity: newQuantity,
+            total_price: totalPrice,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', userId)
+          .eq('template_id', templateId);
+          
+        if (updateError) {
+          console.error('Error updating cart item quantity:', updateError);
+          throw updateError;
+        }
+      } else {
+        // Item doesn't exist, insert a new one
+        const { error: insertError } = await supabase
+          .from('cart_items')
+          .insert({
+            user_id: userId,
+            template_id: templateId,
+            quantity: 1,
+            price_per_item: price,
+            total_price: price,
+            created_at: new Date().toISOString()
+          });
+          
+        if (insertError) {
+          console.error('Error adding item to cart:', insertError);
+          throw insertError;
+        }
       }
+    } catch (error) {
+      console.error('Error in addToCartDB:', error);
+      throw error;
     }
   };
 
