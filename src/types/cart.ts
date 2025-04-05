@@ -9,8 +9,6 @@ export interface CartItem {
   quantity: number;
   type?: string;
   isPack?: boolean;
-  templateId?: string; // Added for database reference
-  addedAt?: string; // Timestamp when added
 }
 
 export interface CartContextProps {
@@ -28,5 +26,4 @@ export interface CartContextProps {
   promoDiscount: number;
   isLoading: boolean;
   fetchCartItems: () => Promise<void>;
-  isAuthenticated: boolean;
 }

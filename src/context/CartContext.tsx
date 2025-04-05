@@ -1,10 +1,8 @@
-
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { CartContextProps } from '@/types/cart';
-import { useCart as useCartHook } from '@/hooks/cart/useCart';
-import { toast } from 'sonner';
+import { useCartHook } from '@/hooks/cart';
 
 // Create context with undefined default value
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -31,10 +29,35 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCartItems
   } = useCartHook(user);
 
-  // Load cart when user logs in or out
+  // Check for pending cart item after login
+  useEffect(() => {
+    const handlePendingCartItem = async () => {
+      const pendingItem = sessionStorage.getItem('pendingCartItem');
+      
+      if (user && pendingItem) {
+        try {
+          const item = JSON.parse(pendingItem);
+          await addToCart(item);
+          sessionStorage.removeItem('pendingCartItem');
+        } catch (error) {
+          console.error('Error adding pending item to cart:', error);
+        }
+      }
+    };
+    
+    handlePendingCartItem();
+  }, [user]);
+
+  // Load cart from Supabase when user logs in
   useEffect(() => {
     if (!authLoading) {
-      fetchCartItems();
+      if (user) {
+        fetchCartItems();
+      } else {
+        // If no user but we had previous items, keep them in local state
+        // They'll be synced when user logs in
+        setItems([]);
+      }
     }
   }, [user, authLoading]);
 
@@ -53,8 +76,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     promoCode,
     promoDiscount,
     isLoading,
-    fetchCartItems,
-    isAuthenticated: !!user
+    fetchCartItems
   };
 
   return (

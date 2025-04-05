@@ -18,7 +18,6 @@ import CartPage from "./pages/CartPage";
 import NotFound from "./pages/NotFound";
 import DemoPaymentPage from "./pages/DemoPaymentPage";
 import ThankYouPage from "./pages/ThankYouPage";
-import Downloads from "./pages/Downloads";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +42,6 @@ const App = () => (
               <Route path="/cart" element={<CartPage />} />
               <Route path="/payment" element={<DemoPaymentPage />} />
               <Route path="/thank-you" element={<ThankYouPage />} />
-              <Route path="/downloads" element={<Downloads />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>

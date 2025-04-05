@@ -1,27 +1,18 @@
 
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Check, Download, ChevronRight, ChevronLeft, Play, File, FileText, Database } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/context/AuthContext';
 
 const ThankYouPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const { packageName = "Package" } = (location.state as { packageName: string }) || {};
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedTab, setSelectedTab] = useState<'curated' | 'bonus'>('curated');
-  
-  // Get data from location state or use defaults
-  const { packageName = "Package", items = [], totalAmount = 0 } = 
-    (location.state as { packageName: string; items: any[]; totalAmount: number }) || {};
   
   // Auto-rotate slides
   useEffect(() => {
@@ -32,52 +23,6 @@ const ThankYouPage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Record purchase in database - only for logged-in users
-  useEffect(() => {
-    const recordPurchase = async () => {
-      // Only record purchase if user is logged in and we have items and location state
-      if (!user || !items.length || !location.state) return;
-      
-      try {
-        // Use a direct insert with type casting to fix TypeScript errors
-        const { error } = await supabase.from('purchase_history' as any).insert({
-          user_id: user.id,
-          items: items,
-          total_amount: totalAmount,
-          payment_status: 'completed',
-          purchase_date: new Date().toISOString()
-        } as any);
-        
-        if (error) {
-          console.error('Error creating purchase history:', error);
-          toast({
-            title: "Error",
-            description: "Failed to record your purchase. Please contact support.",
-            variant: "destructive"
-          });
-        } else {
-          console.log('Purchase recorded successfully');
-        }
-      } catch (error) {
-        console.error('Error recording purchase:', error);
-      }
-    };
-    
-    recordPurchase();
-  }, [user, items, location.state, totalAmount]);
-
-  // Redirect if no state data
-  useEffect(() => {
-    if (!location.state) {
-      toast({
-        title: "Error",
-        description: "Invalid access. Redirecting to homepage.",
-        variant: "destructive"
-      });
-      setTimeout(() => navigate('/'), 3000);
-    }
-  }, [location.state]);
-
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
   };
@@ -86,7 +31,7 @@ const ThankYouPage = () => {
     setCurrentSlide((prev) => (prev === 1 ? 0 : 1));
   };
 
-  // Sample content items - in a real app, this would come from the backend
+  // Sample content items
   const curatedContent = [
     { icon: <FileText className="h-5 w-5 text-blue-500" />, title: "Consulting Proposal Guide", description: "Best practices for structuring proposals", size: "15MB" },
     { icon: <File className="h-5 w-5 text-blue-500" />, title: "PowerPoint Template Pack", description: "242 slides with professional layouts", size: "25MB" },
@@ -119,23 +64,12 @@ const ThankYouPage = () => {
               </div>
               
               <div className="space-y-4">
-                {user ? (
-                  <Button 
-                    className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
-                    onClick={() => navigate('/downloads')}
-                  >
-                    <Download className="h-5 w-5" />
-                    View Downloads
-                  </Button>
-                ) : (
-                  <Button 
-                    className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
-                    onClick={() => navigate('/signin')}
-                  >
-                    <Download className="h-5 w-5" />
-                    Sign in to access downloads
-                  </Button>
-                )}
+                <Button 
+                  className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
+                >
+                  <Download className="h-5 w-5" />
+                  Download Files
+                </Button>
                 
                 <Card className="border-gray-800">
                   <CardContent className="p-4">
