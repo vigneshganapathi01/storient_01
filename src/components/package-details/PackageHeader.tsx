@@ -64,7 +64,7 @@ const PackageHeader = ({
             packageName={packageName}
             price={price}
             buttonVariant="default"
-            buttonText="Buy now"
+            buttonText="Add to cart"
             onAddToCart={handleAddToCart}
           />
         </div>

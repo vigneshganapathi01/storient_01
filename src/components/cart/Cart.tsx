@@ -3,17 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { XCircle, Loader2, CreditCard, ShoppingCart } from 'lucide-react';
+import { XCircle, Loader2, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 const Cart: React.FC = () => {
   const { 
@@ -33,8 +25,6 @@ const Cart: React.FC = () => {
   } = useCart();
   
   const [promoInput, setPromoInput] = useState('');
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const navigate = useNavigate();
 
   // Ensure cart items are loaded
@@ -58,11 +48,6 @@ const Cart: React.FC = () => {
     }
   };
 
-  const handleCheckout = () => {
-    // Direct navigation to payment page instead of showing dialog
-    navigate('/payment', { state: { price: total, packageName: `Cart (${totalItems} items)` } });
-  };
-
   const handleContinueShopping = () => {
     navigate('/templates');
   };
@@ -78,7 +63,7 @@ const Cart: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-10">
+      <div className="text-center py-10 bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
         <p className="text-muted-foreground mb-6">Browse our templates and add some to your cart!</p>
         <Button 
@@ -93,73 +78,72 @@ const Cart: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold mb-6 text-brand-blue">Shopping Cart ({totalItems} {totalItems === 1 ? 'item' : 'items'})</h2>
+      <h2 className="text-2xl font-bold mb-6">Items ({totalItems})</h2>
       
       <div className="space-y-6 mb-8">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between border-b pb-4">
-            <div className="flex items-center">
+          <div key={item.id} className="border rounded-md overflow-hidden">
+            <div className="flex flex-col md:flex-row">
               {item.image && (
-                <div className="w-20 h-16 bg-gray-100 rounded overflow-hidden mr-4">
+                <div className="w-full md:w-1/2 h-48 overflow-hidden">
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                 </div>
               )}
-              <div>
-                <h3 className="font-medium">{item.title}</h3>
-                <div className="text-sm text-muted-foreground">
-                  {item.isPack && <span className="bg-accent/20 text-accent px-2 py-0.5 rounded-full text-xs mr-2">Pack</span>}
-                  {item.type && <span>{item.type}</span>}
-                </div>
-                <div className="mt-1">
-                  {item.discountPrice ? (
-                    <div className="flex items-center">
-                      <span className="font-semibold text-brand-blue">${item.discountPrice.toFixed(2)}</span>
-                      <span className="text-muted-foreground line-through text-sm ml-2">${item.price.toFixed(2)}</span>
-                    </div>
-                  ) : (
-                    <span className="font-semibold text-brand-blue">${item.price.toFixed(2)}</span>
+              <div className="p-4 flex flex-col justify-between flex-grow">
+                <div>
+                  <h3 className="font-bold text-lg">{item.title}</h3>
+                  {item.type && (
+                    <span className="text-sm text-muted-foreground">{item.type}</span>
                   )}
                 </div>
+                
+                <div className="mt-4 flex justify-between items-center">
+                  <div>
+                    {item.discountPrice ? (
+                      <div className="flex items-center">
+                        <span className="font-semibold text-lg">${item.discountPrice.toFixed(2)}</span>
+                        <span className="text-muted-foreground line-through text-sm ml-2">${item.price.toFixed(2)}</span>
+                      </div>
+                    ) : (
+                      <span className="font-semibold text-lg">${item.price.toFixed(2)}</span>
+                    )}
+                  </div>
+                  
+                  <button 
+                    onClick={() => handleRemoveItem(item.id)}
+                    className="text-muted-foreground hover:text-destructive transition-colors"
+                    aria-label="Remove item"
+                  >
+                    <XCircle size={20} />
+                  </button>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-center">
-              <div className="flex items-center mr-4">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="h-8 w-8 rounded-r-none"
-                  onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                  disabled={item.quantity <= 1}
-                >-</Button>
-                <Input 
-                  type="number" 
-                  value={item.quantity} 
-                  onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value) || 1)}
-                  className="h-8 w-12 text-center rounded-none text-sm" 
-                  min="1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="h-8 w-8 rounded-l-none"
-                  onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                >+</Button>
-              </div>
-              
-              <button 
-                onClick={() => handleRemoveItem(item.id)}
-                className="text-muted-foreground hover:text-destructive transition-colors"
-                aria-label="Remove item"
-              >
-                <XCircle size={20} />
-              </button>
             </div>
           </div>
         ))}
       </div>
       
-      <div className="mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            className="text-muted-foreground"
+            onClick={handleContinueShopping}
+          >
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            Continue Shopping
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            className="text-muted-foreground"
+            onClick={() => clearCart()}
+            disabled={items.length === 0}
+          >
+            Clear Cart
+          </Button>
+        </div>
+        
         <div className="flex items-center">
           <Input
             placeholder="Enter promo code"
@@ -174,63 +158,13 @@ const Cart: React.FC = () => {
             Apply
           </Button>
         </div>
-        {promoCode && (
-          <div className="mt-2 text-sm text-brand-purple">
-            Promo code {promoCode} applied!
-          </div>
-        )}
       </div>
       
-      <div className="space-y-2 border-t pt-4">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'}):</span>
-          <span>${subtotal.toFixed(2)}</span>
+      {promoCode && (
+        <div className="mt-4 text-sm text-brand-purple">
+          Promo code {promoCode} applied!
         </div>
-        {discount > 0 && (
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Item Discounts:</span>
-            <span className="text-brand-purple">-${discount.toFixed(2)}</span>
-          </div>
-        )}
-        {promoDiscount > 0 && (
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Promo Discount:</span>
-            <span className="text-brand-purple">-${promoDiscount.toFixed(2)}</span>
-          </div>
-        )}
-        <div className="flex justify-between font-bold text-lg pt-2 border-t">
-          <span>Order Total:</span>
-          <span className="text-brand-blue">${total.toFixed(2)}</span>
-        </div>
-      </div>
-      
-      <div className="mt-8 flex flex-col gap-3">
-        <Button 
-          className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white py-6 text-lg"
-          onClick={handleCheckout}
-          disabled={isCheckingOut || items.length === 0}
-        >
-          Proceed to Checkout ({totalItems} {totalItems === 1 ? 'item' : 'items'})
-        </Button>
-        <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            className="flex-1 text-muted-foreground"
-            onClick={handleContinueShopping}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Continue Shopping
-          </Button>
-          <Button 
-            variant="outline" 
-            className="flex-1 text-muted-foreground"
-            onClick={() => clearCart()}
-            disabled={isCheckingOut || items.length === 0}
-          >
-            Clear Cart
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
