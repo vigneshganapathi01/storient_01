@@ -28,12 +28,10 @@ const Cart: React.FC = () => {
   const [promoInput, setPromoInput] = useState('');
   const navigate = useNavigate();
 
-  // Ensure cart items are loaded when component mounts
+  // Ensure cart items are loaded
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchCartItems();
-    }
-  }, [fetchCartItems, isAuthenticated]);
+    fetchCartItems();
+  }, [fetchCartItems]);
 
   const handleRemoveItem = async (id: string) => {
     if (!isAuthenticated) {

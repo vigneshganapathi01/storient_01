@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { CartItem } from '@/types/cart';
 import { useCartItems } from './useCartItems';
 import { useCartPricing } from './useCartPricing';
 import { usePromoCode } from './usePromoCode';

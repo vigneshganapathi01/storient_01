@@ -31,12 +31,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCartItems
   } = useCartHook(user);
 
-  // Load cart when user logs in or out - ensure fetchCartItems is added to dependency array
+  // Load cart when user logs in or out
   useEffect(() => {
     if (!authLoading) {
       fetchCartItems();
     }
-  }, [user, authLoading, fetchCartItems]);
+  }, [user, authLoading]);
 
   // Create a value object with all the required context properties
   const contextValue: CartContextProps = {

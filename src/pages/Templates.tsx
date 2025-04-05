@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -10,132 +10,64 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { supabase } from '@/integrations/supabase/client';
 
-// Define template pack types
-interface TemplatePack {
-  id: string; // Using UUID from database
+const PackageContent = ({
+  title,
+  description,
+  color,
+  templateCount,
+  onClick
+}: {
   title: string;
   description: string;
-  price: number;
   color: string;
   templateCount?: number;
-}
+  onClick?: () => void;
+}) => <div className={`p-4 h-full ${color} rounded-md cursor-pointer hover:shadow-md transition-all`} onClick={onClick}>
+    <h3 className="font-bold text-lg mb-1">{title}</h3>
+    <p className="text-sm">{description}</p>
+    {templateCount && <div className="mt-2">
+        <Badge variant="outline" className="bg-white/50">
+          {templateCount} Templates
+        </Badge>
+      </div>}
+  </div>;
 
 const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const [pendingPackage, setPendingPackage] = useState<{ name: string, price: number, id: string } | null>(null);
-  const [templatePacks, setTemplatePacks] = useState<{[key: string]: TemplatePack[]}>({
-    '99': [],
-    '149': [],
-    '199': [],
-    '499': [],
-    '999': []
-  });
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const [pendingPackage, setPendingPackage] = useState<{ name: string, price: number } | null>(null);
   const navigate = useNavigate();
   const {
     addToCart,
     isAuthenticated
   } = useCart();
 
-  // Fetch template packs from database
-  useEffect(() => {
-    const fetchTemplatePacks = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('templates')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (error) {
-          throw error;
-        }
-        
-        if (data) {
-          // Group templates by price
-          const grouped = {
-            '99': data.filter(item => item.price === 99).map(item => ({
-              id: item.id,
-              title: item.title,
-              description: item.description || '',
-              price: item.price,
-              color: 'bg-[#f2f2f2]',
-              templateCount: Math.floor(Math.random() * 10) + 5, // For demo purposes
-            })),
-            '149': data.filter(item => item.price === 149).map(item => ({
-              id: item.id,
-              title: item.title,
-              description: item.description || '',
-              price: item.price,
-              color: 'bg-[#ccebff]',
-              templateCount: Math.floor(Math.random() * 10) + 5,
-            })),
-            '199': data.filter(item => item.price === 199).map(item => ({
-              id: item.id,
-              title: item.title,
-              description: item.description || '',
-              price: item.price,
-              color: 'bg-[#99d7fe]',
-              templateCount: Math.floor(Math.random() * 10) + 10,
-            })),
-            '499': [{
-              id: data.find(item => item.price === 499)?.id || 'storytelling-masterclass',
-              title: 'Storytelling Masterclass',
-              description: 'Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.',
-              price: 499,
-              color: 'bg-[#0074bf]',
-              templateCount: 35,
-            }],
-            '999': [{
-              id: data.find(item => item.price === 999)?.id || 'full-access-bundle',
-              title: 'Full Access Bundle',
-              description: 'Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success',
-              price: 999,
-              color: 'bg-[#002060]',
-              templateCount: 100,
-            }]
-          };
-          setTemplatePacks(grouped);
-        }
-      } catch (error) {
-        console.error('Error fetching templates:', error);
-        toast.error('Failed to load templates');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTemplatePacks();
-  }, []);
-
-  const handleAddToCart = async (packageName: string, price: number, templateId: string) => {
+  const handleAddToCart = async (packageName: string, price: number) => {
     if (!isAuthenticated) {
-      setPendingPackage({ name: packageName, price, id: templateId });
+      setPendingPackage({ name: packageName, price });
       setLoginDialogOpen(true);
       return;
     }
 
     try {
       await addToCart({
-        id: templateId, // Using actual UUID from database
+        id: packageName.toLowerCase().replace(/\s+/g, '-'),
         title: packageName,
         price: price,
         image: '/placeholder.svg'
       });
       toast.success(`${packageName} added to cart!`);
       navigate('/cart');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error(`Failed to add to cart: ${error.message}`);
+      toast.error('Failed to add to cart. Please try again.');
     }
   };
 
-  const navigateToPackageDetails = (packageId: string) => {
-    navigate(`/package-details/${packageId}`);
+  const navigateToPackageDetails = (packageName: string) => {
+    navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   const handleLogin = () => {
@@ -143,32 +75,7 @@ const Templates = () => {
     navigate('/signin');
   };
 
-  const PackageContent = ({
-    title,
-    description,
-    color,
-    templateCount,
-    onClick
-  }: {
-    title: string;
-    description: string;
-    color: string;
-    templateCount?: number;
-    onClick?: () => void;
-  }) => (
-    <div className={`p-4 h-full ${color} rounded-md cursor-pointer hover:shadow-md transition-all`} onClick={onClick}>
-      <h3 className="font-bold text-lg mb-1">{title}</h3>
-      <p className="text-sm">{description}</p>
-      {templateCount && <div className="mt-2">
-          <Badge variant="outline" className="bg-white/50">
-            {templateCount} Templates
-          </Badge>
-        </div>}
-    </div>
-  );
-
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">
         <div className="max-container pt-32 pb-20">
@@ -217,47 +124,15 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                {templatePacks['99'].length > 0 ? (
-                  templatePacks['99'].map((pack) => (
-                    <PackageContent
-                      key={pack.id}
-                      title={pack.title} 
-                      description={pack.description}
-                      color={pack.color}
-                      templateCount={pack.templateCount}
-                      onClick={() => navigateToPackageDetails(pack.id)}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <PackageContent 
-                      title="Pitches & Proof of Concepts" 
-                      description="Turn your ideas into winning pitches that build trust and urgency."
-                      color="bg-[#f2f2f2]"
-                      templateCount={12}
-                    />
-                    <PackageContent
-                      title="Case Studies"
-                      description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories."
-                      color="bg-[#f2f2f2]"
-                      templateCount={8}
-                    />
-                  </>
-                )}
+                <PackageContent title="Pitches & Proof of Concepts" description="Turn your ideas into winning pitches that build trust and urgency." color="bg-[#f2f2f2]" templateCount={12} onClick={() => navigateToPackageDetails("Pitches & Proof of Concepts")} />
+                
+                <PackageContent title="Case Studies" description="Share your results with compelling case study templates designed to highlight impact, ROI, and customer success stories." color="bg-[#f2f2f2]" templateCount={8} onClick={() => navigateToPackageDetails("Case Studies")} />
+                
+                <PackageContent title="Point of Views" description="Establish thought leadership with impactful POV templates that empower teams to articulate insights and challenge norms." color="bg-[#f2f2f2]" templateCount={10} onClick={() => navigateToPackageDetails("Point of Views")} />
               </div>
               
               <div className="p-4 mt-auto">
-                <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
-                  onClick={() => {
-                    const pack = templatePacks['99'][0];
-                    handleAddToCart(
-                      pack?.title || "$99 Package", 
-                      99, 
-                      pack?.id || "99-package-default-id"
-                    );
-                  }}
-                >
+                <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$99 Package", 99)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -273,47 +148,15 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                {templatePacks['149'].length > 0 ? (
-                  templatePacks['149'].map((pack) => (
-                    <PackageContent
-                      key={pack.id}
-                      title={pack.title} 
-                      description={pack.description}
-                      color={pack.color}
-                      templateCount={pack.templateCount}
-                      onClick={() => navigateToPackageDetails(pack.id)}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <PackageContent 
-                      title="Workshops" 
-                      description="Facilitate engaging and productive brainstorming sessions."
-                      color="bg-[#ccebff]"
-                      templateCount={15}
-                    />
-                    <PackageContent
-                      title="Proposals"
-                      description="Win pitch-ready deals with proposal templates designed to connect with decision-makers."
-                      color="bg-[#ccebff]"
-                      templateCount={7}
-                    />
-                  </>
-                )}
+                <PackageContent title="Workshops" description="Facilitate engaging and productive brainstorming sessions." color="bg-[#ccebff]" templateCount={15} onClick={() => navigateToPackageDetails("Workshops")} />
+                
+                <PackageContent title="Proposals" description="Win pitch-ready deals with proposal templates designed to connect with decision-makers." color="bg-[#ccebff]" templateCount={7} onClick={() => navigateToPackageDetails("Proposals")} />
+                
+                <PackageContent title="Request for Proposals" description="Respond confidently to RFPs and RFIs with structured templates designed to precisely address client pain points." color="bg-[#ccebff]" templateCount={9} onClick={() => navigateToPackageDetails("Request for Proposals")} />
               </div>
               
               <div className="p-4 mt-auto">
-                <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
-                  onClick={() => {
-                    const pack = templatePacks['149'][0];
-                    handleAddToCart(
-                      pack?.title || "$149 Package", 
-                      149, 
-                      pack?.id || "149-package-default-id"
-                    );
-                  }}
-                >
+                <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$149 Package", 149)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -329,47 +172,15 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                {templatePacks['199'].length > 0 ? (
-                  templatePacks['199'].map((pack) => (
-                    <PackageContent
-                      key={pack.id}
-                      title={pack.title} 
-                      description={pack.description}
-                      color={pack.color}
-                      templateCount={pack.templateCount}
-                      onClick={() => navigateToPackageDetails(pack.id)}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <PackageContent 
-                      title="Business Review Pack" 
-                      description="MEPS, QBRs, and EBRs."
-                      color="bg-[#99d7fe]"
-                      templateCount={18}
-                    />
-                    <PackageContent
-                      title="C-Suite Communication Strategy Pack"
-                      description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions."
-                      color="bg-[#99d7fe]"
-                      templateCount={14}
-                    />
-                  </>
-                )}
+                <PackageContent title="Business Review Pack" description="MEPS, QBRs, and EBRs." color="bg-[#99d7fe]" templateCount={18} onClick={() => navigateToPackageDetails("Business Review Pack")} />
+                
+                <PackageContent title="C-Suite Communication Strategy Pack" description="Craft high-impact C-15s, Newsletter and Readouts that drive decisions." color="bg-[#99d7fe]" templateCount={14} onClick={() => navigateToPackageDetails("C-Suite Communication Strategy Pack")} />
+                
+                <PackageContent title="The Divergent Deck" description="Frameworks for Upcoming Training & Communication." color="bg-[#99d7fe]" templateCount={20} onClick={() => navigateToPackageDetails("The Divergent Deck")} />
               </div>
               
               <div className="p-4 mt-auto">
-                <Button 
-                  className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center"
-                  onClick={() => {
-                    const pack = templatePacks['199'][0];
-                    handleAddToCart(
-                      pack?.title || "$199 Package", 
-                      199, 
-                      pack?.id || "199-package-default-id"
-                    );
-                  }}
-                >
+                <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 flex items-center justify-center" onClick={() => handleAddToCart("$199 Package", 199)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -385,27 +196,17 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-[#0074bf] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails(templatePacks['499'][0]?.id || "storytelling-masterclass")}>
-                  <h3 className="font-bold text-xl mb-3">{templatePacks['499'][0]?.title || "Storytelling Masterclass"}</h3>
-                  <p className="text-sm mb-4">{templatePacks['499'][0]?.description || "Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success."}</p>
+                <div className="bg-[#0074bf] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails("Storytelling Masterclass")}>
+                  <h3 className="font-bold text-xl mb-3">Storytelling Masterclass</h3>
+                  <p className="text-sm mb-4">Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.</p>
                   <Badge variant="outline" className="bg-white/20 text-white">
-                    {templatePacks['499'][0]?.templateCount || 35} Templates
+                    35 Templates
                   </Badge>
                 </div>
               </div>
               
               <div className="p-4 mt-auto">
-                <Button 
-                  className="w-full bg-white text-[#0074bf] hover:bg-white/90 flex items-center justify-center"
-                  onClick={() => {
-                    const pack = templatePacks['499'][0];
-                    handleAddToCart(
-                      pack?.title || "Storytelling Masterclass", 
-                      499, 
-                      pack?.id || "499-package-default-id"
-                    );
-                  }}
-                >
+                <Button className="w-full bg-white text-[#0074bf] hover:bg-white/90 flex items-center justify-center" onClick={() => handleAddToCart("Storytelling Masterclass", 499)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -421,27 +222,17 @@ const Templates = () => {
               </div>
               
               <div className="flex-1 p-4 flex flex-col space-y-4">
-                <div className="bg-[#002060] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails(templatePacks['999'][0]?.id || "full-access-bundle")}>
-                  <h3 className="font-bold text-xl mb-3">{templatePacks['999'][0]?.title || "Full Access Bundle"}</h3>
-                  <p className="text-sm mb-4">{templatePacks['999'][0]?.description || "Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success"}</p>
+                <div className="bg-[#002060] rounded-md p-6 flex-1 flex flex-col justify-center items-center text-center cursor-pointer hover:shadow-md transition-all text-white" onClick={() => navigateToPackageDetails("Full Access Bundle")}>
+                  <h3 className="font-bold text-xl mb-3">Full Access Bundle</h3>
+                  <p className="text-sm mb-4">Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success</p>
                   <Badge variant="outline" className="bg-white/20 text-white">
-                    {templatePacks['999'][0]?.templateCount || 100}+ Templates
+                    100+ Templates
                   </Badge>
                 </div>
               </div>
               
               <div className="p-4 mt-auto">
-                <Button 
-                  className="w-full bg-white text-[#002060] hover:bg-white/90 flex items-center justify-center"
-                  onClick={() => {
-                    const pack = templatePacks['999'][0];
-                    handleAddToCart(
-                      pack?.title || "Full Access Bundle", 
-                      999, 
-                      pack?.id || "999-package-default-id"
-                    );
-                  }}
-                >
+                <Button className="w-full bg-white text-[#002060] hover:bg-white/90 flex items-center justify-center" onClick={() => handleAddToCart("Full Access Bundle", 999)}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Add to Cart
                 </Button>
@@ -474,8 +265,7 @@ const Templates = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
 
 export default Templates;
