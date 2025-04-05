@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -14,25 +13,29 @@ import ReviewSection from '@/components/package-details/ReviewSection';
 import PackageInfo from '@/components/package-details/PackageInfo';
 import usePackageReviews from '@/hooks/usePackageReviews';
 import { fetchTemplateById, fetchTemplateBySlug } from '@/services/templateService';
+import { FileText, PieChart, Book } from 'lucide-react';
 
 const packageSlides = [
   {
     title: "Part 1:",
     subtitle: "Get a tried-and-tested best-practice guide on structuring consulting proposals with hands-on examples and practical tips",
     description: "A best-practice guide with hands-on tips and examples on how to creating proposals following the structure used by McKinsey, Bain, and BCG:",
-    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png",
+    logo: "/lovable-uploads/ff9ae1db-3c11-45a4-b4a0-8b691c330e1c.png"
   },
   {
     title: "Part 2:",
     subtitle: "Use our PowerPoint templates to create professional slides",
     description: "Professional PowerPoint templates with charts, diagrams, and layouts used by top consulting firms:",
-    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png",
+    logo: "/lovable-uploads/ff9ae1db-3c11-45a4-b4a0-8b691c330e1c.png"
   },
   {
     title: "Part 3:",
     subtitle: "Learn from real-world examples",
     description: "Study real Fortune 500 case examples to understand how consultants structure their proposals:",
-    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png"
+    image: "/lovable-uploads/009021ed-582e-42e5-95b7-28ef8fbb950a.png",
+    logo: "/lovable-uploads/ff9ae1db-3c11-45a4-b4a0-8b691c330e1c.png"
   }
 ];
 
