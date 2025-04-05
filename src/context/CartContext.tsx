@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -29,35 +30,38 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCartItems
   } = useCartHook(user);
 
-  // Check for pending cart item after login
+  // Check for pending cart items after login
   useEffect(() => {
-    const handlePendingCartItem = async () => {
-      const pendingItem = sessionStorage.getItem('pendingCartItem');
+    const handlePendingCartItems = async () => {
+      const pendingItems = sessionStorage.getItem('pendingCartItems');
       
-      if (user && pendingItem) {
+      if (user && pendingItems) {
         try {
-          const item = JSON.parse(pendingItem);
-          await addToCart(item);
-          sessionStorage.removeItem('pendingCartItem');
+          const items = JSON.parse(pendingItems);
+          
+          // Clear existing cart first
+          await clearCart();
+          
+          // Add each pending item to the cart
+          for (const item of items) {
+            await addToCart(item);
+          }
+          
+          // Clear pending items
+          sessionStorage.removeItem('pendingCartItems');
         } catch (error) {
-          console.error('Error adding pending item to cart:', error);
+          console.error('Error adding pending items to cart:', error);
         }
       }
     };
     
-    handlePendingCartItem();
+    handlePendingCartItems();
   }, [user]);
 
-  // Load cart from Supabase when user logs in
+  // Load cart when user logs in or out
   useEffect(() => {
     if (!authLoading) {
-      if (user) {
-        fetchCartItems();
-      } else {
-        // If no user but we had previous items, keep them in local state
-        // They'll be synced when user logs in
-        setItems([]);
-      }
+      fetchCartItems();
     }
   }, [user, authLoading]);
 

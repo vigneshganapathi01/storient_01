@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { XCircle, Loader2, ShoppingCart } from 'lucide-react';
+import { XCircle, Loader2, ShoppingCart, Trash2, MinusCircle, PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,16 +29,16 @@ const Cart: React.FC = () => {
 
   // Ensure cart items are loaded
   useEffect(() => {
-    // Force a refresh of cart items when component mounts
     fetchCartItems();
-  }, []);
+  }, [fetchCartItems]);
 
-  const handleRemoveItem = (id: string) => {
-    removeFromCart(id);
+  const handleRemoveItem = async (id: string) => {
+    await removeFromCart(id);
   };
 
-  const handleUpdateQuantity = (id: string, newQuantity: number) => {
-    updateQuantity(id, newQuantity);
+  const handleUpdateQuantity = async (id: string, currentQuantity: number, amount: number) => {
+    const newQuantity = Math.max(1, currentQuantity + amount);
+    await updateQuantity(id, newQuantity);
   };
 
   const handleApplyPromo = () => {
@@ -54,7 +54,7 @@ const Cart: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-40">
+      <div className="flex justify-center items-center h-40 bg-white rounded-lg shadow-sm p-6">
         <Loader2 className="h-8 w-8 animate-spin text-brand-blue" />
         <span className="ml-2 text-lg">Loading your cart...</span>
       </div>
@@ -78,14 +78,25 @@ const Cart: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-2xl font-bold mb-6">Items ({totalItems})</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Items ({totalItems})</h2>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex items-center gap-1"
+          onClick={() => clearCart()}
+        >
+          <Trash2 className="h-4 w-4" />
+          Clear Cart
+        </Button>
+      </div>
       
       <div className="space-y-6 mb-8">
         {items.map((item) => (
           <div key={item.id} className="border rounded-md overflow-hidden">
             <div className="flex flex-col md:flex-row">
               {item.image && (
-                <div className="w-full md:w-1/2 h-48 overflow-hidden">
+                <div className="w-full md:w-1/3 h-48 overflow-hidden">
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                 </div>
               )}
@@ -97,25 +108,50 @@ const Cart: React.FC = () => {
                   )}
                 </div>
                 
-                <div className="mt-4 flex justify-between items-center">
-                  <div>
-                    {item.discountPrice ? (
-                      <div className="flex items-center">
-                        <span className="font-semibold text-lg">${item.discountPrice.toFixed(2)}</span>
-                        <span className="text-muted-foreground line-through text-sm ml-2">${item.price.toFixed(2)}</span>
-                      </div>
-                    ) : (
-                      <span className="font-semibold text-lg">${item.price.toFixed(2)}</span>
-                    )}
+                <div className="mt-4 flex flex-wrap gap-4 justify-between items-end">
+                  <div className="flex items-center space-x-2">
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="h-8 w-8 rounded-full"
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}
+                      disabled={item.quantity <= 1}
+                    >
+                      <MinusCircle className="h-4 w-4" />
+                    </Button>
+                    
+                    <span className="font-medium w-8 text-center">{item.quantity}</span>
+                    
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="h-8 w-8 rounded-full"
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}
+                    >
+                      <PlusCircle className="h-4 w-4" />
+                    </Button>
                   </div>
                   
-                  <button 
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors"
-                    aria-label="Remove item"
-                  >
-                    <XCircle size={20} />
-                  </button>
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      {item.discountPrice ? (
+                        <div className="flex items-center">
+                          <span className="font-semibold text-lg">${item.discountPrice.toFixed(2)}</span>
+                          <span className="text-muted-foreground line-through text-sm ml-2">${item.price.toFixed(2)}</span>
+                        </div>
+                      ) : (
+                        <span className="font-semibold text-lg">${item.price.toFixed(2)}</span>
+                      )}
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleRemoveItem(item.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                      aria-label="Remove item"
+                    >
+                      <XCircle size={20} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,26 +159,15 @@ const Cart: React.FC = () => {
         ))}
       </div>
       
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            className="text-muted-foreground"
-            onClick={handleContinueShopping}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Continue Shopping
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="text-muted-foreground"
-            onClick={() => clearCart()}
-            disabled={items.length === 0}
-          >
-            Clear Cart
-          </Button>
-        </div>
+      <div className="flex flex-col sm:flex-row gap-4 justify-between mt-6 pt-6 border-t">
+        <Button 
+          variant="outline" 
+          className="text-muted-foreground flex items-center gap-2"
+          onClick={handleContinueShopping}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Continue Shopping
+        </Button>
         
         <div className="flex items-center">
           <Input

@@ -121,6 +121,7 @@ export const fetchTemplateById = async (templateId: string): Promise<Template | 
       return templateWithCount;
     }
     
+    console.log('Template not found in database, returning null');
     return null;
   } catch (error) {
     console.error('Error fetching template:', error);
@@ -168,6 +169,28 @@ export const fetchTemplateBySlug = async (slug: string): Promise<Template | null
     return null;
   } catch (error) {
     console.error('Error fetching template by slug:', error);
+    throw error;
+  }
+};
+
+// Create a purchase history record
+export const createPurchaseHistory = async (userId: string, items: any[], totalAmount: number): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('purchase_history')
+      .insert({
+        user_id: userId,
+        items: items,
+        total_amount: totalAmount,
+        purchase_date: new Date().toISOString()
+      });
+      
+    if (error) {
+      console.error('Error creating purchase history:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error creating purchase history:', error);
     throw error;
   }
 };

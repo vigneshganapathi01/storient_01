@@ -29,19 +29,28 @@ const PackageHeader = ({
   isLoading,
   slides 
 }: PackageHeaderProps) => {
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
   const navigate = useNavigate();
 
   const handleAddToCart = async () => {
     try {
+      const templateId = packageName.toLowerCase().replace(/\s+/g, '-');
+      
+      // Check if this item is already in cart
+      const existingItem = items.find(item => item.id === templateId);
+      
       await addToCart({
-        id: packageName.toLowerCase().replace(/\s+/g, '-'),
+        id: templateId,
         title: packageName,
         price: price,
         image: slides[0]?.image || '/placeholder.svg'
       });
       
-      toast.success(`${packageName} added to cart!`);
+      if (existingItem) {
+        toast.success(`${packageName} quantity updated in cart!`);
+      } else {
+        toast.success(`${packageName} added to cart!`);
+      }
       navigate('/cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
