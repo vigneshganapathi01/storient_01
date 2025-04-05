@@ -185,10 +185,10 @@ export const createPurchaseHistory = async (userId: string, items: CartItem[], t
     
     console.log('Creating purchase history for user:', userId);
     
-    // Use RPC call to avoid TypeScript errors with supabase generated types
+    // Fix: Cast parameters to match expected types for RPC call
     const { error } = await supabase.rpc('create_purchase_history', {
       p_user_id: userId,
-      p_items: items,
+      p_items: items as any,
       p_total_amount: totalAmount,
       p_purchase_date: new Date().toISOString(),
       p_payment_status: 'completed'

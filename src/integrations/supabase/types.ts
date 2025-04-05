@@ -46,24 +46,30 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          price_per_item: number | null
           quantity: number | null
           template_id: string
+          total_price: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
+          price_per_item?: number | null
           quantity?: number | null
           template_id: string
+          total_price?: number | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
+          price_per_item?: number | null
           quantity?: number | null
           template_id?: string
+          total_price?: number | null
           updated_at?: string | null
           user_id?: string
         }
@@ -208,7 +214,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_purchase_history: {
+        Args: {
+          p_user_id: string
+          p_items: Json
+          p_total_amount: number
+          p_purchase_date: string
+          p_payment_status: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
