@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { CartContextProps } from '@/types/cart';
-import { useCartHook } from '@/hooks/cart';
+import { useCart as useCartHook } from '@/hooks/cart/useCart';
 import { toast } from 'sonner';
 
 // Create context with undefined default value

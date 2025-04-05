@@ -75,10 +75,24 @@ const DemoPaymentPage = () => {
         throw new Error("You must be logged in to complete the purchase");
       }
 
+      // Convert items to a format suitable for JSON storage
+      const itemsForDB = items.map(item => ({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        discountPrice: item.discountPrice,
+        image: item.image,
+        quantity: item.quantity,
+        type: item.type,
+        isPack: item.isPack,
+        templateId: item.templateId,
+        addedAt: item.addedAt
+      }));
+
       // Create purchase history record
       const { error: purchaseError } = await supabase.rpc('create_purchase_history', {
         p_user_id: user.id,
-        p_items: items,
+        p_items: itemsForDB,
         p_total_amount: price || total,
         p_purchase_date: new Date().toISOString(),
         p_payment_status: 'completed'
