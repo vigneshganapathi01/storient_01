@@ -128,6 +128,7 @@ const PackageDetails = () => {
         <div className="max-container pt-32 pb-20">
           <PackageHeader 
             packageName={packageName}
+            packageId={packageId || ''}
             reviewCount={reviewCount}
             averageRating={averageRating}
             price={packageDetails?.price || 149}

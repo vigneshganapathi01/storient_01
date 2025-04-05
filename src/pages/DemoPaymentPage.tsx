@@ -12,6 +12,7 @@ import { CreditCard, Smartphone, QrCode, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { useCart } from '@/context/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 
 type PaymentMethod = 'card' | 'upi' | 'qr';
 
@@ -27,7 +28,7 @@ const DemoPaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { items, clearCart } = useCart();
+  const { items, clearCart, total } = useCart();
   
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -37,7 +38,7 @@ const DemoPaymentPage = () => {
 
   // Check if user directly accessed this page without going through checkout
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state && items.length === 0) {
       toast({
         title: "Invalid Access",
         description: "Please select items before proceeding to payment",
@@ -45,7 +46,7 @@ const DemoPaymentPage = () => {
       });
       navigate('/templates');
     }
-  }, [location.state]);
+  }, [location.state, items.length]);
 
   const form = useForm<PaymentFormData>({
     defaultValues: {
@@ -57,7 +58,7 @@ const DemoPaymentPage = () => {
     },
   });
 
-  const processPayment = (data: PaymentFormData) => {
+  const processPayment = async (data: PaymentFormData) => {
     setIsProcessing(true);
     
     // Simulate payment processing
@@ -66,16 +67,67 @@ const DemoPaymentPage = () => {
       description: "Please wait while we process your payment",
     });
     
-    // Simulate a delay before redirecting
-    setTimeout(() => {
-      setIsProcessing(false);
+    try {
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("You must be logged in to complete the purchase");
+      }
+
+      // Convert items to a format suitable for JSON storage
+      const itemsForDB = items.map(item => ({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        discountPrice: item.discountPrice,
+        image: item.image,
+        quantity: item.quantity,
+        type: item.type,
+        isPack: item.isPack,
+        templateId: item.templateId,
+        addedAt: item.addedAt
+      }));
+
+      // Create purchase history record
+      const { error: purchaseError } = await supabase.rpc('create_purchase_history', {
+        p_user_id: user.id,
+        p_items: itemsForDB,
+        p_total_amount: price || total,
+        p_purchase_date: new Date().toISOString(),
+        p_payment_status: 'completed'
+      });
+
+      if (purchaseError) {
+        throw purchaseError;
+      }
+      
+      // Pass cart items and total to the thank you page
+      navigate('/thank-you', { 
+        state: { 
+          packageName: packageName || `Cart (${items.length} items)`, 
+          price: price || total,
+          items: items,
+          totalAmount: price || total
+        } 
+      });
+      
       // Clear the cart if payment is successful
-      clearCart();
-      navigate('/thank-you', { state: { packageName, price } });
-    }, 2000);
+      await clearCart();
+      
+    } catch (error: any) {
+      console.error('Payment processing error:', error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "There was an error processing your payment",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const isFromCart = packageName.includes('Cart');
+  const isFromCart = packageName?.includes('Cart') || items.length > 0;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,7 +136,7 @@ const DemoPaymentPage = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-white mb-2">Complete Your Purchase</h1>
-            <p className="text-gray-400">{packageName} - ${price.toFixed(2)}</p>
+            <p className="text-gray-400">{packageName || `Cart (${items.length} items)`} - ${(price || total).toFixed(2)}</p>
           </div>
           
           {isFromCart && items.length > 0 && (
@@ -115,7 +167,7 @@ const DemoPaymentPage = () => {
                   ))}
                   <div className="flex justify-between font-bold pt-2">
                     <span>Total</span>
-                    <span className="text-blue-600">${price.toFixed(2)}</span>
+                    <span className="text-blue-600">${(price || total).toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -239,7 +291,7 @@ const DemoPaymentPage = () => {
                         className="w-full bg-blue-600 hover:bg-blue-700"
                         disabled={isProcessing}
                       >
-                        {isProcessing ? "Processing..." : `Pay $${price.toFixed(2)}`}
+                        {isProcessing ? "Processing..." : `Pay $${(price || total).toFixed(2)}`}
                       </Button>
                     </div>
                   </form>

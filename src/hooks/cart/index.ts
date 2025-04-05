@@ -1,2 +1,5 @@
 
-export { useCart as useCartHook } from './useCart';
+export { useCart } from './useCart';
+export { useCartItems } from './useCartItems';
+export { useCartPricing } from './useCartPricing';
+export { usePromoCode } from './usePromoCode';

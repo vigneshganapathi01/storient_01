@@ -25,6 +25,11 @@ export const calculateCartTotals = (items: CartItem[]) => {
 
 // Fetch cart items from Supabase and return populated cart items
 export const fetchCartItemsFromDB = async (userId: string): Promise<CartItem[]> => {
+  if (!userId) {
+    console.log("No user ID provided, returning empty cart");
+    return [];
+  }
+
   try {
     console.log("Fetching cart items for user:", userId);
     
@@ -34,7 +39,10 @@ export const fetchCartItemsFromDB = async (userId: string): Promise<CartItem[]> 
       .select('*')
       .eq('user_id', userId);
     
-    if (cartError) throw cartError;
+    if (cartError) {
+      console.error('Error fetching cart items:', cartError);
+      throw cartError;
+    }
     
     console.log("Cart items fetched:", cartItems);
     

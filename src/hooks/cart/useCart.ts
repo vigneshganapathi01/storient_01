@@ -54,6 +54,9 @@ export const useCart = (user: any) => {
     applyPromoCode,
     
     // Loading state
-    isLoading
+    isLoading,
+    
+    // Authentication state
+    isAuthenticated: !!user
   };
 };
