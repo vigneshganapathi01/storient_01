@@ -38,6 +38,22 @@ const PackageHeader = ({
   const navigate = useNavigate();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
+  // Handle direct "Buy Now" click - Navigate to payment page
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      setLoginDialogOpen(true);
+      return;
+    }
+    
+    navigate('/payment', { 
+      state: { 
+        packageName: packageName,
+        price: price
+      }
+    });
+  };
+
+  // Handle "Add to Cart" click
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       setLoginDialogOpen(true);
@@ -90,7 +106,8 @@ const PackageHeader = ({
               packageName={packageName}
               price={price}
               buttonVariant="default"
-              buttonText="Add to cart"
+              buttonText="Buy Now"
+              onBuyNow={handleBuyNow}
               onAddToCart={handleAddToCart}
             />
           </div>
@@ -105,7 +122,7 @@ const PackageHeader = ({
           <DialogHeader>
             <DialogTitle>Login Required</DialogTitle>
             <DialogDescription>
-              You need to be logged in to add items to your cart
+              You need to be logged in to make a purchase
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center justify-center py-4">

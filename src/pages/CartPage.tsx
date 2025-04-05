@@ -102,7 +102,7 @@ const CartPage: React.FC = () => {
                         
                         {totalItems > 0 && (
                           <Button 
-                            className="w-full mt-4 py-6 bg-[#132043] hover:bg-[#132043]/90 text-white font-medium"
+                            className="w-full mt-4 py-6 bg-blue-600 hover:bg-blue-700 text-white font-medium"
                             onClick={handleCheckout}
                             disabled={isLoading}
                           >
@@ -113,7 +113,7 @@ const CartPage: React.FC = () => {
                               </>
                             ) : (
                               <>
-                                Checkout <ArrowRight className="ml-2 h-5 w-5" />
+                                Buy Now <ArrowRight className="ml-2 h-5 w-5" />
                               </>
                             )}
                           </Button>
