@@ -56,12 +56,7 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
         const newQuantity = items[existingItemIndex].quantity + 1;
         await updateQuantity(item.id, newQuantity);
         
-        toast.success(`${item.title} quantity updated in cart!`, {
-          description: `New quantity: ${newQuantity}`,
-          duration: 3000,
-          position: 'top-right',
-          className: 'animate-slide-in',
-        });
+        toast.success(`${item.title} quantity updated in cart!`);
       } else {
         // Otherwise add new item
         const newItem: CartItem = { ...item, quantity: 1, addedAt: new Date().toISOString() };
@@ -72,16 +67,7 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
         // Update local state
         setItems(prev => [...prev, newItem]);
         
-        toast.success(`${item.title} added to cart!`, {
-          description: 'You can view all items in your cart',
-          duration: 3000,
-          position: 'top-right',
-          className: 'animate-slide-in',
-          action: {
-            label: 'View Cart',
-            onClick: () => window.location.href = '/cart',
-          },
-        });
+        toast.success(`${item.title} added to cart!`);
       }
     } catch (error: any) {
       console.error('Error adding to cart:', error);
@@ -101,10 +87,6 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
         return;
       }
       
-      // Find the item to get its name for the notification
-      const itemToRemove = items.find(item => item.id === itemId);
-      const itemName = itemToRemove?.title || 'Item';
-      
       // Remove from local state
       const updatedItems = items.filter(item => item.id !== itemId);
       setItems(updatedItems);
@@ -112,12 +94,7 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
       // Remove from database since user is logged in
       await removeItemFromDatabase(user.id, itemId);
       
-      toast.success(`${itemName} removed from cart`, {
-        description: `${updatedItems.length} items remaining in cart`,
-        duration: 3000,
-        position: 'top-right',
-        className: 'animate-slide-in',
-      });
+      toast.success('Item removed from cart');
     } catch (error: any) {
       console.error('Error removing from cart:', error);
       toast.error(`Failed to remove item: ${error.message}`);
@@ -161,13 +138,6 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
       
       // Update in database since user is logged in
       await updateItemQuantityInDatabase(user.id, itemId, quantity, itemPrice);
-      
-      toast.success(`Quantity updated`, {
-        description: `${item.title}: ${quantity} ${quantity === 1 ? 'item' : 'items'}`,
-        duration: 2000,
-        position: 'top-right',
-        className: 'animate-fade-in',
-      });
     } catch (error: any) {
       console.error('Error updating quantity:', error);
       toast.error(`Failed to update quantity: ${error.message}`);
@@ -194,12 +164,7 @@ export const useCartOperations = (user: any, setIsLoading: (loading: boolean) =>
       // Clear from database since user is logged in
       await clearCartInDatabase(user.id);
       
-      toast.success('Cart cleared', {
-        description: 'All items have been removed from your cart',
-        duration: 3000,
-        position: 'top-right',
-        className: 'animate-fade-in',
-      });
+      toast.success('Cart cleared');
     } catch (error: any) {
       console.error('Error clearing cart:', error);
       toast.error(`Failed to clear cart: ${error.message}`);
