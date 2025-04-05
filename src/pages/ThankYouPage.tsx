@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Check, Download, ChevronRight, ChevronLeft, Play, File, FileText, Database } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
 const ThankYouPage = () => {
@@ -33,39 +32,31 @@ const ThankYouPage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Record purchase in database
+  // Record purchase in database - only for logged-in users
   useEffect(() => {
     const recordPurchase = async () => {
+      // Only record purchase if user is logged in and we have items and location state
       if (!user || !items.length || !location.state) return;
       
       try {
-        // Using the raw query method to bypass TypeScript type issues
-        const { error } = await supabase.rpc('create_purchase_history', {
-          p_user_id: user.id,
-          p_items: items,
-          p_total_amount: totalAmount
-        }).single();
+        // Use a direct insert with type casting to fix TypeScript errors
+        const { error } = await supabase.from('purchase_history' as any).insert({
+          user_id: user.id,
+          items: items,
+          total_amount: totalAmount,
+          payment_status: 'completed',
+          purchase_date: new Date().toISOString()
+        } as any);
         
         if (error) {
-          console.error('Error creating purchase history with RPC:', error);
-          
-          // Fallback to direct insert
-          const { error: insertError } = await supabase.from('purchase_history' as any)
-            .insert({
-              user_id: user.id,
-              items: items,
-              total_amount: totalAmount,
-              payment_status: 'completed'
-            } as any);
-            
-          if (insertError) {
-            console.error('Error with fallback purchase history creation:', insertError);
-            toast({
-              title: "Error",
-              description: "Failed to record your purchase. Please contact support.",
-              variant: "destructive"
-            });
-          }
+          console.error('Error creating purchase history:', error);
+          toast({
+            title: "Error",
+            description: "Failed to record your purchase. Please contact support.",
+            variant: "destructive"
+          });
+        } else {
+          console.log('Purchase recorded successfully');
         }
       } catch (error) {
         console.error('Error recording purchase:', error);
@@ -128,13 +119,23 @@ const ThankYouPage = () => {
               </div>
               
               <div className="space-y-4">
-                <Button 
-                  className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
-                  onClick={() => navigate('/downloads')}
-                >
-                  <Download className="h-5 w-5" />
-                  View Downloads
-                </Button>
+                {user ? (
+                  <Button 
+                    className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    onClick={() => navigate('/downloads')}
+                  >
+                    <Download className="h-5 w-5" />
+                    View Downloads
+                  </Button>
+                ) : (
+                  <Button 
+                    className="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    onClick={() => navigate('/signin')}
+                  >
+                    <Download className="h-5 w-5" />
+                    Sign in to access downloads
+                  </Button>
+                )}
                 
                 <Card className="border-gray-800">
                   <CardContent className="p-4">

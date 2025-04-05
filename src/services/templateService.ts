@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 // Define Template type
@@ -176,30 +175,30 @@ export const fetchTemplateBySlug = async (slug: string): Promise<Template | null
 // Create a purchase history record - Fixed TypeScript errors
 export const createPurchaseHistory = async (userId: string, items: any[], totalAmount: number): Promise<void> => {
   try {
-    // Using the raw query method instead of the typed method to bypass TypeScript type issues
-    const { error } = await supabase.rpc('create_purchase_history', {
-      p_user_id: userId,
-      p_items: items,
-      p_total_amount: totalAmount
-    });
-    
-    if (error) {
-      console.error('Error creating purchase history using RPC:', error);
-      
-      // Fallback to direct insert with explicit casting
-      const { error: insertError } = await supabase.from('purchase_history' as any)
-        .insert({
-          user_id: userId,
-          items: items,
-          total_amount: totalAmount,
-          purchase_date: new Date().toISOString()
-        } as any);
-        
-      if (insertError) {
-        console.error('Error with fallback purchase history creation:', insertError);
-        throw insertError;
-      }
+    // Only proceed if user is logged in
+    if (!userId) {
+      console.log('User not logged in, skipping purchase history creation');
+      return;
     }
+    
+    console.log('Creating purchase history for user:', userId);
+    
+    // Use type assertion to fix TypeScript error
+    const { error } = await supabase.from('purchase_history' as any)
+      .insert({
+        user_id: userId,
+        items: items,
+        total_amount: totalAmount,
+        purchase_date: new Date().toISOString(),
+        payment_status: 'completed'
+      });
+      
+    if (error) {
+      console.error('Error creating purchase history:', error);
+      throw error;
+    }
+    
+    console.log('Purchase history created successfully');
   } catch (error) {
     console.error('Error creating purchase history:', error);
     throw error;

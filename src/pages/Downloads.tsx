@@ -16,16 +16,8 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { CartItem } from '@/types/cart';
+import { PurchaseHistoryItem } from '@/types/purchase';
 import { useToast } from '@/hooks/use-toast';
-
-interface PurchaseHistoryItem {
-  id: string;
-  items: CartItem[];
-  total_amount: number;
-  purchase_date: string;
-  payment_status: string;
-}
 
 const Downloads: React.FC = () => {
   const { user, isLoading: authLoading } = useAuth();
@@ -40,10 +32,11 @@ const Downloads: React.FC = () => {
       setIsLoading(true);
       
       try {
-        const { data, error } = await supabase
-          .from('purchase_history')
+        // Use type assertion to fix TypeScript error
+        const { data, error } = await (supabase
+          .from('purchase_history' as any)
           .select('*')
-          .order('purchase_date', { ascending: false });
+          .order('purchase_date', { ascending: false }) as any);
         
         if (error) {
           console.error('Error fetching purchase history:', error);
@@ -55,7 +48,8 @@ const Downloads: React.FC = () => {
           return;
         }
         
-        setPurchases(data || []);
+        // Cast the data to the correct type
+        setPurchases(data as unknown as PurchaseHistoryItem[]);
       } catch (error) {
         console.error('Error fetching purchase history:', error);
       } finally {
