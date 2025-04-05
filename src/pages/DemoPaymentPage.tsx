@@ -12,6 +12,7 @@ import { CreditCard, Smartphone, QrCode, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { useCart } from '@/context/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 
 type PaymentMethod = 'card' | 'upi' | 'qr';
 
@@ -57,7 +58,7 @@ const DemoPaymentPage = () => {
     },
   });
 
-  const processPayment = (data: PaymentFormData) => {
+  const processPayment = async (data: PaymentFormData) => {
     setIsProcessing(true);
     
     // Simulate payment processing
@@ -66,9 +67,26 @@ const DemoPaymentPage = () => {
       description: "Please wait while we process your payment",
     });
     
-    // Simulate a delay before redirecting
-    setTimeout(() => {
-      setIsProcessing(false);
+    try {
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("You must be logged in to complete the purchase");
+      }
+
+      // Create purchase history record
+      const { error: purchaseError } = await supabase.rpc('create_purchase_history', {
+        p_user_id: user.id,
+        p_items: items,
+        p_total_amount: price || total,
+        p_purchase_date: new Date().toISOString(),
+        p_payment_status: 'completed'
+      });
+
+      if (purchaseError) {
+        throw purchaseError;
+      }
       
       // Pass cart items and total to the thank you page
       navigate('/thank-you', { 
@@ -81,8 +99,18 @@ const DemoPaymentPage = () => {
       });
       
       // Clear the cart if payment is successful
-      clearCart();
-    }, 2000);
+      await clearCart();
+      
+    } catch (error: any) {
+      console.error('Payment processing error:', error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "There was an error processing your payment",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const isFromCart = packageName?.includes('Cart') || items.length > 0;

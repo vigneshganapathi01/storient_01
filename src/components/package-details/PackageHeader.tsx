@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import PackageDetailsHeader from './PackageDetailsHeader';
 import PackageImageCarousel from './PackageImageCarousel';
-import PriceSection, { PriceTier } from './PriceSection';
+import PriceSection from './PriceSection';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { LogIn } from 'lucide-react';
 
 interface PackageHeaderProps {
   packageName: string;
+  packageId: string;
   reviewCount: number;
   averageRating: number;
   price: number;
@@ -25,7 +26,8 @@ interface PackageHeaderProps {
 }
 
 const PackageHeader = ({ 
-  packageName, 
+  packageName,
+  packageId, 
   reviewCount, 
   averageRating, 
   price, 
@@ -43,7 +45,7 @@ const PackageHeader = ({
     }
 
     try {
-      const templateId = packageName.toLowerCase().replace(/\s+/g, '-');
+      const templateId = packageId || packageName.toLowerCase().replace(/\s+/g, '-');
       
       // Check if this item is already in cart
       const existingItem = items.find(item => item.id === templateId);
