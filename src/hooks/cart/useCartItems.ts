@@ -40,7 +40,7 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
               if (template) {
                 // Transform data to match CartItem interface
                 cartItemsWithTemplates.push({
-                  id: item.template_id,
+                  id: template.id, // Use the actual template ID as the cart item ID
                   title: template.title,
                   price: template.price,
                   discountPrice: template.discount_percentage 
@@ -86,6 +86,13 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
       
       if (!user) {
         toast.error("Please log in to add items to your cart");
+        return;
+      }
+      
+      // Validate UUID format - this should be a valid UUID from the database
+      if (!item.id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)) {
+        console.error('Invalid UUID format for template ID:', item.id);
+        toast.error(`Failed to add item to cart: invalid template ID format`);
         return;
       }
       

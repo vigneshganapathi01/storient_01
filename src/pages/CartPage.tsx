@@ -17,8 +17,10 @@ const CartPage: React.FC = () => {
   
   // Fetch cart items when page loads
   useEffect(() => {
-    fetchCartItems();
-  }, [fetchCartItems]);
+    if (isAuthenticated) {
+      fetchCartItems();
+    }
+  }, [fetchCartItems, isAuthenticated]);
   
   const handleCheckout = () => {
     if (!isAuthenticated) {
