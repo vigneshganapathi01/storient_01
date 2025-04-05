@@ -40,7 +40,7 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
               if (template) {
                 // Transform data to match CartItem interface
                 cartItemsWithTemplates.push({
-                  id: item.template_id,
+                  id: item.template_id, // Using the template_id (UUID)
                   title: template.title,
                   price: template.price,
                   discountPrice: template.discount_percentage 
@@ -89,6 +89,13 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
         return;
       }
       
+      // Ensure we have a valid template ID (UUID format)
+      if (!item.id || !isValidUUID(item.id)) {
+        console.error('Invalid template ID format:', item.id);
+        toast.error('Failed to add item: Invalid template ID');
+        return;
+      }
+      
       // Check if item already exists in cart
       const existingItemIndex = items.findIndex(i => i.id === item.id);
       
@@ -116,6 +123,12 @@ export const useCartItems = (user: any, setIsLoading: (loading: boolean) => void
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to validate UUID format
+  const isValidUUID = (id: string) => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
   };
 
   // Remove item from cart

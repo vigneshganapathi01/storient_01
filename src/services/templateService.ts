@@ -37,54 +37,6 @@ export const fetchTemplates = async (): Promise<Template[]> => {
   }
 };
 
-// Add an item to a user's cart - now delegated to useCartItems hook
-export const addToCartDB = async (userId: string, templateId: string): Promise<void> => {
-  // First check if the item already exists in the cart
-  const { data, error: fetchError } = await supabase
-    .from('cart_items')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('template_id', templateId)
-    .maybeSingle();
-  
-  if (fetchError) {
-    console.error('Error checking if item exists in cart:', fetchError);
-    throw fetchError;
-  }
-  
-  // If the item already exists, update the quantity, otherwise insert a new item
-  if (data) {
-    // Item exists, update the quantity
-    const { error: updateError } = await supabase
-      .from('cart_items')
-      .update({ 
-        quantity: data.quantity + 1,
-        updated_at: new Date().toISOString() // Convert Date to ISO string
-      })
-      .eq('user_id', userId)
-      .eq('template_id', templateId);
-      
-    if (updateError) {
-      console.error('Error updating cart item quantity:', updateError);
-      throw updateError;
-    }
-  } else {
-    // Item doesn't exist, insert a new one
-    const { error: insertError } = await supabase
-      .from('cart_items')
-      .insert({
-        user_id: userId,
-        template_id: templateId,
-        quantity: 1
-      });
-      
-    if (insertError) {
-      console.error('Error adding item to cart:', insertError);
-      throw insertError;
-    }
-  }
-};
-
 // Fetch a template by ID
 export const fetchTemplateById = async (templateId: string): Promise<Template | null> => {
   console.log('Fetching template details for:', templateId);
