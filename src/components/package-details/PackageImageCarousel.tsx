@@ -1,13 +1,12 @@
 
 import React, { useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, ImageIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 interface Slide {
   title: string;
   subtitle: string;
   description: string;
   image: string;
-  logo?: string;
 }
 
 interface PackageImageCarouselProps {
@@ -28,21 +27,7 @@ const PackageImageCarousel = ({ slides }: PackageImageCarouselProps) => {
   return (
     <div className="bg-white rounded-lg p-5 text-black">
       <div className="relative">
-        <div className="flex items-center mb-1">
-          <div className="w-10 h-10 rounded-lg border border-blue-500 flex items-center justify-center bg-blue-50 mr-3">
-            {slides[currentSlide].logo ? (
-              <img 
-                src={slides[currentSlide].logo} 
-                alt="Template Logo" 
-                className="w-6 h-6 object-contain"
-              />
-            ) : (
-              <ImageIcon size={20} className="text-blue-500" />
-            )}
-          </div>
-          <h2 className="text-xl font-bold text-blue-800">{slides[currentSlide].title}</h2>
-        </div>
-        
+        <h2 className="text-xl font-bold text-blue-800 mb-1">{slides[currentSlide].title}</h2>
         <h3 className="text-lg font-bold mb-4">{slides[currentSlide].subtitle}</h3>
         
         <p className="mb-4 text-sm">
