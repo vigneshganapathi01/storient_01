@@ -20,13 +20,12 @@ import DemoPaymentPage from "./pages/DemoPaymentPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import Downloads from "./pages/Downloads";
 
-// Create a new QueryClient instance
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
+    <TooltipProvider>
+      <BrowserRouter>
         <AuthProvider>
           <CartProvider>
             <Toaster />
@@ -49,8 +48,8 @@ const App = () => (
             </Routes>
           </CartProvider>
         </AuthProvider>
-      </TooltipProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 

@@ -58,7 +58,7 @@ export const fetchCartItemsFromDB = async (userId: string): Promise<CartItem[]> 
           if (template) {
             // Transform data to match CartItem interface
             cartItemsWithTemplates.push({
-              id: item.template_id,  // Use the actual template_id (UUID) from the database
+              id: item.template_id,
               title: template.title,
               price: template.price,
               discountPrice: template.discount_percentage 

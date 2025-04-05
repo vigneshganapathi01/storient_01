@@ -36,7 +36,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!authLoading) {
       fetchCartItems();
     }
-  }, [user, authLoading, fetchCartItems]);
+  }, [user, authLoading]);
 
   // Create a value object with all the required context properties
   const contextValue: CartContextProps = {

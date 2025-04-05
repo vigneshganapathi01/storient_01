@@ -1,17 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ChevronDown, ShoppingCart, LogIn, Loader2 } from 'lucide-react';
+import { Check, ChevronDown, ShoppingCart, LogIn } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { fetchTemplates } from '@/services/templateService';
-import { Template } from '@/services/templateService';
 
 const PackageContent = ({
   title,
@@ -39,128 +37,43 @@ const Templates = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [sortBy, setSortBy] = useState('featured');
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
-  const [pendingPackage, setPendingPackage] = useState<{ name: string, price: number, id: string } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [templates, setTemplates] = useState<Template[]>([]);
-  
+  const [pendingPackage, setPendingPackage] = useState<{ name: string, price: number } | null>(null);
   const navigate = useNavigate();
   const {
     addToCart,
     isAuthenticated
   } = useCart();
 
-  // Fetch template data
-  useEffect(() => {
-    const getTemplates = async () => {
-      setIsLoading(true);
-      try {
-        const templatesData = await fetchTemplates();
-        setTemplates(templatesData);
-      } catch (error) {
-        console.error('Error fetching templates:', error);
-        toast.error('Failed to load templates');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    getTemplates();
-  }, []);
-  
-  // Find template by name or create a mock one with valid UUID
-  const getTemplateByName = (name: string) => {
-    const foundTemplate = templates.find(t => t.title.toLowerCase().includes(name.toLowerCase()));
-    if (foundTemplate) {
-      return {
-        id: foundTemplate.id, // This is a valid UUID from the database
-        title: foundTemplate.title,
-        price: foundTemplate.price,
-        image: foundTemplate.image_url
-      };
-    }
-    
-    // If we can't find a matching template, use the first one
-    if (templates.length > 0) {
-      return {
-        id: templates[0].id,
-        title: name,
-        price: getPackagePrice(name),
-        image: '/placeholder.svg'
-      };
-    }
-    
-    // Fallback with a generic error message
-    toast.error('Template data is not available. Please try again later.');
-    return null;
-  };
-  
-  // Helper to get price based on package name
-  const getPackagePrice = (packageName: string): number => {
-    if (packageName.includes('$99')) return 99;
-    if (packageName.includes('$149')) return 149;
-    if (packageName.includes('$199')) return 199;
-    if (packageName.includes('Storytelling')) return 499;
-    if (packageName.includes('Full Access')) return 999;
-    return 99; // Default price
-  };
-
   const handleAddToCart = async (packageName: string, price: number) => {
     if (!isAuthenticated) {
-      const template = getTemplateByName(packageName);
-      if (template) {
-        setPendingPackage({ name: packageName, price, id: template.id });
-        setLoginDialogOpen(true);
-      }
+      setPendingPackage({ name: packageName, price });
+      setLoginDialogOpen(true);
       return;
     }
 
     try {
-      const template = getTemplateByName(packageName);
-      if (!template) return;
-      
       await addToCart({
-        id: template.id, // Using valid UUID from database
+        id: packageName.toLowerCase().replace(/\s+/g, '-'),
         title: packageName,
         price: price,
-        image: template.image || '/placeholder.svg'
+        image: '/placeholder.svg'
       });
-      
       toast.success(`${packageName} added to cart!`);
       navigate('/cart');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error(`Failed to add to cart: ${error.message}`);
+      toast.error('Failed to add to cart. Please try again.');
     }
   };
 
   const navigateToPackageDetails = (packageName: string) => {
-    const template = getTemplateByName(packageName);
-    if (template) {
-      navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
-    } else {
-      toast.error('Package details not available');
-    }
+    navigate(`/package-details/${packageName.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   const handleLogin = () => {
     setLoginDialogOpen(false);
     navigate('/signin');
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="h-10 w-10 animate-spin text-brand-blue mx-auto mb-4" />
-            <p className="text-lg text-gray-600">Loading templates...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   return <div className="flex flex-col min-h-screen">
       <Navbar />
