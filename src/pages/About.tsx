@@ -13,10 +13,10 @@ const teamMembers = [
     image: '/uploads/team/ajay.jpg'
   },  
   {
-    name: 'Michael Chen',
-    role: 'Head of Design',
+    name: 'Antony raj J',
+    role: 'Data and AI Scientist',
     bio: 'Award-winning designer who leads our creative team with a focus on innovative and user-friendly templates.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'
+    image: '/uploads/team/anto.jpeg'
   }, {
     name: 'Vignesh Ganapathi',
     role: 'Lead Developer - Data Scientist',
@@ -32,7 +32,7 @@ const LocationMap = () => {
       <div className="h-full w-full relative">
         {/* Google Maps iframe - Type fix: changed allowFullScreen from "" to boolean true */}
         <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d962.0047399705351!2d76.9302855795769!3d11.093545435587707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8f66af1487f91%3A0xf88c8d829607bf3!2sThudiyalur%2C%20Tamil%20Nadu!5e1!3m2!1sen!2sin!4v1743880393200!5m2!1sen!2sin" 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d654.5241645261509!2d76.91984746836276!3d11.102053845708662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8f68058ecc6b3%3A0x587a255ebfdbba2b!2sKathir%20Naickenpalayam%2C%20K.%20Vadamadurai%2C%20Coimbatore%2C%20Tamil%20Nadu%20641017!5e1!3m2!1sen!2sin!4v1744030327576!5m2!1sen!2sin" 
           width="100%" 
           height="100%" 
           style={{ border: 0 }} 
@@ -187,7 +187,7 @@ We built Storient to bridge the gap between quality content and stunning design.
                     <MapPin className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Our Location</p>
-                      <p className="text-muted-foreground">39, Ganapathy Nagar, Kathirnaikenpalayam, Coimbatore-641017</p>
+                      <p className="text-muted-foreground">No. 39, Ganapathy Nagar, Kathirnaikenpalayam, Coimbatore-641017</p>
                     </div>
                   </div>
                     
