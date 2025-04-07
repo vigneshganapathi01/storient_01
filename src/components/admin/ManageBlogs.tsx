@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import BlogList from '@/components/admin/BlogList';
@@ -18,6 +17,7 @@ export interface BlogPost {
   created_at: string | null;
   updated_at: string | null;
   tags: string[] | null;
+  author_id?: string;
 }
 
 const ManageBlogs: React.FC = () => {

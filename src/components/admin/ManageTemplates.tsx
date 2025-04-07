@@ -20,6 +20,9 @@ export interface Template {
   created_at: string | null;
   updated_at: string | null;
   tags: string[] | null;
+  is_pack?: boolean;
+  discount_percentage?: number;
+  slug?: string;
 }
 
 const ManageTemplates: React.FC = () => {

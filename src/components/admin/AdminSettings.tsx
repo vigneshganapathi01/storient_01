@@ -42,27 +42,27 @@ const AdminSettings: React.FC = () => {
     try {
       setLoading(true);
       
-      const { data: users, error: usersError } = await supabase
-        .from('user_roles')
+      // Use raw SQL query to fetch user roles and their emails
+      const { data, error } = await supabase.from('user_roles')
         .select(`
-          id,
+          id, 
           user_id,
           role
         `)
         .eq('role', 'admin');
         
-      if (usersError) throw usersError;
+      if (error) throw error;
       
-      if (users && users.length > 0) {
+      if (data && data.length > 0) {
         // Get user emails
-        const userEmails = await Promise.all(users.map(async (user) => {
+        const userEmails = await Promise.all(data.map(async (user) => {
           const { data: userData, error: userError } = await supabase
             .from('profiles')
             .select('email')
             .eq('id', user.user_id)
             .single();
             
-          if (userError) return { ...user, email: 'Unknown email' };
+          if (userError) return { id: user.id, email: 'Unknown email', role: user.role };
           return { 
             id: user.id,
             email: userData?.email || 'Unknown email',
@@ -71,6 +71,8 @@ const AdminSettings: React.FC = () => {
         }));
         
         setAdminUsers(userEmails);
+      } else {
+        setAdminUsers([]);
       }
     } catch (error: any) {
       toast.error(`Error fetching admin users: ${error.message}`);
@@ -95,8 +97,7 @@ const AdminSettings: React.FC = () => {
       }
       
       // Check if user already has admin role
-      const { data: existingRole, error: roleError } = await supabase
-        .from('user_roles')
+      const { data: existingRole } = await supabase.from('user_roles')
         .select('id')
         .eq('user_id', user.id)
         .eq('role', 'admin')
@@ -106,13 +107,12 @@ const AdminSettings: React.FC = () => {
         throw new Error(`User with email ${data.email} is already an admin`);
       }
       
-      // Add admin role to user
-      const { error: insertError } = await supabase
-        .from('user_roles')
-        .insert([{
+      // Add admin role to user - using a different approach
+      const { error: insertError } = await supabase.from('user_roles')
+        .insert({
           user_id: user.id,
           role: 'admin'
-        }]);
+        });
         
       if (insertError) throw insertError;
       
@@ -128,8 +128,7 @@ const AdminSettings: React.FC = () => {
 
   const removeAdminRole = async (id: string, email: string) => {
     try {
-      const { error } = await supabase
-        .from('user_roles')
+      const { error } = await supabase.from('user_roles')
         .delete()
         .eq('id', id);
         

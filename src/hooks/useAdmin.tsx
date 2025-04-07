@@ -17,6 +17,7 @@ export const useAdmin = () => {
       }
 
       try {
+        // Use a custom query approach to call the has_role RPC function
         const { data, error } = await supabase.rpc('has_role', {
           _user_id: user.id,
           _role: 'admin'

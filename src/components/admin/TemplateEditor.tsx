@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { Template } from './ManageTemplates';
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -83,22 +84,23 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
       if (error) throw error;
       
       if (data) {
+        const templateData = data as unknown as Template;
         reset({
-          title: data.title,
-          description: data.description || '',
-          price: data.price,
-          category: data.category || '',
-          is_visible: data.is_visible || true,
+          title: templateData.title,
+          description: templateData.description || '',
+          price: templateData.price,
+          category: templateData.category || '',
+          is_visible: templateData.is_visible !== undefined ? templateData.is_visible : true,
         });
         
-        setTags(data.tags || []);
+        setTags(templateData.tags || []);
         
-        if (data.image_url) {
-          setImagePreview(data.image_url);
+        if (templateData.image_url) {
+          setImagePreview(templateData.image_url);
         }
         
-        if (data.file_url) {
-          const fileName = data.file_url.split('/').pop() || 'template-file';
+        if (templateData.file_url) {
+          const fileName = templateData.file_url.split('/').pop() || 'template-file';
           setTemplateFileName(fileName);
         }
       }
@@ -188,7 +190,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
       }
       
       // Prepare the template data
-      const templateData = {
+      const templateData: Partial<Template> = {
         title: data.title,
         description: data.description,
         price: data.price,
@@ -199,11 +201,11 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
       };
       
       if (imageUrl) {
-        templateData['image_url' as keyof typeof templateData] = imageUrl;
+        templateData.image_url = imageUrl;
       }
       
       if (fileUrl) {
-        templateData['file_url' as keyof typeof templateData] = fileUrl;
+        templateData.file_url = fileUrl;
       }
       
       let result;
@@ -218,7 +220,7 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
         // Create new template
         result = await supabase
           .from('templates')
-          .insert([templateData]);
+          .insert(templateData);
       }
       
       if (result.error) throw result.error;

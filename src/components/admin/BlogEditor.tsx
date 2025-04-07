@@ -14,6 +14,8 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
+import { BlogPost } from './ManageBlogs';
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -28,6 +30,7 @@ interface BlogEditorProps {
 const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isEditMode = !!id;
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -134,7 +137,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
       }
       
       // Prepare the blog post data
-      const blogData = {
+      const blogData: Partial<BlogPost> = {
         title: data.title,
         content: data.content,
         published: data.published,
@@ -142,6 +145,10 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
         image_url: imageUrl || null,
         updated_at: new Date().toISOString()
       };
+
+      if (!isEditMode && user) {
+        blogData.author_id = user.id;
+      }
       
       let result;
       
@@ -155,7 +162,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
         // Create new blog post
         result = await supabase
           .from('blog_posts')
-          .insert([blogData]);
+          .insert(blogData);
       }
       
       if (result.error) throw result.error;
