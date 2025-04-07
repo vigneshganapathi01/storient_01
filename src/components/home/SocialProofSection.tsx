@@ -1,9 +1,18 @@
-
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Shield, Users, Clock } from 'lucide-react';
 
 const SocialProofSection: React.FC = () => {
+  // Sample array of company logos
+  const companyLogos = [
+    { name: "nike", logoUrl: "/uploads/company_logo/nike.png", alt: "nike logo" },
+    { name: "eclerx", logoUrl: "/uploads/company_logo/eclerx.png", alt: "eclerx logo" },
+    { name: "bank", logoUrl: "/uploads/company_logo/bank.png", alt: "bank logo" },
+    { name: "boa", logoUrl: "/uploads/company_logo/BOA.png", alt: "boa logo" },
+    { name: "cognizant", logoUrl: "/uploads/company_logo/cognizant.png", alt: "Cognizant logo" },
+    { name: "supergas", logoUrl: "/uploads/company_logo/supergas.png", alt: "supergas logo" },
+  ];
+
   return (
     <section className="section-padding bg-muted">
       <div className="max-container">
@@ -56,13 +65,15 @@ const SocialProofSection: React.FC = () => {
         <div className="text-center">
           <h3 className="text-muted-foreground mb-6">Trusted by companies worldwide</h3>
           <div className="flex flex-wrap justify-center items-center gap-12">
-            {/* For a real project, replace these with actual brand logos */}
-            <div className="h-8 w-24 bg-secondary/30 rounded animate-pulse"></div>
-            <div className="h-8 w-32 bg-secondary/30 rounded animate-pulse"></div>
-            <div className="h-8 w-28 bg-secondary/30 rounded animate-pulse"></div>
-            <div className="h-8 w-20 bg-secondary/30 rounded animate-pulse"></div>
-            <div className="h-8 w-36 bg-secondary/30 rounded animate-pulse"></div>
-            <div className="h-8 w-24 bg-secondary/30 rounded animate-pulse"></div>
+            {companyLogos.map((company, index) => (
+              <div key={index} className="flex items-center justify-center">
+                <img
+                  src={company.logoUrl}
+                  alt={company.alt}
+                  className="h-8 max-w-full object-contain"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

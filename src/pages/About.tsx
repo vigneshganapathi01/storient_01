@@ -3,27 +3,60 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { MapPin, Mail, Phone, Clock, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-const teamMembers = [{
-  name: 'Sarah Johnson',
-  role: 'CEO & Founder',
-  bio: 'With 15+ years in design and tech, Sarah founded TemplatePro to make premium design accessible to everyone.',
-  image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'
-}, {
-  name: 'Michael Chen',
-  role: 'Head of Design',
-  bio: 'Award-winning designer who leads our creative team with a focus on innovative and user-friendly templates.',
-  image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'
-}, {
-  name: 'Jessica Williams',
-  role: 'Lead Developer',
-  bio: 'Full-stack developer with expertise in creating responsive, accessible, and high-performance web templates.',
-  image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop'
-}, {
-  name: 'Daniel Martinez',
-  role: 'Customer Success',
-  bio: 'Passionate about helping clients make the most of our templates and ensuring exceptional user experiences.',
-  image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop'
-}];
+import { Card } from '@/components/ui/card';
+
+const teamMembers = [
+  {
+    name: 'Ajay Nagaraju',
+    role: 'CEO & Founder',
+    bio: 'Communication Strategist. Specializes in hyper-personalized storytelling and knowledge management for enterprise data science, analytics, AI, and Fintech teams.',
+    image: '/uploads/team/ajay.jpg'
+  },  
+  {
+    name: 'Michael Chen',
+    role: 'Head of Design',
+    bio: 'Award-winning designer who leads our creative team with a focus on innovative and user-friendly templates.',
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'
+  }, {
+    name: 'Vignesh Ganapathi',
+    role: 'Lead Developer - Data Scientist',
+    bio: 'Combines front-end development skills with data science to deliver optimized, scalable digital solutions.',
+    image: '/uploads/team/vignesh.jpg'
+  }
+];
+
+// Map Component
+const LocationMap = () => {
+  return (
+    <Card className="overflow-hidden w-full h-64 shadow-md">
+      <div className="h-full w-full relative">
+        {/* Google Maps iframe - Type fix: changed allowFullScreen from "" to boolean true */}
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d962.0047399705351!2d76.9302855795769!3d11.093545435587707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8f66af1487f91%3A0xf88c8d829607bf3!2sThudiyalur%2C%20Tamil%20Nadu!5e1!3m2!1sen!2sin!4v1743880393200!5m2!1sen!2sin" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0 }} 
+          allowFullScreen={true}
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Storient Location Map"
+          className="absolute inset-0"
+        />
+        
+        {/* Custom pin overlay */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <div className="bg-white p-2 rounded-lg shadow-lg">
+            <div className="flex items-center">
+              <MapPin className="h-5 w-5 text-brand-purple mr-2" />
+              <span className="font-medium text-sm">Storient</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
 const About = () => {
   return <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -31,7 +64,7 @@ const About = () => {
         {/* Hero Section */}
         <div className="relative bg-brand-purple text-white">
           <div className="max-container pt-40 pb-20 px-4 md:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About TemplatePro</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">About Storient</h1>
             <p className="text-xl md:text-2xl max-w-3xl mb-8">
               We're a team of designers and developers passionate about creating high-quality templates 
               that help professionals elevate their projects.
@@ -54,13 +87,14 @@ const About = () => {
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-muted-foreground mb-6">
-                TemplatePro was founded in 2018 with a simple mission: to make beautiful, functional design accessible to everyone. 
-                We believed that great design shouldn't be limited to those with extensive technical skills or large budgets.
+              Storient was born out of a simple realization — that great ideas often go unheard due to poor presentation. As students, professionals, and creators, we spent countless hours formatting slides and documents when we should've been focusing on our message.
+So we decided to fix that.
+
+
               </p>
               <p className="text-muted-foreground mb-6">
-                What started as a small collection of website templates has grown into a comprehensive library of digital assets 
-                spanning websites, presentations, UI kits, and more. Along the way, we've helped thousands of professionals, 
-                small businesses, and creative individuals bring their visions to life.
+                
+We built Storient to bridge the gap between quality content and stunning design. Our platform delivers ready-to-use templates tailored for business, education, startups, and more — so users can share their story confidently and beautifully.
               </p>
               <p className="text-muted-foreground">
                 Today, we're proud to serve a global community of users who rely on our templates to create impressive, 
@@ -82,7 +116,7 @@ const About = () => {
           <div className="mb-24">
             <h2 className="text-3xl font-bold mb-6 text-center">Our Mission</h2>
             <p className="text-xl text-center text-muted-foreground max-w-3xl mx-auto mb-12">
-              Our mission is to empower professionals with beautiful, functional templates that save time and enhance their work.
+            To empower individuals and organizations to present their ideas with clarity, creativity, and confidence — by providing premium, customizable templates that save time and elevate impact.
             </p>
               
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -92,7 +126,7 @@ const About = () => {
                 </div>
                 <h3 className="text-xl font-medium mb-2">Quality Design</h3>
                 <p className="text-muted-foreground">
-                  We believe in crafting templates with meticulous attention to detail, ensuring every pixel is perfect.
+                Make professional-quality content accessible to everyone
                 </p>
               </div>
                 
@@ -125,7 +159,7 @@ const About = () => {
               Meet the talented individuals behind TemplatePro who work tirelessly to create the best templates for our users.
             </p>
               
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {teamMembers.map((member, index) => <div key={index} className="text-center">
                   <div className="relative mb-4 mx-auto w-40 h-40 rounded-full overflow-hidden">
                     <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
@@ -139,20 +173,21 @@ const About = () => {
             
           {/* Contact Section */}
           <div className="bg-muted rounded-lg p-8">
+            <h2 className="text-3xl font-bold mb-6">Get In Touch</h2>
+            <p className="text-muted-foreground mb-8">
+              Have questions about our templates or interested in joining our team? 
+              We'd love to hear from you. Reach out using the contact information below.
+            </p>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
-                <h2 className="text-3xl font-bold mb-6">Get In Touch</h2>
-                <p className="text-muted-foreground mb-8">
-                  Have questions about our templates or interested in joining our team? 
-                  We'd love to hear from you. Reach out using the contact information below.
-                </p>
-                  
-                <div className="space-y-4">
+                {/* Contact Information */}
+                <div className="space-y-4 mb-6">
                   <div className="flex items-start">
                     <MapPin className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Our Location</p>
-                      <p className="text-muted-foreground">123 Design Avenue, San Francisco, CA 94107</p>
+                      <p className="text-muted-foreground">123, Thudiyalur, Coimbatore - 641034</p>
                     </div>
                   </div>
                     
@@ -160,7 +195,7 @@ const About = () => {
                     <Mail className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Email Us</p>
-                      <p className="text-muted-foreground">hello@templatepro.com</p>
+                      <p className="text-muted-foreground">ajay@storient.in</p>
                     </div>
                   </div>
                     
@@ -168,7 +203,7 @@ const About = () => {
                     <Phone className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Call Us</p>
-                      <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                      <p className="text-muted-foreground">+91 86086 00777</p>
                     </div>
                   </div>
                     
@@ -176,10 +211,13 @@ const About = () => {
                     <Clock className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Business Hours</p>
-                      <p className="text-muted-foreground">Monday - Friday: 9am - 6pm PST</p>
+                      <p className="text-muted-foreground">Monday - Friday: 9am - 6pm GST</p>
                     </div>
                   </div>
                 </div>
+                
+                {/* Map Component */}
+                <LocationMap />
               </div>
                 
               <div className="bg-background p-6 rounded-lg shadow-sm">
@@ -215,4 +253,5 @@ const About = () => {
       <Footer />
     </div>;
 };
+
 export default About;

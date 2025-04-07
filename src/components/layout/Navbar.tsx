@@ -1,13 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, Download, Package, FileDown, Settings } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Download, Package, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
-import { useAdmin } from '@/hooks/useAdmin';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -16,7 +15,6 @@ const Navbar: React.FC = () => {
     user,
     signOut
   } = useAuth();
-  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const {
     totalItems
@@ -104,19 +102,6 @@ const Navbar: React.FC = () => {
                     <span>My Downloads</span>
                   </Link>
                 </DropdownMenuItem>
-                
-                {isAdmin && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="w-full flex items-center">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Admin Dashboard</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-                
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
                   <Download className="mr-2 h-4 w-4 rotate-90" />
@@ -154,12 +139,6 @@ const Navbar: React.FC = () => {
             <Link to="/about" className="block text-foreground hover:text-primary py-2" onClick={() => setMobileMenuOpen(false)}>
               About Us
             </Link>
-            
-            {isAdmin && (
-              <Link to="/admin" className="block text-foreground hover:text-primary py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>
-                Admin Dashboard
-              </Link>
-            )}
             
             <div className="flex items-center justify-between pt-4 border-t border-border">
               <div className="flex space-x-4">

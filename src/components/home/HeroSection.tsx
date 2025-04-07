@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
 
   const messages: HeroMessage[] = [
     {
-      title: "Storient Premium Templates for Professionals",
+      title: "Storient Premium Templates for Market Expertise",
       description: "Elevate your projects with our expertly crafted designs. Save time and impress your clients.",
       cta: "Browse Templates",
       path: "/templates"

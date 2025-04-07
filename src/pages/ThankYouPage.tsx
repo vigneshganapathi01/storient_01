@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -88,14 +87,14 @@ const ThankYouPage = () => {
 
   // Sample content items - in a real app, this would come from the backend
   const curatedContent = [
-    { icon: <FileText className="h-5 w-5 text-blue-500" />, title: "Consulting Proposal Guide", description: "Best practices for structuring proposals", size: "15MB" },
-    { icon: <File className="h-5 w-5 text-blue-500" />, title: "PowerPoint Template Pack", description: "242 slides with professional layouts", size: "25MB" },
-    { icon: <Database className="h-5 w-5 text-blue-500" />, title: "Excel Financial Model", description: "Complete modeling toolkit", size: "8MB" }
+    { icon: <FileText className="h-5 w-5 text-blue-500" />, title: "Business Review Playbook", description: "Essential strategies for reviewing business performance and future planning"},
+    { icon: <File className="h-5 w-5 text-blue-500" />, title: "PowerPoint Slide Deck", description: "242 slides designed for quarterly reviews, board meetings, and performance reports"},
+    { icon: <Database className="h-5 w-5 text-blue-500" />, title: "Excel Financial Toolkit", description: "Comprehensive model for financial summaries, KPIs, and forecasting"}
   ];
 
   const bonusContent = [
-    { icon: <FileText className="h-5 w-5 text-green-500" />, title: "Case Study: Fortune 500", description: "Real-world implementation example", size: "12MB" },
-    { icon: <File className="h-5 w-5 text-green-500" />, title: "Client Presentation Template", description: "Ready-to-use presentation format", size: "10MB" }
+    { icon: <FileText className="h-5 w-5 text-green-500" />, title: "Case Study: Fortune 500", description: "Real-world implementation example"},
+    { icon: <File className="h-5 w-5 text-green-500" />, title: "Client Presentation Template", description: "Ready-to-use presentation format"}
   ];
 
   const currentContent = selectedTab === 'curated' ? curatedContent : bonusContent;
@@ -113,8 +112,9 @@ const ThankYouPage = () => {
               
               <div className="text-xl md:text-2xl text-white mb-8">
                 <p>
-                  Thank you for purchasing from Storient! Your template is ready to use
-                  —wishing you success in your projects.
+                Thank you for purchasing from Storient! <br/>
+<br/>
+                Your Pack is ready to use — we wish you success as you present and grow your business.
                 </p>
               </div>
               
@@ -146,7 +146,7 @@ const ThankYouPage = () => {
                       >
                         Curated Content
                       </button>
-                      <span className="text-lg">+</span>
+                      <span className="text-lg"></span>
                       <button 
                         className={`text-lg font-medium pb-2 border-b-2 ${selectedTab === 'bonus' ? 'border-blue-500 text-blue-500' : 'border-transparent'}`}
                         onClick={() => setSelectedTab('bonus')}
@@ -161,13 +161,12 @@ const ThankYouPage = () => {
                           <div className="flex items-center gap-3">
                             {item.icon}
                             <div>
-                              <div className="font-medium">{item.title}</div>
+                              <div className="font-medium text-white">{item.title}</div>
                               <div className="text-sm text-gray-400">{item.description}</div>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-400">{item.size}</span>
-                            <Button variant="ghost" size="sm">
+                             <Button variant="ghost" size="sm" color='white'>
                               <Download className="h-4 w-4" />
                             </Button>
                           </div>
@@ -195,7 +194,7 @@ const ThankYouPage = () => {
                 <DialogTrigger asChild>
                   <button className="relative w-full aspect-video bg-gray-900 rounded-lg overflow-hidden">
                     <img 
-                      src="/lovable-uploads/ff9ae1db-3c11-45a4-b4a0-8b691c330e1c.png"
+                      src="\uploads\thumpnail\thumpnail.jpeg"
                       alt="Template preview" 
                       className="w-full h-full object-cover"
                     />
@@ -211,7 +210,7 @@ const ThankYouPage = () => {
                     <iframe 
                       width="100%" 
                       height="100%" 
-                      src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                      src="https://youtu.be/t5Z-Q1bg1tU?si=XiDpUfO4t6Fn3P7b" 
                       title="YouTube video player" 
                       frameBorder="0" 
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

@@ -39,7 +39,7 @@ const PackageImageCarousel = ({ slides }: PackageImageCarouselProps) => {
         {/* Main Image */}         
         <div className="bg-blue-900 rounded-lg p-6 mb-6">           
           <img             
-            src="/uploads/PointOfView.gif"
+            src="/uploads/template/PointOfView.gif"
             alt={slides[currentSlide].title}             
             className="w-full h-auto rounded-lg mb-4"           
           />                     

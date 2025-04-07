@@ -12,22 +12,28 @@ const Footer: React.FC = () => {
           {/* Column 1: Logo and Description */}
           <div className="space-y-4">
             <Link to="/" className="inline-block">
-              <span className="text-2xl font-bold text-gradient">TemplatePro</span>
+              <span className="text-2xl font-bold text-gradient">Storient</span>
             </Link>
             <p className="text-muted-foreground">
               Premium templates for professionals. Elevate your projects with our expertly crafted designs.
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
-                <Linkedin className="h-5 w-5 text-brand-purple" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
-                <Twitter className="h-5 w-5 text-brand-purple" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
-                <Instagram className="h-5 w-5 text-brand-purple" />
-              </Button>
-            </div>
+  <a href='https://www.linkedin.com/company/storient/posts/?feedView=all'>
+    <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
+      <Linkedin className="h-5 w-5 text-brand-purple" />
+    </Button>
+  </a>
+  <a href="#">
+    <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
+      <Twitter className="h-5 w-5 text-brand-purple" />
+    </Button>
+  </a>
+  <a href="#">
+    <Button variant="ghost" size="icon" className="rounded-full hover:bg-brand-purple/10">
+      <Instagram className="h-5 w-5 text-brand-purple" />
+    </Button>
+  </a>
+</div>
           </div>
 
           {/* Column 2: Pages */}
@@ -67,7 +73,7 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/templates/website" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/package-details/workshops" className="text-muted-foreground hover:text-primary transition-colors">
                   Website Templates
                 </Link>
               </li>
@@ -77,7 +83,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/templates/social-media" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/package-details/the-divergent-deck" className="text-muted-foreground hover:text-primary transition-colors">
                   Social Media Kits
                 </Link>
               </li>
@@ -87,7 +93,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/templates/ui-kits" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/templates" className="text-muted-foreground hover:text-primary transition-colors">
                   UI Kits
                 </Link>
               </li>
@@ -115,7 +121,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <div className="pt-8 border-t border-border text-center text-muted-foreground">
-          <p>© 2023 TemplatePro. All rights reserved.</p>
+          <p>© 2025 storient. All rights reserved.</p>
         </div>
       </div>
     </footer>
