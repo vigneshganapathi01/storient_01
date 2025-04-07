@@ -124,22 +124,23 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
       />
 
       {/* Package 4 - $499 */}
-      <PackageCard
-        price={499}
-        priceColor="bg-[#0074bf]"
-        subtitle="Includes an exclusive 1:1"
-        subtitle2="consult with our team"
-        singlePackage={{
-          title: "Storytelling Masterclass",
-          description: "Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.",
-          templateCount: 35,
-          imageUrl: "/uploads/template/Storytelling Masterclass.png",
-          onClick: () => navigateToPackageDetails("storytelling-masterclass")
-        }}
-        onAddToCart={() => onAddToCart("storytelling-masterclass", "Storytelling Masterclass", 499)}
-        buttonClass="bg-white text-[#0074bf] hover:bg-white/90"
-      />
-
+      {/* Package 4 - $499 */}
+<PackageCard
+  price={499}
+  priceColor="bg-[#0074bf]"
+  subtitle="Includes an exclusive 1:1"
+  subtitle2="consult with our team"
+  singlePackage={{
+    title: "Storytelling Masterclass",
+    description: "Your comprehensive guide to mastering enterprise storytelling, packed with strategies that build credibility and deliver business success.",
+    templateCount: 35,
+    imageUrl: "/uploads/ver.png",
+    onClick: () => navigateToPackageDetails("storytelling-masterclass"),
+    imageClass: "object-contain h-148 w-full" // Add this line to control image sizing
+  }}
+  onAddToCart={() => onAddToCart("storytelling-masterclass", "Storytelling Masterclass", 499)}
+  buttonClass="bg-white text-[#0074bf] hover:bg-white/90"
+/>
       {/* Package 5 - $999 */}
       <PackageCard
         price={999}
@@ -150,8 +151,9 @@ const TemplatePackages = ({ onAddToCart }: TemplatePackagesProps) => {
           title: "Full Access Bundle",
           description: "Your All-in-One Toolkit for Winning & Growing Future-proof Enterprise Success",
           templateCount: 100,
-          imageUrl: "/uploads/template/access.png",
-          onClick: () => navigateToPackageDetails("full-access-bundle")
+          imageUrl: "/uploads/de.jpg",
+          onClick: () => navigateToPackageDetails("full-access-bundle"),
+          imageClass: "object-contain h-148 w-full" // Add this line to control image sizing
         }}
         onAddToCart={() => onAddToCart("full-access-bundle", "Full Access Bundle", 999)}
         buttonClass="bg-white text-[#002060] hover:bg-white/90"
