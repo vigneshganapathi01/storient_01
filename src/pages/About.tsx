@@ -187,7 +187,7 @@ We built Storient to bridge the gap between quality content and stunning design.
                     <MapPin className="h-5 w-5 mr-3 text-brand-purple mt-0.5" />
                     <div>
                       <p className="font-medium">Our Location</p>
-                      <p className="text-muted-foreground">123, Thudiyalur, Coimbatore - 641034</p>
+                      <p className="text-muted-foreground">39, Ganapathy Nagar, Kathirnaikenpalayam, Coimbatore-641017</p>
                     </div>
                   </div>
                     

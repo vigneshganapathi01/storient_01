@@ -47,6 +47,7 @@ interface PackageCardProps {
     title: string;
     description: string;
     templateCount?: number;
+    imageStyle?: React.CSSProperties;
     imageUrl?: string;
     onClick?: () => void;
   };
