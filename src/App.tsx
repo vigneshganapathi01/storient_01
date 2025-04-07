@@ -14,6 +14,7 @@ import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import CartPage from "./pages/CartPage";
 import NotFound from "./pages/NotFound";
 import DemoPaymentPage from "./pages/DemoPaymentPage";
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/signin" element={<Auth tab="signin" />} />
               <Route path="/signup" element={<Auth tab="signup" />} />
               <Route path="/dashboard/*" element={<Dashboard />} />
+              <Route path="/admin/*" element={<AdminDashboard />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/payment" element={<DemoPaymentPage />} />
               <Route path="/thank-you" element={<ThankYouPage />} />

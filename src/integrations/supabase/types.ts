@@ -17,6 +17,7 @@ export type Database = {
           id: string
           image_url: string | null
           published: boolean | null
+          tags: string[] | null
           title: string
           updated_at: string | null
         }
@@ -27,6 +28,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           published?: boolean | null
+          tags?: string[] | null
           title: string
           updated_at?: string | null
         }
@@ -37,6 +39,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           published?: boolean | null
+          tags?: string[] | null
           title?: string
           updated_at?: string | null
         }
@@ -173,11 +176,14 @@ export type Database = {
           created_at: string | null
           description: string | null
           discount_percentage: number | null
+          file_url: string | null
           id: string
           image_url: string | null
           is_pack: boolean | null
+          is_visible: boolean | null
           price: number
           slug: string | null
+          tags: string[] | null
           title: string
           updated_at: string | null
         }
@@ -186,11 +192,14 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           discount_percentage?: number | null
+          file_url?: string | null
           id?: string
           image_url?: string | null
           is_pack?: boolean | null
+          is_visible?: boolean | null
           price: number
           slug?: string | null
+          tags?: string[] | null
           title: string
           updated_at?: string | null
         }
@@ -199,13 +208,37 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           discount_percentage?: number | null
+          file_url?: string | null
           id?: string
           image_url?: string | null
           is_pack?: boolean | null
+          is_visible?: boolean | null
           price?: number
           slug?: string | null
+          tags?: string[] | null
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -223,6 +256,13 @@ export type Database = {
           p_payment_status: string
         }
         Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
