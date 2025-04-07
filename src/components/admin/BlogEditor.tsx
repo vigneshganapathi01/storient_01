@@ -136,8 +136,16 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
         imageUrl = publicUrlData.publicUrl;
       }
       
-      // Prepare the blog post data
-      const blogData: Partial<BlogPost> = {
+      // Prepare the blog post data with required fields
+      const blogData: {
+        title: string;
+        content: string;
+        published: boolean;
+        tags: string[] | null;
+        image_url: string | null;
+        updated_at: string;
+        author_id?: string;
+      } = {
         title: data.title,
         content: data.content,
         published: data.published,
@@ -146,6 +154,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
         updated_at: new Date().toISOString()
       };
 
+      // Only set author_id for new posts
       if (!isEditMode && user) {
         blogData.author_id = user.id;
       }
@@ -160,6 +169,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ onSuccess }) => {
           .eq('id', id);
       } else {
         // Create new blog post
+        if (!user) {
+          throw new Error("User must be logged in to create a blog post");
+        }
+        
+        // For new posts, author_id is required
+        if (!blogData.author_id) {
+          blogData.author_id = user.id;
+        }
+        
         result = await supabase
           .from('blog_posts')
           .insert(blogData);

@@ -84,23 +84,22 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
       if (error) throw error;
       
       if (data) {
-        const templateData = data as unknown as Template;
         reset({
-          title: templateData.title,
-          description: templateData.description || '',
-          price: templateData.price,
-          category: templateData.category || '',
-          is_visible: templateData.is_visible !== undefined ? templateData.is_visible : true,
+          title: data.title,
+          description: data.description || '',
+          price: data.price,
+          category: data.category || '',
+          is_visible: data.is_visible !== undefined ? data.is_visible : true,
         });
         
-        setTags(templateData.tags || []);
+        setTags(data.tags || []);
         
-        if (templateData.image_url) {
-          setImagePreview(templateData.image_url);
+        if (data.image_url) {
+          setImagePreview(data.image_url);
         }
         
-        if (templateData.file_url) {
-          const fileName = templateData.file_url.split('/').pop() || 'template-file';
+        if (data.file_url) {
+          const fileName = data.file_url.split('/').pop() || 'template-file';
           setTemplateFileName(fileName);
         }
       }
@@ -189,8 +188,18 @@ const TemplateEditor: React.FC<TemplateEditorProps> = ({ onSuccess }) => {
         fileUrl = publicUrlData.publicUrl;
       }
       
-      // Prepare the template data
-      const templateData: Partial<Template> = {
+      // Prepare the template data with required fields
+      const templateData: {
+        title: string;
+        description: string;
+        price: number;
+        category: string | null;
+        is_visible: boolean;
+        tags: string[] | null;
+        updated_at: string;
+        image_url?: string | null;
+        file_url?: string | null;
+      } = {
         title: data.title,
         description: data.description,
         price: data.price,
