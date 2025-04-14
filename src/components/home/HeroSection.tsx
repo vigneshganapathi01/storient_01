@@ -91,7 +91,7 @@ const HeroSection: React.FC = () => {
                 }`}
               >
                 <p className="text-brand-purple font-semibold mb-3 animate-fade-in">Premium Quality</p>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                   {message.title}
                 </h1>
                 <p className="text-lg text-muted-foreground mb-8 max-w-md">
